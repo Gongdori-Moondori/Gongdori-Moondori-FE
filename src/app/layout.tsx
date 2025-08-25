@@ -1,10 +1,7 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import AppWrapper from '@/components/AppWrapper';
 import { Providers } from '@/components/providers';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Rzi Mobile App',
@@ -41,9 +38,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-icon" href="/icons/manifestImage.svg" />
       </head>
-      <body
-        className={`${inter.className} mobile-app-container safe-area-top safe-area-bottom`}
-      >
+      <body className="mobile-app-container safe-area-top safe-area-bottom">
         <Providers>
           <AppWrapper>
             <div className="mobile-scroll">{children}</div>
