@@ -1,0 +1,32 @@
+{
+    "name": "Rzi Mobile App",
+    "short_name": "Rzi",
+    "description": "모바일 최적화된 Rzi 애플리케이션",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "categories": ["productivity", "utilities"],
+    "lang": "ko",
+    "scope": "/",
+    "icons": [
+      {
+        "src": "/icons/manifestImage.svg",
+        "sizes": "192x192",
+        "type": "image/svg+xml",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/icons/manifestImage.svg",
+        "sizes": "512x512",
+        "type": "image/svg+xml",
+        "purpose": "any maskable"
+      }
+    ],
+    "prefer_related_applications": false,
+    "edge_side_panel": {
+      "preferred_width": 428
+    }
+  }
+  
