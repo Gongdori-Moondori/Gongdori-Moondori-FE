@@ -1,7 +1,7 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "name": "이예림",
       "email": "yerim@example.com",
       "profileImage": "👨‍🍳"
@@ -9,19 +9,19 @@
   ],
   "markets": [
     {
-      "id": 1,
+      "id": "1",
       "name": "경동시장",
       "location": "서울시 동대문구",
       "isActive": true
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "남대문시장",
       "location": "서울시 중구",
       "isActive": false
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "동네마트",
       "location": "서울시 강남구",
       "isActive": false
@@ -29,7 +29,7 @@
   ],
   "recommendations": [
     {
-      "id": 1,
+      "id": "1",
       "type": "seasonal",
       "emoji": "🍉",
       "name": "수박",
@@ -38,7 +38,7 @@
       "userId": 1
     },
     {
-      "id": 2,
+      "id": "2",
       "type": "discount",
       "emoji": "🥬",
       "name": "배추",
@@ -49,7 +49,7 @@
   ],
   "topProducts": [
     {
-      "id": 1,
+      "id": "1",
       "emoji": "🍅",
       "name": "토마토(물)",
       "description": "지금 토마토(물) 구매하면",
@@ -59,7 +59,7 @@
       "rank": 1
     },
     {
-      "id": 2,
+      "id": "2",
       "emoji": "🥕",
       "name": "당근(물)",
       "description": "지금 당근(물) 구매하면",
@@ -69,7 +69,7 @@
       "rank": 2
     },
     {
-      "id": 3,
+      "id": "3",
       "emoji": "🥩",
       "name": "삼겹살(200g)",
       "description": "지금 삼겹살(200g) 구매하면",
@@ -81,7 +81,7 @@
   ],
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "emoji": "🍅",
       "name": "토마토",
       "category": "채소",
@@ -93,7 +93,7 @@
       "description": "신선한 토마토"
     },
     {
-      "id": 2,
+      "id": "2",
       "emoji": "🥕",
       "name": "당근",
       "category": "채소",
@@ -105,7 +105,7 @@
       "description": "달콤한 당근"
     },
     {
-      "id": 3,
+      "id": "3",
       "emoji": "🥬",
       "name": "배추",
       "category": "채소",
@@ -117,7 +117,7 @@
       "description": "아삭한 배추"
     },
     {
-      "id": 4,
+      "id": "4",
       "emoji": "🥩",
       "name": "삼겹살",
       "category": "육류",
@@ -129,7 +129,7 @@
       "description": "신선한 삼겹살 200g"
     },
     {
-      "id": 5,
+      "id": "5",
       "emoji": "🐟",
       "name": "고등어",
       "category": "수산",
@@ -141,7 +141,7 @@
       "description": "싱싱한 고등어"
     },
     {
-      "id": 6,
+      "id": "6",
       "emoji": "🍎",
       "name": "사과",
       "category": "과일",
@@ -155,7 +155,7 @@
   ],
   "cart": [
     {
-      "id": 1,
+      "id": "1",
       "productId": 1,
       "userId": 1,
       "quantity": 2,
@@ -164,16 +164,16 @@
   ],
   "favorites": [
     {
-      "id": 1,
-      "productId": 1,
-      "userId": 1,
-      "addedAt": "2024-01-15T09:20:00Z"
-    },
-    {
-      "id": 2,
+      "id": "2",
       "productId": 4,
       "userId": 1,
       "addedAt": "2024-01-15T11:45:00Z"
+    },
+    {
+      "id": "eaf4",
+      "userId": "1",
+      "productId": 1,
+      "addedAt": "2025-08-25T06:29:38.062Z"
     }
   ]
 }

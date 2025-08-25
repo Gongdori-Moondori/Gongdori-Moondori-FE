@@ -17,6 +17,7 @@ import {
   useToggleFavorite,
   useFavorites,
 } from '@/lib/api/hooks';
+import { Market } from '@/lib/api/types';
 
 export default function Home() {
   // API 데이터 가져오기
@@ -42,9 +43,9 @@ export default function Home() {
   const addToCartMutation = useAddToCart();
   const toggleFavoriteMutation = useToggleFavorite();
 
-  const handleMarketChange = (marketName: string) => {
-    console.log('Market changed to:', marketName);
-    // 실제 구현에서는 marketName으로 marketId를 찾아서 설정
+  const handleMarketChange = (market: Market) => {
+    console.log('Market changed to:', market.name);
+    // MarketSelector 내부에서 이미 setActiveMarket을 호출하므로 추가 작업 불필요
   };
 
   const handleAddToCart = (productId: string) => {
@@ -96,15 +97,13 @@ export default function Home() {
   }));
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 text-foreground">
+    <div className="min-h-screen flex flex-col bg-gray-50 text-foreground gap-6">
       <WelcomeHeader userName={currentUser?.name || '이예림'} />
-
-      <main className="flex-1 px-6 py-6 pb-20">
-        <MarketSelector
-          selectedMarket={activeMarket?.name || '경동시장'}
-          onMarketChange={handleMarketChange}
-        />
-
+      <MarketSelector
+        selectedMarketId={activeMarket?.id}
+        onMarketChange={handleMarketChange}
+      />
+      {/* <main className="flex-1 px-6 py-6 pb-20">
         <AIChatBot
           userName={currentUser?.name || '이예림'}
           recommendedItem={
@@ -138,7 +137,7 @@ export default function Home() {
           error={productsError?.message}
           onRetry={() => refetchProducts()}
         />
-      </main>
+      </main> */}
 
       <BottomNavigation />
     </div>

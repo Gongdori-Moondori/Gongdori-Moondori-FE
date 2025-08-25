@@ -1,41 +1,131 @@
+'use client';
+
+import { useState, useRef, useEffect } from 'react';
+import { useMarkets, useSetActiveMarket } from '@/lib/api/hooks';
+import { Market } from '@/lib/api/types';
+
 interface MarketSelectorProps {
-  selectedMarket?: string;
-  onMarketChange?: (market: string) => void;
+  selectedMarketId?: number;
+  onMarketChange?: (market: Market) => void;
 }
 
 export default function MarketSelector({
-  selectedMarket = '경동시장',
+  selectedMarketId,
   onMarketChange,
 }: MarketSelectorProps) {
-  const handleClick = () => {
-    // 드롭다운 기능 구현 시 사용
-    if (onMarketChange) {
-      onMarketChange(selectedMarket);
-    }
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { data: markets = [], isLoading } = useMarkets();
+  const setActiveMarket = useSetActiveMarket();
+
+  // 선택된 시장 찾기
+  const selectedMarket =
+    markets.find((market) => market.id === selectedMarketId) || markets[0];
+
+  // 드롭다운 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleMarketSelect = (market: Market) => {
+    setIsOpen(false);
+    setActiveMarket.mutate(market.id);
+    onMarketChange?.(market);
   };
 
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="m-6">
+        <h2 className="text-lg font-bold mb-3">시장 선택하기</h2>
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 w-full">
+          <span className="text-gray-400">로딩중...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="mb-6">
-      <h2 className="text-lg font-bold mb-3">시장 선택하기</h2>
-      <button
-        onClick={handleClick}
-        className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 w-full touch-feedback"
-      >
-        <span className="text-gray-600">{selectedMarket}</span>
-        <svg
-          className="w-5 h-5 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+    <div className="flex flex-row gap-2 bg-white p-6" ref={dropdownRef}>
+      <h2 className="text-lg font-bold w-1/2 flex items-center">
+        시장 선택하기
+      </h2>
+      <div className="relative w-full">
+        <button
+          onClick={toggleDropdown}
+          className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 w-full touch-feedback hover:bg-gray-50 transition-colors"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
+          <div className="flex flex-col items-start">
+            <span className="text-gray-900 font-medium text-left">
+              {selectedMarket?.name || '시장을 선택하세요'}
+            </span>
+            {/* TODO : 시장 위치 표시 할지 말지 결정 */}
+            {/* {selectedMarket?.location && (
+              <span className="text-sm text-gray-500">
+                {selectedMarket.location}
+              </span>
+            )} */}
+          </div>
+          <svg
+            className={`w-5 h-5 text-gray-400 transform transition-transform ${
+              isOpen ? 'rotate-180' : ''
+            }`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+
+        {isOpen && (
+          <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+            {markets.map((market) => (
+              <button
+                key={market.id}
+                onClick={() => handleMarketSelect(market)}
+                className={`w-full p-4 text-left hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 ${
+                  selectedMarket?.id === market.id
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'text-gray-900'
+                }`}
+              >
+                <div className="flex flex-col">
+                  <span className="font-medium">{market.name}</span>
+                  {/* TODO : 시장 위치 표시 할지 말지 결정 */}
+                  {/* <span className="text-sm text-gray-500">
+                    {market.location}
+                  </span> */}
+                  {/* {selectedMarket?.id === market.id && (
+                    <span className="text-xs text-blue-600 mt-1">
+                      현재 선택됨
+                    </span>
+                  )} */}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
