@@ -16,6 +16,7 @@ interface AllProductsSectionProps extends ProductActionsProps {
   isLoading?: boolean;
   error?: string;
   onRetry?: () => void;
+  marketName?: string;
 }
 
 export default function AllProductsSection({
@@ -26,6 +27,7 @@ export default function AllProductsSection({
   isLoading = false,
   error,
   onRetry,
+  marketName,
 }: AllProductsSectionProps) {
   const {
     products: hookProducts,
@@ -64,7 +66,10 @@ export default function AllProductsSection({
   return (
     <>
       <div className="mb-6">
-        <SectionHeader maxSavings={calculatedMaxSavings} />
+        <SectionHeader
+          maxSavings={calculatedMaxSavings}
+          marketName={marketName}
+        />
 
         {/* 상품 카드들 */}
         {isLoadingData ? (

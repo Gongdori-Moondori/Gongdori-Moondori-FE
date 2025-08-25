@@ -67,7 +67,10 @@ export default function Home() {
 
         <TopThreeProducts userName={currentUser?.name || '이예림'} />
 
-        <AllProductsSection maxSavings={15000} />
+        <AllProductsSection
+          maxSavings={15000}
+          marketName={activeMarket?.name}
+        />
       </main>
 
       <BottomNavigation />
