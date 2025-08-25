@@ -7,6 +7,7 @@ import AIChatBot from '@/components/home/AIChatBot';
 import TopThreeProducts from '@/components/home/TopThreeProducts';
 import AllProductsSection from '@/components/home/AllProductsSection';
 import { useState, useEffect } from 'react';
+import { marketAPI } from '@/lib/api/client';
 
 interface Market {
   id: number;
@@ -24,10 +25,9 @@ export default function Home() {
     // 간단한 데이터 로딩 시뮬레이션
     const loadData = async () => {
       try {
-        const response = await fetch('/db.json');
-        const data = await response.json();
-        const active = data.markets.find((m: Market) => m.isActive);
-        setActiveMarket(active || data.markets[0]);
+        const data = await marketAPI.getMarkets();
+        const active = data.find((m: Market) => m.isActive);
+        setActiveMarket(active || data[0]);
       } catch (error) {
         console.error('Failed to load data:', error);
       } finally {

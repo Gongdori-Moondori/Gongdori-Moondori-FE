@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ProductData } from '@/components/product/types';
 import { useToast } from '@/components/ui/Toast';
 
-// DB 데이터 타입 정의
+// DB 데이터 타입 정의 (실제 DB 구조에 맞춤)
 interface CartItem {
   id: string;
   productId?: string | number;
@@ -62,14 +62,25 @@ export function useProducts(): UseProductsReturn {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/db.json');
-        const data: DBData = await response.json();
+
+        // 각 엔드포인트에서 데이터를 개별적으로 가져오기
+        const [cartResponse, favoritesResponse, productsResponse] =
+          await Promise.all([
+            fetch('http://localhost:3001/cart'),
+            fetch('http://localhost:3001/favorites'),
+            fetch('http://localhost:3001/products'),
+          ]);
+
+        const cart: CartItem[] = await cartResponse.json();
+        const favorites: FavoriteItem[] = await favoritesResponse.json();
+        const products: Product[] = await productsResponse.json();
+
+        const data: DBData = { cart, favorites, products };
 
         // cart에 있는 productId들 추출
-        const cartProductIds = data.cart.map((cartItem: CartItem) =>
-          cartItem.productId
-            ? cartItem.productId.toString()
-            : cartItem.id.toString()
+        const cartProductIds = data.cart.map(
+          (cartItem: CartItem) =>
+            cartItem.productId?.toString() || cartItem.id.toString()
         );
         const cartProductsSet = new Set<string>(cartProductIds);
 

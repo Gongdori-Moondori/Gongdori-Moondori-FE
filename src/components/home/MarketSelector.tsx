@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { marketAPI } from '@/lib/api/client';
 
 interface Market {
   id: number;
@@ -27,9 +28,8 @@ export default function MarketSelector({
     // 시장 데이터 로딩
     const loadMarkets = async () => {
       try {
-        const response = await fetch('/db.json');
-        const data = await response.json();
-        setMarkets(data.markets);
+        const data = await marketAPI.getMarkets();
+        setMarkets(data);
       } catch (error) {
         console.error('Failed to load markets:', error);
       } finally {
