@@ -4,9 +4,7 @@ interface Product {
   id: string;
   emoji: string;
   name: string;
-  description: string;
   savings: number;
-  actionText: string;
 }
 
 interface TopThreeProductsProps {
@@ -21,26 +19,20 @@ const defaultProducts: Product[] = [
   {
     id: '1',
     emoji: '🍅',
-    name: '토마토(물)',
-    description: '지금 토마토(물) 구매하면',
+    name: '토마토',
     savings: 4000,
-    actionText: '토마토 구매하고',
   },
   {
     id: '2',
     emoji: '🥕',
     name: '당근(물)',
-    description: '지금 당근(물) 구매하면',
     savings: 8000,
-    actionText: '당근 구매하고',
   },
   {
     id: '3',
     emoji: '🥩',
     name: '삼겹살(200g)',
-    description: '지금 삼겹살(200g) 구매하면',
     savings: 8000,
-    actionText: '삼겹살 구매하고',
   },
 ];
 

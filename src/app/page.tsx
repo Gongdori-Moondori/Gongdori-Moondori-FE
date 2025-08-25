@@ -116,7 +116,7 @@ export default function Home() {
           onRetry={() => refetchProducts()}
           userName={currentUser?.name || '이예림'}
         />
-        {/* 
+
         <AllProductsSection
           maxSavings={15000}
           products={productsWithFavorites}
@@ -125,7 +125,7 @@ export default function Home() {
           isLoading={productsLoading}
           error={productsError?.message}
           onRetry={() => refetchProducts()}
-        /> */}
+        />
       </main>
 
       <BottomNavigation />

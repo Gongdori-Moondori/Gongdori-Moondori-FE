@@ -85,8 +85,7 @@
       "supermarketPrice": 5000,
       "savings": 2000,
       "marketId": 1,
-      "inStock": true,
-      "description": "신선한 토마토"
+      "inStock": true
     },
     {
       "id": "2",
@@ -97,8 +96,7 @@
       "supermarketPrice": 4500,
       "savings": 2000,
       "marketId": 1,
-      "inStock": true,
-      "description": "달콤한 당근"
+      "inStock": true
     },
     {
       "id": "3",
@@ -109,8 +107,7 @@
       "supermarketPrice": 3500,
       "savings": 1500,
       "marketId": 1,
-      "inStock": true,
-      "description": "아삭한 배추"
+      "inStock": true
     },
     {
       "id": "4",
@@ -121,8 +118,7 @@
       "supermarketPrice": 18000,
       "savings": 6000,
       "marketId": 1,
-      "inStock": true,
-      "description": "신선한 삼겹살 200g"
+      "inStock": true
     },
     {
       "id": "5",
@@ -133,8 +129,7 @@
       "supermarketPrice": 12000,
       "savings": 4000,
       "marketId": 1,
-      "inStock": true,
-      "description": "싱싱한 고등어"
+      "inStock": true
     },
     {
       "id": "6",
@@ -145,8 +140,7 @@
       "supermarketPrice": 7000,
       "savings": 2000,
       "marketId": 1,
-      "inStock": true,
-      "description": "달콤한 사과"
+      "inStock": true
     }
   ],
   "cart": [
