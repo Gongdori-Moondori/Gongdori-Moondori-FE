@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 interface ProductCardProps {
   id: string;
   emoji: string;
@@ -40,7 +42,11 @@ export default function ProductCard({
   return (
     <div className="bg-white rounded-xl p-4 border border-gray-200 touch-feedback">
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-xl">{emoji}</span>
+        {emoji.startsWith('/') ? (
+          <Image src={emoji} alt={name} width={20} height={20} />
+        ) : (
+          <span className="text-xl">{emoji}</span>
+        )}
         <span className="font-medium text-sm">{name}</span>
       </div>
       <p className="text-green-600 font-bold text-lg mb-3">

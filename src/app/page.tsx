@@ -103,25 +103,10 @@ export default function Home() {
         selectedMarketId={activeMarket?.id}
         onMarketChange={handleMarketChange}
       />
-      {/* <main className="flex-1 px-6 py-6 pb-20">
-        <AIChatBot
-          userName={currentUser?.name || '이예림'}
-          recommendedItem={
-            seasonalRecommendation
-              ? {
-                  emoji: seasonalRecommendation.emoji,
-                  name: seasonalRecommendation.name,
-                  message: seasonalRecommendation.message,
-                }
-              : {
-                  emoji: '🍉',
-                  name: '수박',
-                  message: '지금 이 시기에는',
-                }
-          }
-        />
+      <main className="flex-1 px-6 py-6 pb-20">
+        <AIChatBot userName={currentUser?.name || '이예림'} />
 
-        <TopThreeProducts
+        {/* <TopThreeProducts
           products={topProductsData}
           isLoading={topProductsLoading}
           error={topProductsError?.message}
@@ -136,8 +121,8 @@ export default function Home() {
           isLoading={productsLoading}
           error={productsError?.message}
           onRetry={() => refetchProducts()}
-        />
-      </main> */}
+        /> */}
+      </main>
 
       <BottomNavigation />
     </div>

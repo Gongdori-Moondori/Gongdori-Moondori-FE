@@ -31,19 +31,15 @@
     {
       "id": "1",
       "type": "seasonal",
-      "emoji": "🍉",
-      "name": "수박",
-      "message": "지금 이 시기에는",
-      "description": "장보기 리스트 추가하기",
+      "emoji": "/assets/watermelon.svg",
+      "name": " 수박",
       "userId": 1
     },
     {
       "id": "2",
       "type": "discount",
-      "emoji": "🥬",
-      "name": "배추",
-      "message": "지금 이 시기에는",
-      "description": "할인 상품으로 추천",
+      "emoji": "/assets/vegetable.svg",
+      "name": " 배추",
       "userId": 1
     }
   ],
@@ -106,7 +102,7 @@
     },
     {
       "id": "3",
-      "emoji": "🥬",
+      "emoji": "/assets/vegetable.svg",
       "name": "배추",
       "category": "채소",
       "marketPrice": 2000,

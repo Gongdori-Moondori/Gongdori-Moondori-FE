@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 interface Product {
   id: string;
   emoji: string;
@@ -88,6 +90,26 @@ export default function TopThreeProducts({
 
   return (
     <div className="mb-6">
+      <div className="flex items-center gap-2 text-blue-500 text-sm">
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.003 8.003 0 01-7.799-6.666M3 12c0-4.418 3.582-8 8-8s8 3.582 8 8"
+          />
+        </svg>
+        {/* <span>{userName}님을 위해 모아봤어요</span> */}
+      </div>
+      <p className="text-xs text-gray-500 mt-1">
+        지난주에 비해{' '}
+        <span className="text-blue-600 font-medium">할인된 상품</span>이에요
+      </p>
       <h2 className="text-lg font-bold mb-4">TOP 3</h2>
 
       {isLoading ? (
@@ -118,7 +140,16 @@ export default function TopThreeProducts({
               onClick={() => handleProductClick(product.id)}
             >
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl">{product.emoji}</span>
+                {product.emoji.startsWith('/') ? (
+                  <Image
+                    src={product.emoji}
+                    alt={product.name}
+                    width={24}
+                    height={24}
+                  />
+                ) : (
+                  <span className="text-2xl">{product.emoji}</span>
+                )}
                 <span className="font-medium">{product.description}</span>
               </div>
               <p className="text-sm text-gray-600 mb-3">
