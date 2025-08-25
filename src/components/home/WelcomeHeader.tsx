@@ -9,7 +9,7 @@ export default function WelcomeHeader({
 }: WelcomeHeaderProps) {
   return (
     <section
-      className="text-white px-6 pt-12 pb-8 relative overflow-hidden w-full"
+      className="text-neutral-900 px-6 pt-12 pb-8 relative overflow-hidden w-full"
       style={{
         height: '163px',
         borderRadius: '0 0 40px 40px',
