@@ -86,18 +86,21 @@ export default function Home() {
     isFavorite: favorites?.some((fav) => fav.productId === product.id) || false,
   }));
 
-  // TOP 3 상품 데이터 가공
-  const topProductsData = topProducts?.map((product) => ({
-    id: product.id.toString(),
-    emoji: product.emoji,
-    name: product.name,
-    description: product.description,
-    savings: product.savings,
-    actionText: product.actionText,
-  }));
+  // TOP 3 상품 데이터 가공 - products에서 절약 금액이 높은 상위 3개 선택
+  const topProductsData = products
+    ?.sort((a, b) => b.savings - a.savings) // 절약 금액 기준 내림차순 정렬
+    .slice(0, 3) // 상위 3개만 선택
+    .map((product) => ({
+      id: product.id.toString(),
+      emoji: product.emoji,
+      name: product.name,
+      description: `지금 ${product.name} 구매하면`,
+      savings: product.savings,
+      actionText: `${product.name} 구매하고`,
+    }));
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 text-foreground gap-6">
+    <div className="min-h-screen flex flex-col bg-gray-50 text-foreground gap-1">
       <WelcomeHeader userName={currentUser?.name || '이예림'} />
       <MarketSelector
         selectedMarketId={activeMarket?.id}
@@ -108,10 +111,10 @@ export default function Home() {
 
         <TopThreeProducts
           products={topProductsData}
-          isLoading={topProductsLoading}
-          error={topProductsError?.message}
-          onRetry={() => refetchTopProducts()}
-          userName={currentUser?.name || '22'}
+          isLoading={productsLoading}
+          error={productsError?.message}
+          onRetry={() => refetchProducts()}
+          userName={currentUser?.name || '이예림'}
         />
         {/* 
         <AllProductsSection

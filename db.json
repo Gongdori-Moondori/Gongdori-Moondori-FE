@@ -78,7 +78,7 @@
   "products": [
     {
       "id": "1",
-      "emoji": "🍅",
+      "emoji": "/assets/tomato.svg",
       "name": "토마토",
       "category": "채소",
       "marketPrice": 3000,
@@ -114,7 +114,7 @@
     },
     {
       "id": "4",
-      "emoji": "🥩",
+      "emoji": "/assets/meat.svg",
       "name": "삼겹살",
       "category": "육류",
       "marketPrice": 12000,
@@ -126,7 +126,7 @@
     },
     {
       "id": "5",
-      "emoji": "🐟",
+      "emoji": "/assets/fish.svg",
       "name": "고등어",
       "category": "수산",
       "marketPrice": 8000,
@@ -138,7 +138,7 @@
     },
     {
       "id": "6",
-      "emoji": "🍎",
+      "emoji": "/assets/apple.svg",
       "name": "사과",
       "category": "과일",
       "marketPrice": 5000,

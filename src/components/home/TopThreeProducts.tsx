@@ -37,10 +37,10 @@ const defaultProducts: Product[] = [
   {
     id: '3',
     emoji: '🥩',
-    name: '삼겹살(200g)(물)',
-    description: '지금 삼겹살(200g)(물) 구매하면',
+    name: '삼겹살(200g)',
+    description: '지금 삼겹살(200g) 구매하면',
     savings: 8000,
-    actionText: '당근 구매하고',
+    actionText: '삼겹살 구매하고',
   },
 ];
 
@@ -92,20 +92,14 @@ export default function TopThreeProducts({
 
   return (
     <div className="mb-6">
-      <div className="flex items-center gap-2 text-blue-500 text-sm">
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <Image src="/assets/chef.svg" alt="요리사" width={60} height={60} />
-        </svg>
+      <div className="flex flex-col items-start gap-3">
+        <Image src="/assets/graph.svg" alt="그래프" width={40} height={40} />
         <span>{userName}님을 위해 모아봤어요</span>
       </div>
-      <p className="text-xs text-gray-500 mt-1">
+      <p className="text-lg text-gray-500 font-medium ">
         지난주에 비해{' '}
-        <span className="text-blue-600 font-medium">할인된 상품</span>이에요
+        <span className="text-primary-400 font-semibold">할인된 상품</span>
+        이에요
       </p>
       <h2 className="text-lg font-bold mb-4">TOP 3</h2>
 
@@ -136,28 +130,34 @@ export default function TopThreeProducts({
               className="bg-white rounded-xl p-4 border border-gray-200 touch-feedback"
               onClick={() => handleProductClick(product.id)}
             >
-              <div className="flex items-center gap-3 mb-2">
-                {product.emoji.startsWith('/') ? (
-                  <Image
-                    src={product.emoji}
-                    alt={product.name}
-                    width={24}
-                    height={24}
-                  />
-                ) : (
-                  <span className="text-2xl">{product.emoji}</span>
-                )}
-                <span className="font-medium">{product.description}</span>
+              <div className="flex flex-row gap-4">
+                <div className="flex flex-col items-center justify-center gap-3 ">
+                  {product.emoji.startsWith('/') ? (
+                    <Image
+                      src={product.emoji}
+                      alt={product.name}
+                      width={24}
+                      height={24}
+                    />
+                  ) : (
+                    <span className="text-2xl">{product.emoji}</span>
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium">
+                    지금 {product.name} 구매하면
+                  </span>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {product.savings.toLocaleString()}원을 절약할 수 있어요
+                  </p>
+                </div>
               </div>
-              <p className="text-sm text-gray-600 mb-3">
-                {product.savings.toLocaleString()}원을 절약할 수 있어요
-              </p>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">
-                  {product.actionText}
+                <span className="text-sm font-medium">
+                  {product.name} 구매하고
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">
+                  <span className="text-sm text-gray-500">
                     {product.savings.toLocaleString()}원 절약하기
                   </span>
                   <svg
