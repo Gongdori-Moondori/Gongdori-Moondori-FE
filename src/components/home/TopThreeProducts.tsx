@@ -86,7 +86,7 @@ export default function TopThreeProducts({
     <div className="mb-6">
       <div className="flex flex-col items-start gap-3">
         <Image src="/assets/graph.svg" alt="그래프" width={40} height={40} />
-        <span>{userName}님을 위해 모아봤어요</span>
+        <span className="font-semibold">{userName}님을 위해 모아봤어요</span>
       </div>
       <p className="text-lg text-gray-500 font-medium ">
         지난주에 비해{' '}

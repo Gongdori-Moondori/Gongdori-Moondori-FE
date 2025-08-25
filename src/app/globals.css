@@ -767,3 +767,32 @@ body {
 .shadow-custom-lg {
   box-shadow: 0 10px 15px var(--shadow-lg);
 }
+
+/* 스크롤바 숨김 */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* 가로 스크롤 컨테이너 최적화 */
+.horizontal-scroll {
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.horizontal-scroll > * {
+  scroll-snap-align: start;
+}
+
+/* 모바일 터치 스크롤 최적화 */
+.touch-scroll {
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}

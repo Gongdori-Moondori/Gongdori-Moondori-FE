@@ -1,8 +1,13 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useMarkets, useSetActiveMarket } from '@/lib/api/hooks';
-import { Market } from '@/lib/api/types';
+
+interface Market {
+  id: number;
+  name: string;
+  location: string;
+  isActive: boolean;
+}
 
 interface MarketSelectorProps {
   selectedMarketId?: number;
@@ -14,10 +19,26 @@ export default function MarketSelector({
   onMarketChange,
 }: MarketSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [markets, setMarkets] = useState<Market[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { data: markets = [], isLoading } = useMarkets();
-  const setActiveMarket = useSetActiveMarket();
+  useEffect(() => {
+    // 시장 데이터 로딩
+    const loadMarkets = async () => {
+      try {
+        const response = await fetch('/db.json');
+        const data = await response.json();
+        setMarkets(data.markets);
+      } catch (error) {
+        console.error('Failed to load markets:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadMarkets();
+  }, []);
 
   // 선택된 시장 찾기
   const selectedMarket =
@@ -40,7 +61,6 @@ export default function MarketSelector({
 
   const handleMarketSelect = (market: Market) => {
     setIsOpen(false);
-    setActiveMarket.mutate(market.id);
     onMarketChange?.(market);
   };
 

@@ -10,7 +10,7 @@ import {
   AddToFavoritesRequest,
 } from './types';
 
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = '';
 
 // 기본 fetch 함수
 async function apiRequest<T>(
