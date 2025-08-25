@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import AppWrapper from '@/components/AppWrapper';
-// import { Providers } from '@/components/providers';
+import { Providers } from '@/components/providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -44,9 +44,11 @@ export default function RootLayout({
       <body
         className={`${inter.className} mobile-app-container safe-area-top safe-area-bottom`}
       >
-        <AppWrapper>
-          <div className="mobile-scroll">{children}</div>
-        </AppWrapper>
+        <Providers>
+          <AppWrapper>
+            <div className="mobile-scroll">{children}</div>
+          </AppWrapper>
+        </Providers>
       </body>
     </html>
   );

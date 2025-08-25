@@ -9,7 +9,9 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "server": "json-server --watch db.json --port 3001",
+    "dev:all": "concurrently \"npm run server\" \"npm run dev\""
   },
   "dependencies": {
     "@tanstack/react-query": "^5.85.5",
@@ -40,11 +42,13 @@
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.40.0",
     "@typescript-eslint/parser": "^8.40.0",
+    "concurrently": "^9.2.0",
     "eslint": "^9.34.0",
     "eslint-config-next": "^15.5.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
+    "json-server": "^1.0.0-beta.3",
     "lint-staged": "^15.3.0",
     "prettier": "^3.6.2",
     "tailwindcss": "^4",

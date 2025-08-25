@@ -1,88 +1,145 @@
-import Image from 'next/image';
-import Link from 'next/link';
+'use client';
+
 import BottomNavigation from '@/components/layout/BottomNavigation';
+import WelcomeHeader from '@/components/home/WelcomeHeader';
+import MarketSelector from '@/components/home/MarketSelector';
+import AIChatBot from '@/components/home/AIChatBot';
+import TopThreeProducts from '@/components/home/TopThreeProducts';
+import AllProductsSection from '@/components/home/AllProductsSection';
+import {
+  useCurrentUser,
+  useActiveMarket,
+  useSetActiveMarket,
+  useSeasonalRecommendation,
+  useTopProducts,
+  useProducts,
+  useAddToCart,
+  useToggleFavorite,
+  useFavorites,
+} from '@/lib/api/hooks';
 
 export default function Home() {
-  return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {/* 헤더 */}
-      <header className="flex items-center justify-center p-4 border-b border-gray-200">
-        <h1 className="text-xl font-bold">Rzi App</h1>
-      </header>
+  // API 데이터 가져오기
+  const { data: currentUser, isLoading: userLoading } = useCurrentUser();
+  const { data: activeMarket, isLoading: marketLoading } = useActiveMarket();
+  const { data: seasonalRecommendation } = useSeasonalRecommendation();
+  const {
+    data: topProducts,
+    isLoading: topProductsLoading,
+    error: topProductsError,
+    refetch: refetchTopProducts,
+  } = useTopProducts(activeMarket?.id);
+  const {
+    data: products,
+    isLoading: productsLoading,
+    error: productsError,
+    refetch: refetchProducts,
+  } = useProducts(activeMarket?.id);
+  const { data: favorites } = useFavorites();
 
-      {/* 메인 콘텐츠 */}
-      <main className="flex-1 p-6 flex flex-col items-center justify-center gap-8">
+  // API mutations
+  const setActiveMarketMutation = useSetActiveMarket();
+  const addToCartMutation = useAddToCart();
+  const toggleFavoriteMutation = useToggleFavorite();
+
+  const handleMarketChange = (marketName: string) => {
+    console.log('Market changed to:', marketName);
+    // 실제 구현에서는 marketName으로 marketId를 찾아서 설정
+  };
+
+  const handleAddToCart = (productId: string) => {
+    if (!currentUser) return;
+
+    addToCartMutation.mutate({
+      productId: parseInt(productId),
+      userId: currentUser.id,
+      quantity: 1,
+    });
+  };
+
+  const handleToggleFavorite = (productId: string) => {
+    if (!currentUser) return;
+
+    toggleFavoriteMutation.mutate({
+      userId: currentUser.id,
+      productId: parseInt(productId),
+    });
+  };
+
+  // 로딩 상태 처리
+  if (userLoading || marketLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Image
-            className="mx-auto mb-4"
-            src="/icons/Rzilogo.svg"
-            alt="Rzi logo"
-            width={150}
-            height={60}
-            priority
-          />
-          <h2 className="text-2xl font-bold mb-2">환영합니다!</h2>
-          <p className="text-gray-600 mb-6">
-            모바일 앱 형태로 최적화된 웹 애플리케이션입니다.
-          </p>
+          <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">로딩 중...</p>
         </div>
+      </div>
+    );
+  }
 
-        <div className="w-full max-w-sm space-y-4">
-          <Link
-            href="/dashboard"
-            className="mobile-button touch-feedback w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-medium block text-center"
-          >
-            시작하기
-          </Link>
-          <Link
-            href="/about"
-            className="mobile-button touch-feedback w-full border border-gray-300 text-foreground px-6 py-3 rounded-lg font-medium block text-center"
-          >
-            둘러보기
-          </Link>
-        </div>
+  // 상품 데이터 가공
+  const productsWithFavorites = products?.map((product) => ({
+    ...product,
+    id: product.id.toString(),
+    isFavorite: favorites?.some((fav) => fav.productId === product.id) || false,
+  }));
 
-        <div className="grid grid-cols-3 gap-4 w-full max-w-sm">
-          <div className="touch-feedback flex flex-col items-center p-4 rounded-lg border border-gray-200">
-            <Image
-              src="/icons/Rzilogo.svg"
-              alt="Learn"
-              width={32}
-              height={32}
-              className="mb-2"
-            />
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              학습
-            </span>
-          </div>
-          <div className="touch-feedback flex flex-col items-center p-4 rounded-lg border border-gray-200">
-            <Image
-              src="/icons/Rzilogo.svg"
-              alt="Examples"
-              width={32}
-              height={32}
-              className="mb-2"
-            />
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              예제
-            </span>
-          </div>
-          <div className="touch-feedback flex flex-col items-center p-4 rounded-lg border border-gray-200">
-            <Image
-              src="/icons/Rzilogo.svg"
-              alt="Docs"
-              width={32}
-              height={32}
-              className="mb-2"
-            />
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              문서
-            </span>
-          </div>
-        </div>
+  // TOP 3 상품 데이터 가공
+  const topProductsData = topProducts?.map((product) => ({
+    id: product.id.toString(),
+    emoji: product.emoji,
+    name: product.name,
+    description: product.description,
+    savings: product.savings,
+    actionText: product.actionText,
+  }));
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-50 text-foreground">
+      <WelcomeHeader userName={currentUser?.name || '이예림'} />
+
+      <main className="flex-1 px-6 py-6 pb-20">
+        <MarketSelector
+          selectedMarket={activeMarket?.name || '경동시장'}
+          onMarketChange={handleMarketChange}
+        />
+
+        <AIChatBot
+          userName={currentUser?.name || '이예림'}
+          recommendedItem={
+            seasonalRecommendation
+              ? {
+                  emoji: seasonalRecommendation.emoji,
+                  name: seasonalRecommendation.name,
+                  message: seasonalRecommendation.message,
+                }
+              : {
+                  emoji: '🍉',
+                  name: '수박',
+                  message: '지금 이 시기에는',
+                }
+          }
+        />
+
+        <TopThreeProducts
+          products={topProductsData}
+          isLoading={topProductsLoading}
+          error={topProductsError?.message}
+          onRetry={() => refetchTopProducts()}
+        />
+
+        <AllProductsSection
+          maxSavings={15000}
+          products={productsWithFavorites}
+          onAddToCart={handleAddToCart}
+          onToggleFavorite={handleToggleFavorite}
+          isLoading={productsLoading}
+          error={productsError?.message}
+          onRetry={() => refetchProducts()}
+        />
       </main>
 
-      {/* 하단 네비게이션 */}
       <BottomNavigation />
     </div>
   );
