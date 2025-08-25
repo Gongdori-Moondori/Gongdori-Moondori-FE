@@ -6,7 +6,7 @@ interface AIChatBotProps {
   userName?: string;
 }
 
-export default function AIChatBot({ userName = '이예림' }: AIChatBotProps) {
+export default function AIChatBot({ userName = '사용자' }: AIChatBotProps) {
   const { data: recommendations } = useRecommendations(1);
   const [currentIndex, setCurrentIndex] = useState(0);
 

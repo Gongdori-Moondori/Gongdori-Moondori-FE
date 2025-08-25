@@ -106,13 +106,14 @@ export default function Home() {
       <main className="flex-1 px-6 py-6 pb-20">
         <AIChatBot userName={currentUser?.name || '이예림'} />
 
-        {/* <TopThreeProducts
+        <TopThreeProducts
           products={topProductsData}
           isLoading={topProductsLoading}
           error={topProductsError?.message}
           onRetry={() => refetchTopProducts()}
+          userName={currentUser?.name || '22'}
         />
-
+        {/* 
         <AllProductsSection
           maxSavings={15000}
           products={productsWithFavorites}

@@ -5,7 +5,7 @@ interface WelcomeHeaderProps {
 }
 
 export default function WelcomeHeader({
-  userName = '이예림',
+  userName = '사용자',
 }: WelcomeHeaderProps) {
   return (
     <section

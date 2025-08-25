@@ -14,6 +14,7 @@ interface TopThreeProductsProps {
   isLoading?: boolean;
   error?: string;
   onRetry?: () => void;
+  userName?: string;
 }
 
 const defaultProducts: Product[] = [
@@ -48,6 +49,7 @@ export default function TopThreeProducts({
   isLoading = false,
   error,
   onRetry,
+  userName = '사용자',
 }: TopThreeProductsProps) {
   const handleProductClick = (productId: string) => {
     console.log(`Product ${productId} clicked`);
@@ -97,14 +99,9 @@ export default function TopThreeProducts({
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.003 8.003 0 01-7.799-6.666M3 12c0-4.418 3.582-8 8-8s8 3.582 8 8"
-          />
+          <Image src="/assets/chef.svg" alt="요리사" width={60} height={60} />
         </svg>
-        {/* <span>{userName}님을 위해 모아봤어요</span> */}
+        <span>{userName}님을 위해 모아봤어요</span>
       </div>
       <p className="text-xs text-gray-500 mt-1">
         지난주에 비해{' '}
