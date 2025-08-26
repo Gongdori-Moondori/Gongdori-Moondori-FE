@@ -33,10 +33,10 @@ export default function About() {
             <div className="touch-feedback p-4 rounded-lg border border-gray-200">
               <h3 className="font-semibold mb-2">기술 스택</h3>
               <div className="flex flex-wrap gap-2">
-                <span className="px-2 py-1 bg-blue-100 bg-blue-100 text-blue-800 text-blue-800 text-xs rounded">
+                <span className="px-2 py-1 bg-primary-100 bg-primary-100 text-primary-800 text-primary-800 text-xs rounded">
                   Next.js
                 </span>
-                <span className="px-2 py-1 bg-green-100 bg-green-100 text-green-800 text-green-800 text-xs rounded">
+                <span className="px-2 py-1 bg-primary-100 bg-primary-100 text-primary-800 text-primary-800 text-xs rounded">
                   React
                 </span>
                 <span className="px-2 py-1 bg-purple-100 bg-purple-100 text-purple-800 text-purple-800 text-xs rounded">

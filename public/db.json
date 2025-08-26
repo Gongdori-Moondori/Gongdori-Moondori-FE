@@ -1,0 +1,555 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "이예림",
+      "email": "yerim@example.com",
+      "profileImage": "👨‍🍳"
+    }
+  ],
+  "markets": [
+    {
+      "id": "1",
+      "name": "경동시장",
+      "location": "서울시 동대문구",
+      "isActive": true
+    },
+    {
+      "id": "2",
+      "name": "남대문시장",
+      "location": "서울시 중구",
+      "isActive": false
+    },
+    {
+      "id": "3",
+      "name": "동네마트",
+      "location": "서울시 강남구",
+      "isActive": false
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "1",
+      "type": "seasonal",
+      "emoji": "/assets/watermelon.svg",
+      "name": " 수박",
+      "userId": 1,
+      "marketId": 1
+    },
+    {
+      "id": "2",
+      "type": "discount",
+      "emoji": "/assets/vegetable.svg",
+      "name": " 배추",
+      "userId": 1,
+      "marketId": 1
+    },
+    {
+      "id": "3",
+      "type": "seasonal",
+      "emoji": "/assets/meat.svg",
+      "name": " 한우등심",
+      "userId": 1,
+      "marketId": 2
+    },
+    {
+      "id": "4",
+      "type": "discount",
+      "emoji": "/assets/fish.svg",
+      "name": " 광어",
+      "userId": 1,
+      "marketId": 2
+    },
+    {
+      "id": "5",
+      "type": "seasonal",
+      "emoji": "/assets/fish.svg",
+      "name": " 연어",
+      "userId": 1,
+      "marketId": 3
+    },
+    {
+      "id": "6",
+      "type": "discount",
+      "emoji": "/assets/meat.svg",
+      "name": " 닭가슴살",
+      "userId": 1,
+      "marketId": 3
+    }
+  ],
+  "topProducts": [
+    {
+      "id": "1",
+      "emoji": "/assets/tomato.svg",
+      "name": "토마토",
+      "savings": 4000,
+      "marketId": 1,
+      "rank": 1
+    },
+    {
+      "id": "2",
+      "emoji": "/assets/carrot.svg",
+      "name": "당근",
+      "savings": 8000,
+      "marketId": 1,
+      "rank": 2
+    },
+    {
+      "id": "3",
+      "emoji": "/assets/meat.svg",
+      "name": "삼겹살(200g)",
+      "savings": 8000,
+      "marketId": 1,
+      "rank": 3
+    },
+    {
+      "id": "4",
+      "emoji": "/assets/meat.svg",
+      "name": "한우등심",
+      "savings": 10000,
+      "marketId": 2,
+      "rank": 1
+    },
+    {
+      "id": "5",
+      "emoji": "/assets/fish.svg",
+      "name": "광어",
+      "savings": 7000,
+      "marketId": 2,
+      "rank": 2
+    },
+    {
+      "id": "6",
+      "emoji": "/assets/watermelon.svg",
+      "name": "수박",
+      "savings": 4000,
+      "marketId": 2,
+      "rank": 3
+    },
+    {
+      "id": "7",
+      "emoji": "/assets/fish.svg",
+      "name": "연어",
+      "savings": 4000,
+      "marketId": 3,
+      "rank": 1
+    },
+    {
+      "id": "8",
+      "emoji": "/assets/meat.svg",
+      "name": "닭가슴살",
+      "savings": 2000,
+      "marketId": 3,
+      "rank": 2
+    },
+    {
+      "id": "9",
+      "emoji": "/assets/carrot.svg",
+      "name": "파프리카",
+      "savings": 1600,
+      "marketId": 3,
+      "rank": 3
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "emoji": "/assets/tomato.svg",
+      "name": "토마토",
+      "category": "채소",
+      "marketPrice": 3000,
+      "supermarketPrice": 5000,
+      "savings": 2000,
+      "marketId": 1,
+      "inStock": true
+    },
+    {
+      "id": "2",
+      "emoji": "/assets/carrot.svg",
+      "name": "당근",
+      "category": "채소",
+      "marketPrice": 2500,
+      "supermarketPrice": 4500,
+      "savings": 2000,
+      "marketId": 1,
+      "inStock": true
+    },
+    {
+      "id": "3",
+      "emoji": "/assets/vegetable.svg",
+      "name": "배추",
+      "category": "채소",
+      "marketPrice": 2000,
+      "supermarketPrice": 3500,
+      "savings": 1500,
+      "marketId": 1,
+      "inStock": true
+    },
+    {
+      "id": "4",
+      "emoji": "/assets/meat.svg",
+      "name": "삼겹살",
+      "category": "육류",
+      "marketPrice": 12000,
+      "supermarketPrice": 18000,
+      "savings": 6000,
+      "marketId": 1,
+      "inStock": true
+    },
+    {
+      "id": "5",
+      "emoji": "/assets/fish.svg",
+      "name": "고등어",
+      "category": "수산",
+      "marketPrice": 8000,
+      "supermarketPrice": 12000,
+      "savings": 4000,
+      "marketId": 1,
+      "inStock": true
+    },
+    {
+      "id": "6",
+      "emoji": "/assets/apple.svg",
+      "name": "사과",
+      "category": "과일",
+      "marketPrice": 5000,
+      "supermarketPrice": 7000,
+      "savings": 2000,
+      "marketId": 1,
+      "inStock": true
+    },
+    {
+      "id": "7",
+      "emoji": "/assets/watermelon.svg",
+      "name": "수박",
+      "category": "과일",
+      "marketPrice": 8000,
+      "supermarketPrice": 12000,
+      "savings": 4000,
+      "marketId": 2,
+      "inStock": true
+    },
+    {
+      "id": "8",
+      "emoji": "/assets/fish.svg",
+      "name": "광어",
+      "category": "수산",
+      "marketPrice": 15000,
+      "supermarketPrice": 22000,
+      "savings": 7000,
+      "marketId": 2,
+      "inStock": true
+    },
+    {
+      "id": "9",
+      "emoji": "/assets/meat.svg",
+      "name": "한우등심",
+      "category": "육류",
+      "marketPrice": 25000,
+      "supermarketPrice": 35000,
+      "savings": 10000,
+      "marketId": 2,
+      "inStock": true
+    },
+    {
+      "id": "10",
+      "emoji": "/assets/vegetable.svg",
+      "name": "시금치",
+      "category": "채소",
+      "marketPrice": 1500,
+      "supermarketPrice": 2500,
+      "savings": 1000,
+      "marketId": 2,
+      "inStock": true
+    },
+    {
+      "id": "11",
+      "emoji": "/assets/carrot.svg",
+      "name": "양파",
+      "category": "채소",
+      "marketPrice": 2000,
+      "supermarketPrice": 3000,
+      "savings": 1000,
+      "marketId": 2,
+      "inStock": true
+    },
+    {
+      "id": "12",
+      "emoji": "/assets/apple.svg",
+      "name": "배",
+      "category": "과일",
+      "marketPrice": 6000,
+      "supermarketPrice": 8500,
+      "savings": 2500,
+      "marketId": 2,
+      "inStock": true
+    },
+    {
+      "id": "13",
+      "emoji": "/assets/tomato.svg",
+      "name": "방울토마토",
+      "category": "채소",
+      "marketPrice": 3500,
+      "supermarketPrice": 5000,
+      "savings": 1500,
+      "marketId": 3,
+      "inStock": true
+    },
+    {
+      "id": "14",
+      "emoji": "/assets/meat.svg",
+      "name": "닭가슴살",
+      "category": "육류",
+      "marketPrice": 4000,
+      "supermarketPrice": 6000,
+      "savings": 2000,
+      "marketId": 3,
+      "inStock": true
+    },
+    {
+      "id": "15",
+      "emoji": "/assets/fish.svg",
+      "name": "연어",
+      "category": "수산",
+      "marketPrice": 12000,
+      "supermarketPrice": 16000,
+      "savings": 4000,
+      "marketId": 3,
+      "inStock": true
+    },
+    {
+      "id": "16",
+      "emoji": "/assets/apple.svg",
+      "name": "바나나",
+      "category": "과일",
+      "marketPrice": 2500,
+      "supermarketPrice": 4000,
+      "savings": 1500,
+      "marketId": 3,
+      "inStock": true
+    },
+    {
+      "id": "17",
+      "emoji": "/assets/vegetable.svg",
+      "name": "브로콜리",
+      "category": "채소",
+      "marketPrice": 2800,
+      "supermarketPrice": 4200,
+      "savings": 1400,
+      "marketId": 3,
+      "inStock": true
+    },
+    {
+      "id": "18",
+      "emoji": "/assets/carrot.svg",
+      "name": "파프리카",
+      "category": "채소",
+      "marketPrice": 3200,
+      "supermarketPrice": 4800,
+      "savings": 1600,
+      "marketId": 3,
+      "inStock": true
+    }
+  ],
+  "cart": [
+    {
+      "id": "6",
+      "emoji": "/assets/tomato.svg",
+      "name": "토마토",
+      "category": "채소",
+      "marketPrice": 3000,
+      "supermarketPrice": 5000,
+      "savings": 2000,
+      "marketId": 1,
+      "inStock": true
+    },
+    {
+      "id": "7",
+      "emoji": "/assets/carrot.svg",
+      "name": "당근",
+      "category": "채소",
+      "marketPrice": 2500,
+      "supermarketPrice": 4500,
+      "savings": 2000,
+      "marketId": 1,
+      "inStock": true
+    },
+    {
+      "id": "8",
+      "emoji": "/assets/vegetable.svg",
+      "name": "배추",
+      "category": "채소",
+      "marketPrice": 2000,
+      "supermarketPrice": 3500,
+      "savings": 1500,
+      "marketId": 1,
+      "inStock": true
+    },
+    {
+      "id": "9",
+      "emoji": "/assets/meat.svg",
+      "name": "삼겹살",
+      "category": "육류",
+      "marketPrice": 12000,
+      "supermarketPrice": 18000,
+      "savings": 6000,
+      "marketId": 1,
+      "inStock": true
+    },
+    {
+      "id": "10",
+      "emoji": "/assets/fish.svg",
+      "name": "고등어",
+      "category": "수산",
+      "marketPrice": 8000,
+      "supermarketPrice": 12000,
+      "savings": 4000,
+      "marketId": 1,
+      "inStock": true
+    },
+    {
+      "id": "11",
+      "emoji": "/assets/apple.svg",
+      "name": "사과",
+      "category": "과일",
+      "marketPrice": 5000,
+      "supermarketPrice": 7000,
+      "savings": 2000,
+      "marketId": 1,
+      "inStock": true
+    }
+  ],
+  "favorites": [
+    {
+      "id": "2",
+      "productId": 4,
+      "userId": 1,
+      "addedAt": "2024-01-15T11:45:00Z"
+    },
+    {
+      "id": "eaf4",
+      "userId": "1",
+      "productId": 1,
+      "addedAt": "2025-08-25T06:29:38.062Z"
+    }
+  ],
+  "shoppingList": [
+    {
+      "id": "sl1",
+      "userId": 1,
+      "productId": 1,
+      "quantity": 2,
+      "addedAt": "2025-01-15T10:30:00Z"
+    },
+    {
+      "id": "sl2",
+      "userId": 1,
+      "productId": 4,
+      "quantity": 1,
+      "addedAt": "2025-01-15T11:00:00Z"
+    },
+    {
+      "id": "sl3",
+      "userId": 1,
+      "productId": 6,
+      "quantity": 3,
+      "addedAt": "2025-01-15T11:15:00Z"
+    },
+    {
+      "id": "sl4",
+      "userId": 1,
+      "productId": 2,
+      "quantity": 1,
+      "addedAt": "2025-01-15T11:30:00Z"
+    },
+    {
+      "id": "sl5",
+      "userId": 1,
+      "productId": 5,
+      "quantity": 2,
+      "addedAt": "2025-01-15T12:00:00Z"
+    }
+  ],
+  "purchaseHistory": [
+    {
+      "id": "ph1",
+      "userId": 1,
+      "productId": 1,
+      "quantity": 1,
+      "price": 3000,
+      "purchaseDate": "2025-01-10T14:30:00Z"
+    },
+    {
+      "id": "ph2",
+      "userId": 1,
+      "productId": 1,
+      "quantity": 2,
+      "price": 3000,
+      "purchaseDate": "2025-01-05T16:20:00Z"
+    },
+    {
+      "id": "ph3",
+      "userId": 1,
+      "productId": 4,
+      "quantity": 1,
+      "price": 12000,
+      "purchaseDate": "2025-01-12T18:45:00Z"
+    },
+    {
+      "id": "ph4",
+      "userId": 1,
+      "productId": 4,
+      "quantity": 1,
+      "price": 12000,
+      "purchaseDate": "2025-01-02T12:30:00Z"
+    },
+    {
+      "id": "ph5",
+      "userId": 1,
+      "productId": 2,
+      "quantity": 2,
+      "price": 2500,
+      "purchaseDate": "2025-01-08T10:15:00Z"
+    },
+    {
+      "id": "ph6",
+      "userId": 1,
+      "productId": 2,
+      "quantity": 1,
+      "price": 2500,
+      "purchaseDate": "2025-01-01T15:30:00Z"
+    },
+    {
+      "id": "ph7",
+      "userId": 1,
+      "productId": 6,
+      "quantity": 1,
+      "price": 5000,
+      "purchaseDate": "2025-01-14T11:20:00Z"
+    },
+    {
+      "id": "ph8",
+      "userId": 1,
+      "productId": 15,
+      "quantity": 1,
+      "price": 12000,
+      "purchaseDate": "2025-01-11T19:45:00Z"
+    },
+    {
+      "id": "ph9",
+      "userId": 1,
+      "productId": 14,
+      "quantity": 2,
+      "price": 4000,
+      "purchaseDate": "2025-01-09T13:30:00Z"
+    },
+    {
+      "id": "ph10",
+      "userId": 1,
+      "productId": 8,
+      "quantity": 1,
+      "price": 15000,
+      "purchaseDate": "2025-01-07T17:15:00Z"
+    }
+  ]
+}

@@ -62,13 +62,13 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
       {/* 하단 로딩 인디케이터 */}
       <div className="pb-20">
         <div className="flex space-x-2">
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+          <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
           <div
-            className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+            className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"
             style={{ animationDelay: '0.2s' }}
           ></div>
           <div
-            className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+            className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"
             style={{ animationDelay: '0.4s' }}
           ></div>
         </div>

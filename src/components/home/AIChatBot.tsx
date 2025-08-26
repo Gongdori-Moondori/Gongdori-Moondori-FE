@@ -53,7 +53,7 @@ export default function AIChatBot({ userName = '사용자' }: AIChatBotProps) {
             <div className="flex flex-col">
               <span className="font-medium">
                 지금 이 시기에는
-                <span className="text-green-600 font-bold">
+                <span className="text-primary-600 font-bold">
                   {currentRecommendation.name}
                 </span>
                 이(가) 싸요!

@@ -22,7 +22,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 간단한 데이터 로딩 시뮬레이션
+    // 데이터 로딩
     const loadData = async () => {
       try {
         const data = await marketAPI.getMarkets();
@@ -39,8 +39,10 @@ export default function Home() {
   }, []);
 
   const handleMarketChange = (market: Market) => {
+    console.log('handleMarketChange called with:', market);
+    console.log('Previous activeMarket:', activeMarket);
     setActiveMarket(market);
-    console.log('Market changed to:', market.name);
+    console.log('Market changed to:', market.name, 'ID:', market.id);
   };
 
   // 로딩 상태 처리
@@ -48,7 +50,7 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">로딩 중...</p>
         </div>
       </div>
@@ -65,11 +67,15 @@ export default function Home() {
       <main className="flex-1 px-6 py-6 pb-20">
         <AIChatBot userName={currentUser?.name || '이예림'} />
 
-        <TopThreeProducts userName={currentUser?.name || '이예림'} />
+        <TopThreeProducts
+          userName={currentUser?.name || '이예림'}
+          marketId={activeMarket?.id}
+        />
 
         <AllProductsSection
           maxSavings={15000}
           marketName={activeMarket?.name}
+          marketId={activeMarket?.id}
         />
       </main>
 

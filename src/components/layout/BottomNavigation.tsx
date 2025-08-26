@@ -59,14 +59,14 @@ export default function BottomNavigation() {
             >
               <div
                 className={`p-1 rounded-lg mb-1 transition-colors ${
-                  isActive ? 'text-blue-500 bg-blue-50' : 'text-gray-400'
+                  isActive ? 'text-primary-500 ' : 'text-gray-400'
                 }`}
               >
                 <IconComponent className="w-6 h-6" />
               </div>
               <span
                 className={`text-xs transition-colors ${
-                  isActive ? 'text-blue-500 font-medium' : 'text-gray-400'
+                  isActive ? 'text-primary-500 font-medium' : 'text-gray-400'
                 }`}
               >
                 {item.label}
