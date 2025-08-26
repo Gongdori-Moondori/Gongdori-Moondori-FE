@@ -239,19 +239,19 @@ export default function FrequentlyPurchasedPage() {
               <h2 className="text-lg font-semibold mb-4">구매 통계</h2>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary-500">
+                  <div className="text-xl font-bold text-primary-500">
                     {stats.totalPurchases}
                   </div>
                   <div className="text-sm text-gray-600">총 구매 횟수</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary-500">
+                  <div className="text-xl font-bold text-primary-500">
                     {stats.totalSpent.toLocaleString()}원
                   </div>
                   <div className="text-sm text-gray-600">총 구매 금액</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary-500">
+                  <div className="text-xl font-bold text-primary-500">
                     {stats.totalSavings.toLocaleString()}원
                   </div>
                   <div className="text-sm text-gray-600">총 절약 금액</div>
