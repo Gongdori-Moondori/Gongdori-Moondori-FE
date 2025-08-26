@@ -80,7 +80,10 @@ function EditShoppingListContent() {
                     className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                   >
                     <div className="flex items-center space-x-3">
-                      <IoCheckmarkCircle className="text-green-500" size={20} />
+                      <IoCheckmarkCircle
+                        className="text-primary-500"
+                        size={20}
+                      />
                       <span className="text-gray-800">{item}</span>
                     </div>
                     <button
@@ -106,12 +109,12 @@ function EditShoppingListContent() {
                 onChange={(e) => setNewItem(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="새로운 항목을 입력하세요"
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
               <button
                 onClick={addItem}
                 disabled={!newItem.trim()}
-                className="bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2"
+                className="bg-primary-500 hover:bg-primary-600 disabled:bg-gray-300 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2"
               >
                 <IoAddOutline size={20} />
                 추가
@@ -124,7 +127,7 @@ function EditShoppingListContent() {
             <button
               onClick={saveList}
               disabled={items.length === 0}
-              className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-2xl transition-colors text-lg"
+              className="w-full bg-primary-500 hover:bg-primary-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-2xl transition-colors text-lg"
             >
               장보기 리스트 저장하기 ({items.length}개 항목)
             </button>

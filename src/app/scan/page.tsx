@@ -82,9 +82,9 @@ export default function Scan() {
             <div className="mt-6">
               <button
                 onClick={handleCameraCapture}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-4 px-6 rounded-2xl transition-colors duration-200 text-lg"
+                className="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-4 px-6 rounded-2xl transition-colors duration-200 text-lg"
               >
-                스캔하기
+                사진찍기
               </button>
             </div>
           </div>
@@ -116,7 +116,7 @@ export default function Scan() {
               {!uploadedImage ? (
                 <div
                   onClick={handleFileInputClick}
-                  className="w-full mt-6 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 transition-colors"
+                  className="w-full mt-6 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-primary-500 transition-colors"
                 >
                   <div className="space-y-2">
                     <div className="flex justify-center mb-4">
@@ -137,7 +137,7 @@ export default function Scan() {
                       </div>
                     </div>
                     <div className="text-gray-600">
-                      <span className="font-medium text-blue-600 hover:text-blue-500">
+                      <span className="font-medium text-primary-600 hover:text-primary-500">
                         클릭하여 이미지 선택
                       </span>
                       <p className="text-xs text-gray-500 mt-1">
@@ -172,7 +172,7 @@ export default function Scan() {
             {/* 완료 상태 표시 */}
             {uploadedImage && (
               <div className="mt-4">
-                <span className="inline-block px-3 py-1 bg-blue-500 text-white rounded-full text-sm">
+                <span className="inline-block px-3 py-1 bg-primary-500 text-white rounded-full text-sm">
                   이미지 업로드 완료
                   <button
                     onClick={handleRemoveImage}

@@ -27,7 +27,7 @@ export default function Signup() {
               <input
                 type="text"
                 id="name"
-                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-foreground focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 placeholder="홍길동"
               />
             </div>
@@ -39,7 +39,7 @@ export default function Signup() {
               <input
                 type="email"
                 id="email"
-                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-foreground focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 placeholder="your@email.com"
               />
             </div>
@@ -54,7 +54,7 @@ export default function Signup() {
               <input
                 type="password"
                 id="password"
-                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-foreground focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 placeholder="••••••••"
               />
             </div>
@@ -69,7 +69,7 @@ export default function Signup() {
               <input
                 type="password"
                 id="confirmPassword"
-                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg bg-white text-foreground focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 placeholder="••••••••"
               />
             </div>
@@ -78,7 +78,7 @@ export default function Signup() {
               <input
                 type="checkbox"
                 id="terms"
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
               />
               <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
                 <span>서비스 이용약관</span>과 <span>개인정보 처리방침</span>에
@@ -88,7 +88,7 @@ export default function Signup() {
 
             <button
               type="submit"
-              className="mobile-button touch-feedback w-full bg-blue-500 text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition-colors"
+              className="mobile-button touch-feedback w-full bg-primary-500 text-white py-3 rounded-lg font-medium hover:bg-primary-600 transition-colors"
             >
               회원가입
             </button>
@@ -99,7 +99,7 @@ export default function Signup() {
               </span>
               <a
                 href="/auth/login"
-                className="text-sm text-blue-600 hover:text-blue-500 font-medium"
+                className="text-sm text-primary-600 hover:text-primary-500 font-medium"
               >
                 로그인
               </a>

@@ -117,7 +117,7 @@ function ScanResultContent() {
           <p className="text-gray-500 mb-4">처리할 이미지가 없습니다.</p>
           <button
             onClick={() => router.push('/scan')}
-            className="bg-green-500 text-white px-4 py-2 rounded-lg"
+            className="bg-primary-500 text-white px-4 py-2 rounded-lg"
           >
             스캔 페이지로 돌아가기
           </button>
@@ -180,7 +180,7 @@ function ScanResultContent() {
                     key={index}
                     className="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg"
                   >
-                    <span className="text-green-500">✓</span>
+                    <span className="text-primary-500">✓</span>
                     <span className="flex-1">{item}</span>
                   </div>
                 ))}
@@ -189,7 +189,7 @@ function ScanResultContent() {
               <div className="mt-4 flex space-x-3">
                 <button
                   onClick={handleSaveToList}
-                  className="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg transition-colors"
+                  className="flex-1 bg-primary-500 hover:bg-primary-600 text-white py-3 px-4 rounded-lg transition-colors"
                 >
                   리스트에 저장
                 </button>

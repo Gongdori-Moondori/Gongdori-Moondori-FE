@@ -29,17 +29,17 @@ export default function Dashboard() {
         <div className="space-y-6">
           {/* 통계 카드 */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="touch-feedback p-4 rounded-lg bg-blue-50 bg-blue-50 border border-blue-200 border-blue-200">
+            <div className="touch-feedback p-4 rounded-lg bg-primary-50 bg-primary-50 border border-primary-200 border-primary-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-blue-600 dark:text-blue-400">
+                  <p className="text-sm text-primary-600 dark:text-primary-400">
                     총 방문자
                   </p>
-                  <p className="text-2xl font-bold text-blue-700 text-blue-700">
+                  <p className="text-2xl font-bold text-primary-700 text-primary-700">
                     1,234
                   </p>
                 </div>
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
                   <svg
                     className="w-4 h-4 text-white"
                     fill="currentColor"
@@ -51,17 +51,17 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="touch-feedback p-4 rounded-lg bg-green-50 bg-green-50 border border-green-200 border-green-200">
+            <div className="touch-feedback p-4 rounded-lg bg-primary-50 bg-primary-50 border border-primary-200 border-primary-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-green-600 dark:text-green-400">
+                  <p className="text-sm text-primary-600 dark:text-primary-400">
                     매출
                   </p>
-                  <p className="text-2xl font-bold text-green-700 text-green-700">
+                  <p className="text-2xl font-bold text-primary-700 text-primary-700">
                     ₩56K
                   </p>
                 </div>
-                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
                   <svg
                     className="w-4 h-4 text-white"
                     fill="currentColor"
@@ -80,7 +80,7 @@ export default function Dashboard() {
             <div className="space-y-3">
               <div className="touch-feedback p-4 rounded-lg border border-gray-200">
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
                   <div className="flex-1">
                     <p className="font-medium">새로운 사용자 등록</p>
                     <p className="text-sm text-gray-600">2분 전</p>
@@ -90,7 +90,7 @@ export default function Dashboard() {
 
               <div className="touch-feedback p-4 rounded-lg border border-gray-200">
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
                   <div className="flex-1">
                     <p className="font-medium">주문 완료</p>
                     <p className="text-sm text-gray-600">5분 전</p>
@@ -118,14 +118,14 @@ export default function Dashboard() {
                 href="/dashboard/settings"
                 className="mobile-button touch-feedback flex flex-col items-center p-4 rounded-lg border border-gray-200"
               >
-                <div className="w-8 h-8 bg-blue-500 rounded-full mb-2"></div>
+                <div className="w-8 h-8 bg-primary-500 rounded-full mb-2"></div>
                 <span className="text-xs">보고서</span>
               </Link>
               <Link
                 href="/dashboard/settings"
                 className="mobile-button touch-feedback flex flex-col items-center p-4 rounded-lg border border-gray-200"
               >
-                <div className="w-8 h-8 bg-green-500 rounded-full mb-2"></div>
+                <div className="w-8 h-8 bg-primary-500 rounded-full mb-2"></div>
                 <span className="text-xs">설정</span>
               </Link>
               <Link

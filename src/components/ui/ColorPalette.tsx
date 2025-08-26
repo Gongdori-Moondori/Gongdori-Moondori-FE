@@ -75,7 +75,11 @@ const ColorPalette: React.FC = () => {
       variable: '--yellow-500',
       description: '노란색 액센트',
     },
-    { name: 'Green 500', variable: '--green-500', description: '성공/신선함' },
+    {
+      name: 'Green 500',
+      variable: '--green-500',
+      description: '성공/신선함 (이제 Primary-500 사용 권장)',
+    },
     { name: 'Red 500', variable: '--red-500', description: '에러/경고' },
   ];
 

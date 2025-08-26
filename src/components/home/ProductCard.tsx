@@ -77,7 +77,7 @@ export default function ProductCard({
         </span>
       </div>
       <p
-        className={`font-bold text-lg mb-3 ${isInCart ? 'text-green-600' : 'text-green-500'}`}
+        className={`font-bold text-lg mb-3 ${isInCart ? 'text-primary-600' : 'text-primary-500'}`}
       >
         {savings.toLocaleString()}원 저렴해요
       </p>
@@ -108,10 +108,10 @@ export default function ProductCard({
             flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-sm transition-all duration-200 
             ${
               isInCart
-                ? 'bg-green-100 text-green-700 border border-green-200 cursor-default'
+                ? 'bg-primary-100 text-primary-700 border border-primary-200 cursor-default'
                 : isCartLoading
-                  ? 'bg-green-400 text-white cursor-wait'
-                  : 'bg-green-500 hover:bg-green-600 active:bg-green-700 text-white shadow-sm hover:shadow-md active:scale-95'
+                  ? 'bg-primary-400 text-white cursor-wait'
+                  : 'bg-primary-500 hover:bg-primary-600 active:bg-primary-700 text-white shadow-sm hover:shadow-md active:scale-95'
             }
             disabled:opacity-50 disabled:cursor-not-allowed
           `}

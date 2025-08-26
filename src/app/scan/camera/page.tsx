@@ -103,7 +103,7 @@ export default function CameraCapture() {
               <p className="text-white text-sm mb-4">{cameraError}</p>
               <button
                 onClick={startCamera}
-                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors"
+                className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 다시 시도
               </button>
@@ -154,7 +154,7 @@ export default function CameraCapture() {
             </button>
             <button
               onClick={processCapturedImage}
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white py-4 px-6 rounded-2xl transition-colors"
+              className="flex-1 bg-primary-500 hover:bg-primary-600 text-white py-4 px-6 rounded-2xl transition-colors"
             >
               스캔하기
             </button>

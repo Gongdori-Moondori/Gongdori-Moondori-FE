@@ -125,7 +125,7 @@ export default function MarketSelector({
                 onClick={() => handleMarketSelect(market)}
                 className={`w-full p-4 text-left hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 ${
                   selectedMarket?.id === market.id
-                    ? 'bg-blue-50 text-blue-700'
+                    ? 'bg-primary-50 text-primary-700'
                     : 'text-gray-900'
                 }`}
               >
@@ -136,7 +136,7 @@ export default function MarketSelector({
                     {market.location}
                   </span> */}
                   {/* {selectedMarket?.id === market.id && (
-                    <span className="text-xs text-blue-600 mt-1">
+                    <span className="text-xs text-primary-600 mt-1">
                       현재 선택됨
                     </span>
                   )} */}

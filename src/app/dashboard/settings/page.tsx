@@ -20,7 +20,7 @@ export default function Settings() {
             <div className="space-y-3">
               <div className="touch-feedback p-4 rounded-lg border border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center">
                     <svg
                       className="w-5 h-5 text-white"
                       fill="currentColor"
@@ -51,7 +51,7 @@ export default function Settings() {
 
               <div className="touch-feedback p-4 rounded-lg border border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center">
                     <svg
                       className="w-5 h-5 text-white"
                       fill="currentColor"

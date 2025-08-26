@@ -42,13 +42,13 @@ function ToastItem({ toast, onClose }: ToastProps) {
     let colorStyles = '';
     switch (toast.type) {
       case 'success':
-        colorStyles = 'bg-green-500';
+        colorStyles = 'bg-primary-500';
         break;
       case 'error':
         colorStyles = 'bg-red-500';
         break;
       case 'info':
-        colorStyles = 'bg-blue-500';
+        colorStyles = 'bg-primary-500';
         break;
     }
 
