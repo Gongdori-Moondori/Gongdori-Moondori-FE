@@ -432,5 +432,124 @@
       "productId": 1,
       "addedAt": "2025-08-25T06:29:38.062Z"
     }
+  ],
+  "shoppingList": [
+    {
+      "id": "sl1",
+      "userId": 1,
+      "productId": 1,
+      "quantity": 2,
+      "addedAt": "2025-01-15T10:30:00Z"
+    },
+    {
+      "id": "sl2",
+      "userId": 1,
+      "productId": 4,
+      "quantity": 1,
+      "addedAt": "2025-01-15T11:00:00Z"
+    },
+    {
+      "id": "sl3",
+      "userId": 1,
+      "productId": 6,
+      "quantity": 3,
+      "addedAt": "2025-01-15T11:15:00Z"
+    },
+    {
+      "id": "sl4",
+      "userId": 1,
+      "productId": 2,
+      "quantity": 1,
+      "addedAt": "2025-01-15T11:30:00Z"
+    },
+    {
+      "id": "sl5",
+      "userId": 1,
+      "productId": 5,
+      "quantity": 2,
+      "addedAt": "2025-01-15T12:00:00Z"
+    }
+  ],
+  "purchaseHistory": [
+    {
+      "id": "ph1",
+      "userId": 1,
+      "productId": 1,
+      "quantity": 1,
+      "price": 3000,
+      "purchaseDate": "2025-01-10T14:30:00Z"
+    },
+    {
+      "id": "ph2",
+      "userId": 1,
+      "productId": 1,
+      "quantity": 2,
+      "price": 3000,
+      "purchaseDate": "2025-01-05T16:20:00Z"
+    },
+    {
+      "id": "ph3",
+      "userId": 1,
+      "productId": 4,
+      "quantity": 1,
+      "price": 12000,
+      "purchaseDate": "2025-01-12T18:45:00Z"
+    },
+    {
+      "id": "ph4",
+      "userId": 1,
+      "productId": 4,
+      "quantity": 1,
+      "price": 12000,
+      "purchaseDate": "2025-01-02T12:30:00Z"
+    },
+    {
+      "id": "ph5",
+      "userId": 1,
+      "productId": 2,
+      "quantity": 2,
+      "price": 2500,
+      "purchaseDate": "2025-01-08T10:15:00Z"
+    },
+    {
+      "id": "ph6",
+      "userId": 1,
+      "productId": 2,
+      "quantity": 1,
+      "price": 2500,
+      "purchaseDate": "2025-01-01T15:30:00Z"
+    },
+    {
+      "id": "ph7",
+      "userId": 1,
+      "productId": 6,
+      "quantity": 1,
+      "price": 5000,
+      "purchaseDate": "2025-01-14T11:20:00Z"
+    },
+    {
+      "id": "ph8",
+      "userId": 1,
+      "productId": 15,
+      "quantity": 1,
+      "price": 12000,
+      "purchaseDate": "2025-01-11T19:45:00Z"
+    },
+    {
+      "id": "ph9",
+      "userId": 1,
+      "productId": 14,
+      "quantity": 2,
+      "price": 4000,
+      "purchaseDate": "2025-01-09T13:30:00Z"
+    },
+    {
+      "id": "ph10",
+      "userId": 1,
+      "productId": 8,
+      "quantity": 1,
+      "price": 15000,
+      "purchaseDate": "2025-01-07T17:15:00Z"
+    }
   ]
 }
