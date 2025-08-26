@@ -1,88 +1,78 @@
-import Image from 'next/image';
-import Link from 'next/link';
+'use client';
+
 import BottomNavigation from '@/components/layout/BottomNavigation';
+import WelcomeHeader from '@/components/home/WelcomeHeader';
+import MarketSelector from '@/components/home/MarketSelector';
+import AIChatBot from '@/components/home/AIChatBot';
+import TopThreeProducts from '@/components/home/TopThreeProducts';
+import AllProductsSection from '@/components/home/AllProductsSection';
+import { useState, useEffect } from 'react';
+import { marketAPI } from '@/lib/api/client';
+
+interface Market {
+  id: number;
+  name: string;
+  location: string;
+  isActive: boolean;
+}
 
 export default function Home() {
-  return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {/* 헤더 */}
-      <header className="flex items-center justify-center p-4 border-b border-gray-200">
-        <h1 className="text-xl font-bold">Rzi App</h1>
-      </header>
+  const [currentUser] = useState({ id: 1, name: '이예림' });
+  const [activeMarket, setActiveMarket] = useState<Market | null>(null);
+  const [loading, setLoading] = useState(true);
 
-      {/* 메인 콘텐츠 */}
-      <main className="flex-1 p-6 flex flex-col items-center justify-center gap-8">
+  useEffect(() => {
+    // 간단한 데이터 로딩 시뮬레이션
+    const loadData = async () => {
+      try {
+        const data = await marketAPI.getMarkets();
+        const active = data.find((m: Market) => m.isActive);
+        setActiveMarket(active || data[0]);
+      } catch (error) {
+        console.error('Failed to load data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const handleMarketChange = (market: Market) => {
+    setActiveMarket(market);
+    console.log('Market changed to:', market.name);
+  };
+
+  // 로딩 상태 처리
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Image
-            className="mx-auto mb-4"
-            src="/icons/Rzilogo.svg"
-            alt="Rzi logo"
-            width={150}
-            height={60}
-            priority
-          />
-          <h2 className="text-2xl font-bold mb-2">환영합니다!</h2>
-          <p className="text-gray-600 mb-6">
-            모바일 앱 형태로 최적화된 웹 애플리케이션입니다.
-          </p>
+          <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">로딩 중...</p>
         </div>
+      </div>
+    );
+  }
 
-        <div className="w-full max-w-sm space-y-4">
-          <Link
-            href="/dashboard"
-            className="mobile-button touch-feedback w-full bg-blue-500 text-white px-6 py-3 rounded-lg font-medium block text-center"
-          >
-            시작하기
-          </Link>
-          <Link
-            href="/about"
-            className="mobile-button touch-feedback w-full border border-gray-300 text-foreground px-6 py-3 rounded-lg font-medium block text-center"
-          >
-            둘러보기
-          </Link>
-        </div>
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-50 text-foreground gap-1">
+      <WelcomeHeader userName={currentUser?.name || '이예림'} />
+      <MarketSelector
+        selectedMarketId={activeMarket?.id}
+        onMarketChange={handleMarketChange}
+      />
+      <main className="flex-1 px-6 py-6 pb-20">
+        <AIChatBot userName={currentUser?.name || '이예림'} />
 
-        <div className="grid grid-cols-3 gap-4 w-full max-w-sm">
-          <div className="touch-feedback flex flex-col items-center p-4 rounded-lg border border-gray-200">
-            <Image
-              src="/icons/Rzilogo.svg"
-              alt="Learn"
-              width={32}
-              height={32}
-              className="mb-2"
-            />
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              학습
-            </span>
-          </div>
-          <div className="touch-feedback flex flex-col items-center p-4 rounded-lg border border-gray-200">
-            <Image
-              src="/icons/Rzilogo.svg"
-              alt="Examples"
-              width={32}
-              height={32}
-              className="mb-2"
-            />
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              예제
-            </span>
-          </div>
-          <div className="touch-feedback flex flex-col items-center p-4 rounded-lg border border-gray-200">
-            <Image
-              src="/icons/Rzilogo.svg"
-              alt="Docs"
-              width={32}
-              height={32}
-              className="mb-2"
-            />
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              문서
-            </span>
-          </div>
-        </div>
+        <TopThreeProducts userName={currentUser?.name || '이예림'} />
+
+        <AllProductsSection
+          maxSavings={15000}
+          marketName={activeMarket?.name}
+        />
       </main>
 
-      {/* 하단 네비게이션 */}
       <BottomNavigation />
     </div>
   );
