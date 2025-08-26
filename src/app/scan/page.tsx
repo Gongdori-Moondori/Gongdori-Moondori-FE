@@ -1,134 +1,188 @@
+'use client';
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import BottomNavigation from '@/components/layout/BottomNavigation';
-import BackButton from '@/components/layout/BackButton';
+import PageHeader from '@/components/layout/PageHeader';
+import IconWithTitle from '@/components/ui/IconWithTitle';
 
 export default function Scan() {
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // 이미지 파일 타입 검증
+      if (!file.type.startsWith('image/')) {
+        alert('이미지 파일만 업로드 가능합니다.');
+        return;
+      }
+
+      // 파일 크기 제한 (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('파일 크기는 5MB 이하여야 합니다.');
+        return;
+      }
+
+      setUploadedImage(file);
+
+      // 이미지 미리보기 생성
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setUploadedImage(null);
+    setImagePreview('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleFileInputClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleCameraCapture = () => {
+    // 카메라 촬영 페이지로 이동
+    router.push('/scan/camera');
+  };
+
+  const handleProcessScan = () => {
+    if (uploadedImage) {
+      // OCR 처리를 위해 결과 페이지로 이동 (이미지와 함께)
+      const imageUrl = URL.createObjectURL(uploadedImage);
+      router.push(`/scan/result?image=${encodeURIComponent(imageUrl)}`);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       {/* 헤더 */}
-      <header className="flex items-center justify-between p-4 border-b border-gray-200">
-        <BackButton />
-        <h1 className="text-xl font-bold">스캔하기</h1>
-        <div className="w-10"></div>
-      </header>
+      <PageHeader title="스캔하기" className="bg-white" />
 
       {/* 메인 콘텐츠 */}
-      <main className="flex-1 p-6 pb-20">
-        <div className="space-y-6">
-          {/* 스캔 영역 */}
-          <div className="flex flex-col items-center justify-center bg-gray-50 rounded-lg p-8 min-h-[300px] border-2 border-dashed border-gray-300">
-            <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mb-4">
-              <svg
-                className="w-10 h-10 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h4M4 8h4m0 0V4m0 4h12M4 16h4m0 0v4m0-4h12M20 8h-4m0 0V4m0 4v12"
-                />
-              </svg>
-            </div>
-            <h2 className="text-xl font-bold mb-2">영수증을 스캔하세요</h2>
-            <p className="text-gray-600 text-center mb-6">
-              영수증을 카메라로 촬영하거나
-              <br />
-              갤러리에서 선택해주세요
-            </p>
+      <main className="flex-1 p-6 pb-24">
+        <div className="space-y-8">
+          {/* 카메라 촬영 섹션 */}
+          <div className="px-4">
+            <IconWithTitle
+              iconSrc="/assets/camera.svg"
+              iconAlt="카메라"
+              title="이예림님의 장보기 리스트를 찍어주세요"
+            />
 
-            <div className="space-y-3 w-full max-w-xs">
-              <button className="mobile-button touch-feedback w-full bg-blue-500 text-white py-3 rounded-lg font-medium">
-                📷 카메라로 촬영
-              </button>
-              <button className="mobile-button touch-feedback w-full border border-gray-300 text-foreground py-3 rounded-lg font-medium">
-                🖼️ 갤러리에서 선택
+            {/* 스캔하기 버튼 */}
+            <div className="mt-6">
+              <button
+                onClick={handleCameraCapture}
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-4 px-6 rounded-2xl transition-colors duration-200 text-lg"
+              >
+                스캔하기
               </button>
             </div>
           </div>
 
-          {/* 최근 스캔 내역 */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">최근 스캔 내역</h3>
-            <div className="space-y-3">
-              <div className="touch-feedback p-4 rounded-lg border border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <span className="text-green-600 font-bold">✓</span>
-                  </div>
-                  <div>
-                    <p className="font-medium">이마트 송파점</p>
-                    <p className="text-sm text-gray-600">
-                      ₩45,320 • 2024.01.15
-                    </p>
-                  </div>
-                </div>
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
+          {/* 또는 구분선 */}
+          <div className="flex items-center gap-4 px-4">
+            <div className="flex-1 h-px bg-gray-300"></div>
+            <span className="text-gray-500 text-sm">또는</span>
+            <div className="flex-1 h-px bg-gray-300"></div>
+          </div>
 
-              <div className="touch-feedback p-4 rounded-lg border border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <span className="text-green-600 font-bold">✓</span>
-                  </div>
-                  <div>
-                    <p className="font-medium">스타벅스 강남역점</p>
-                    <p className="text-sm text-gray-600">₩8,500 • 2024.01.14</p>
-                  </div>
-                </div>
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
+          {/* 이미지 업로드 섹션 */}
+          <div className="px-4">
+            <IconWithTitle
+              iconSrc="/assets/photo.svg"
+              iconAlt="사진"
+              title="앗 이미 찍어둔 사진이 있나요?"
+            />
 
-              <div className="touch-feedback p-4 rounded-lg border border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <span className="text-yellow-600 font-bold">⏳</span>
-                  </div>
-                  <div>
-                    <p className="font-medium">CU 역삼점</p>
-                    <p className="text-sm text-gray-600">처리중 • 2024.01.14</p>
+            <div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+
+              {!uploadedImage ? (
+                <div
+                  onClick={handleFileInputClick}
+                  className="w-full mt-6 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 transition-colors"
+                >
+                  <div className="space-y-2">
+                    <div className="flex justify-center mb-4">
+                      <div className="text-gray-400">
+                        <svg
+                          className="mx-auto h-12 w-12"
+                          stroke="currentColor"
+                          fill="none"
+                          viewBox="0 0 48 48"
+                        >
+                          <path
+                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="text-gray-600">
+                      <span className="font-medium text-blue-600 hover:text-blue-500">
+                        클릭하여 이미지 선택
+                      </span>
+                      <p className="text-xs text-gray-500 mt-1">
+                        PNG, JPG, GIF 최대 5MB
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="relative">
+                    <img
+                      src={imagePreview}
+                      alt="업로드된 이미지"
+                      className="w-full h-48 object-cover rounded-lg border border-gray-300"
+                    />
+                    <button
+                      onClick={handleRemoveImage}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    {uploadedImage.name} (
+                    {(uploadedImage.size / 1024 / 1024).toFixed(2)}MB)
+                  </p>
+                </div>
+              )}
             </div>
+
+            {/* 완료 상태 표시 */}
+            {uploadedImage && (
+              <div className="mt-4">
+                <span className="inline-block px-3 py-1 bg-blue-500 text-white rounded-full text-sm">
+                  이미지 업로드 완료
+                  <button
+                    onClick={handleRemoveImage}
+                    className="ml-2 text-white hover:text-gray-200"
+                  >
+                    ×
+                  </button>
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </main>

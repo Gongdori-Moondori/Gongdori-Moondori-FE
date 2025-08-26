@@ -2,11 +2,17 @@
 
 import { useRouter } from 'next/navigation';
 
-export default function BackButton() {
+interface BackButtonProps {
+  onBack?: () => void;
+}
+
+export default function BackButton({ onBack }: BackButtonProps) {
   const router = useRouter();
 
   const handleBack = () => {
-    if (window.history.length > 1) {
+    if (onBack) {
+      onBack();
+    } else if (window.history.length > 1) {
       router.back();
     } else {
       router.push('/');

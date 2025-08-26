@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import IconWithTitle from '@/components/ui/IconWithTitle';
 
 interface SectionHeaderProps {
   maxSavings: number;
@@ -20,10 +20,11 @@ export default function SectionHeader({
   const displayTitle = title || defaultTitle;
   return (
     <>
-      <div className="flex flex-col items-start gap-3">
-        <Image src="/assets/cart.svg" alt="카트" width={40} height={40} />
-        <span className="font-semibold">{displayTitle}</span>
-      </div>
+      <IconWithTitle
+        iconSrc="/assets/cart.svg"
+        iconAlt="카트"
+        title={displayTitle}
+      />
       <p className="text-lg text-gray-500 font-medium ">
         {subtitle}{' '}
         <span className="text-primary-400 font-semibold">
