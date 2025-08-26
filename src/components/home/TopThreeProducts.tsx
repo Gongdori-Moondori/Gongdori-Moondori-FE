@@ -1,48 +1,64 @@
 import Image from 'next/image';
+import { useEffect, useState, useCallback } from 'react';
 
 interface Product {
   id: string;
   emoji: string;
   name: string;
   savings: number;
+  marketId: number;
+  rank: number;
 }
 
 interface TopThreeProductsProps {
-  products?: Product[];
-  isLoading?: boolean;
-  error?: string;
-  onRetry?: () => void;
   userName?: string;
+  marketId?: number; // 현재 선택된 마켓 ID
 }
 
-const defaultProducts: Product[] = [
-  {
-    id: '1',
-    emoji: '🍅',
-    name: '토마토',
-    savings: 4000,
-  },
-  {
-    id: '2',
-    emoji: '🥕',
-    name: '당근(물)',
-    savings: 8000,
-  },
-  {
-    id: '3',
-    emoji: '🥩',
-    name: '삼겹살(200g)',
-    savings: 8000,
-  },
-];
-
 export default function TopThreeProducts({
-  products = defaultProducts,
-  isLoading = false,
-  error,
-  onRetry,
   userName = '사용자',
+  marketId = 1, // 기본값으로 첫 번째 마켓 선택
 }: TopThreeProductsProps) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchTopProducts = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      console.log('TopThreeProducts: Fetching data for marketId:', marketId);
+
+      const response = await fetch(
+        `http://localhost:3001/topProducts?marketId=${marketId}&_sort=rank&_order=asc`
+      );
+      if (!response.ok) {
+        throw new Error('데이터를 불러오는데 실패했습니다.');
+      }
+
+      const topProducts = await response.json();
+      const limitedProducts = topProducts.slice(0, 3); // TOP 3만 가져오기
+
+      console.log('TopThreeProducts: Fetched products:', limitedProducts);
+      setProducts(limitedProducts);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, [marketId]);
+
+  useEffect(() => {
+    fetchTopProducts();
+  }, [fetchTopProducts]);
+
+  const onRetry = () => {
+    fetchTopProducts();
+  };
+
   const handleProductClick = (productId: string) => {
     console.log(`Product ${productId} clicked`);
     // 상품 상세 페이지로 이동하는 로직 구현

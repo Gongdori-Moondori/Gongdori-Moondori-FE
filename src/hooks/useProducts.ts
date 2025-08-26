@@ -50,7 +50,7 @@ export interface UseProductsReturn {
   toggleFavorite: (productId: string) => Promise<void>;
 }
 
-export function useProducts(): UseProductsReturn {
+export function useProducts(marketId?: number): UseProductsReturn {
   const [products, setProducts] = useState<ProductData[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [cartItems, setCartItems] = useState<Set<string>>(new Set());
@@ -64,38 +64,42 @@ export function useProducts(): UseProductsReturn {
         setLoading(true);
 
         // 각 엔드포인트에서 데이터를 개별적으로 가져오기
+        console.log('useProducts: Fetching data for marketId:', marketId);
+
+        const productsUrl = marketId
+          ? `http://localhost:3001/products?marketId=${marketId}`
+          : `http://localhost:3001/products`;
+
         const [cartResponse, favoritesResponse, productsResponse] =
           await Promise.all([
             fetch('http://localhost:3001/cart'),
             fetch('http://localhost:3001/favorites'),
-            fetch('http://localhost:3001/products'),
+            fetch(productsUrl),
           ]);
 
         const cart: CartItem[] = await cartResponse.json();
         const favorites: FavoriteItem[] = await favoritesResponse.json();
         const products: Product[] = await productsResponse.json();
 
-        const data: DBData = { cart, favorites, products };
+        console.log('useProducts: Fetched products count:', products.length);
 
         // cart에 있는 productId들 추출
-        const cartProductIds = data.cart.map(
+        const cartProductIds = cart.map(
           (cartItem: CartItem) =>
             cartItem.productId?.toString() || cartItem.id.toString()
         );
         const cartProductsSet = new Set<string>(cartProductIds);
 
-        // 전체 products 데이터를 가져오되, 카트와 즐겨찾기 상태 정보 포함
-        const allProducts: ProductData[] = data.products.map(
-          (product: Product) => ({
-            ...product,
-            id: product.id.toString(),
-            isFavorite: false, // 초기값, 아래에서 설정
-            isInCart: cartProductsSet.has(product.id.toString()),
-          })
-        );
+        // products 데이터를 가져오되, 카트와 즐겨찾기 상태 정보 포함
+        const allProducts: ProductData[] = products.map((product: Product) => ({
+          ...product,
+          id: product.id.toString(),
+          isFavorite: false, // 초기값, 아래에서 설정
+          isInCart: cartProductsSet.has(product.id.toString()),
+        }));
 
         // favorites 데이터 처리
-        const favoriteProductIds = data.favorites.map((fav: FavoriteItem) =>
+        const favoriteProductIds = favorites.map((fav: FavoriteItem) =>
           fav.productId.toString()
         );
         const favoritesSet = new Set<string>(favoriteProductIds);
@@ -116,7 +120,7 @@ export function useProducts(): UseProductsReturn {
     };
 
     fetchData();
-  }, []);
+  }, [marketId]);
 
   // 카트 담기 기능
   const addToCart = async (productId: string): Promise<void> => {

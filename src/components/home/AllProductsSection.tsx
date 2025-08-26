@@ -17,6 +17,7 @@ interface AllProductsSectionProps extends ProductActionsProps {
   error?: string;
   onRetry?: () => void;
   marketName?: string;
+  marketId?: number;
 }
 
 export default function AllProductsSection({
@@ -28,13 +29,14 @@ export default function AllProductsSection({
   error,
   onRetry,
   marketName,
+  marketId,
 }: AllProductsSectionProps) {
   const {
     products: hookProducts,
     loading,
     addToCart,
     toggleFavorite,
-  } = useProducts();
+  } = useProducts(marketId);
   const { toasts, removeToast } = useToast();
 
   // products가 props로 전달된 경우 해당 데이터 사용, 아니면 hook에서 가져온 데이터 사용
