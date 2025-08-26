@@ -308,19 +308,17 @@ export default function ShoppingListPage() {
                 </div>
               ))}
             </div>
-
-            {/* 주문하기 버튼 */}
-            {shoppingListItems.length > 0 && (
-              <div className="fixed bottom-20 left-0 right-0 p-6 bg-gray-100">
-                <button className="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold hover:bg-blue-700 transition-colors">
-                  주문하기 ({getTotalPrice().toLocaleString()}원)
-                </button>
-              </div>
-            )}
           </div>
         )}
       </main>
-
+      {/* 주문하기 버튼 */}
+      {shoppingListItems.length > 0 && (
+        <div className="fixed bottom-20 left-0 right-0 bg-gray-100 px-4 py-3 max-w-md mx-auto">
+          <button className="w-full bg-primary-600 text-white py-4 rounded-xl font-semibold text-sm sm:text-base">
+            주문하기 ({getTotalPrice().toLocaleString()}원)
+          </button>
+        </div>
+      )}
       <BottomNavigation />
     </div>
   );
