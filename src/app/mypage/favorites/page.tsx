@@ -44,6 +44,7 @@ export default function FavoritesPage() {
   const [markets, setMarkets] = useState<Market[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
 
   useEffect(() => {
     fetchFavorites();
@@ -119,9 +120,25 @@ export default function FavoritesPage() {
     }
   };
 
+  const getFilteredProducts = () => {
+    if (selectedCategory === '전체') {
+      return favoriteProducts;
+    }
+    return favoriteProducts.filter(
+      (product) => product.category === selectedCategory
+    );
+  };
+
+  const getCategories = () => {
+    const categories = Array.from(
+      new Set(favoriteProducts.map((p) => p.category))
+    );
+    return ['전체', ...categories];
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-100">
+      <div className="min-h-screen flex flex-col bg-gray-50">
         <PageHeader title="즐겨찾기" showBackButton />
         <div className="flex-1 flex items-center justify-center">
           <LoadingSpinner />
@@ -133,7 +150,7 @@ export default function FavoritesPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-100">
+      <div className="min-h-screen flex flex-col bg-gray-50">
         <PageHeader title="즐겨찾기" showBackButton />
         <div className="flex-1 flex items-center justify-center p-6">
           <ErrorMessage message={error} />
@@ -144,7 +161,7 @@ export default function FavoritesPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 text-foreground">
+    <div className="min-h-screen flex flex-col bg-gray-50 text-foreground">
       <PageHeader title="즐겨찾기" showBackButton className="bg-white" />
 
       <main className="flex-1 p-6 pb-20">
@@ -165,13 +182,13 @@ export default function FavoritesPage() {
               <h2 className="text-lg font-semibold mb-4">즐겨찾기 현황</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className="text-2xl font-bold text-primary-500">
                     {favoriteProducts.length}
                   </div>
                   <div className="text-sm text-gray-600">즐겨찾기 상품</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">
+                  <div className="text-2xl font-bold text-primary-500">
                     {favoriteProducts
                       .reduce((total, item) => total + item.savings, 0)
                       .toLocaleString()}
@@ -186,18 +203,21 @@ export default function FavoritesPage() {
             <div className="bg-white rounded-xl p-4 shadow-sm">
               <h3 className="font-semibold mb-3">카테고리별 보기</h3>
               <div className="flex flex-wrap gap-2">
-                {Array.from(
-                  new Set(favoriteProducts.map((p) => p.category))
-                ).map((category) => (
+                {getCategories().map((category) => (
                   <button
                     key={category}
-                    className="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-gray-200 transition-colors"
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                      selectedCategory === category
+                        ? 'bg-primary-500 text-white'
+                        : 'bg-gray-100 hover:bg-gray-200'
+                    }`}
                   >
                     {category} (
-                    {
-                      favoriteProducts.filter((p) => p.category === category)
-                        .length
-                    }
+                    {category === '전체'
+                      ? favoriteProducts.length
+                      : favoriteProducts.filter((p) => p.category === category)
+                          .length}
                     )
                   </button>
                 ))}
@@ -206,8 +226,10 @@ export default function FavoritesPage() {
 
             {/* 즐겨찾기 상품 리스트 */}
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold">즐겨찾기 상품</h2>
-              {favoriteProducts.map((item) => (
+              <h2 className="text-lg font-semibold">
+                즐겨찾기 상품 ({getFilteredProducts().length}개)
+              </h2>
+              {getFilteredProducts().map((item) => (
                 <div
                   key={item.favoriteId}
                   className="bg-white rounded-xl p-4 shadow-sm"
@@ -237,19 +259,19 @@ export default function FavoritesPage() {
                       <div className="text-sm text-gray-500 line-through">
                         {item.supermarketPrice.toLocaleString()}원
                       </div>
-                      <div className="text-sm text-green-600">
+                      <div className="text-sm text-primary-500">
                         {item.savings.toLocaleString()}원 절약
                       </div>
                       <div className="mt-2 space-x-2">
                         <button
                           onClick={() => addToCart(item)}
-                          className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                          className="px-3 py-1 bg-primary-500 text-white text-xs rounded hover:bg-primary-600 transition-colors"
                         >
                           담기
                         </button>
                         <button
                           onClick={() => removeFromFavorites(item.favoriteId)}
-                          className="px-3 py-1 bg-red-100 text-red-600 text-xs rounded hover:bg-red-200"
+                          className="px-3 py-1 bg-red-100 text-red-600 text-xs rounded hover:bg-red-200 transition-colors"
                         >
                           삭제
                         </button>
@@ -263,7 +285,7 @@ export default function FavoritesPage() {
                       <span
                         className={`text-xs px-2 py-1 rounded-full ${
                           item.inStock
-                            ? 'bg-green-100 text-green-800'
+                            ? 'bg-secondary-100 text-primary-800'
                             : 'bg-red-100 text-red-800'
                         }`}
                       >

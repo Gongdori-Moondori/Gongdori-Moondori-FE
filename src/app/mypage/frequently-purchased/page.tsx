@@ -190,7 +190,7 @@ export default function FrequentlyPurchasedPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-100">
+      <div className="min-h-screen flex flex-col bg-gray-50">
         <PageHeader title="자주 구매한 상품" showBackButton />
         <div className="flex-1 flex items-center justify-center">
           <LoadingSpinner />
@@ -202,7 +202,7 @@ export default function FrequentlyPurchasedPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-100">
+      <div className="min-h-screen flex flex-col bg-gray-50">
         <PageHeader title="자주 구매한 상품" showBackButton />
         <div className="flex-1 flex items-center justify-center p-6">
           <ErrorMessage message={error} />
@@ -216,7 +216,7 @@ export default function FrequentlyPurchasedPage() {
   const filteredProducts = getFilteredProducts();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 text-foreground">
+    <div className="min-h-screen flex flex-col bg-gray-50 text-foreground">
       <PageHeader
         title="자주 구매한 상품"
         showBackButton
@@ -239,19 +239,19 @@ export default function FrequentlyPurchasedPage() {
               <h2 className="text-lg font-semibold mb-4">구매 통계</h2>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className="text-2xl font-bold text-primary-500">
                     {stats.totalPurchases}
                   </div>
                   <div className="text-sm text-gray-600">총 구매 횟수</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">
+                  <div className="text-2xl font-bold text-primary-500">
                     {stats.totalSpent.toLocaleString()}원
                   </div>
                   <div className="text-sm text-gray-600">총 구매 금액</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">
+                  <div className="text-2xl font-bold text-primary-500">
                     {stats.totalSavings.toLocaleString()}원
                   </div>
                   <div className="text-sm text-gray-600">총 절약 금액</div>
@@ -272,7 +272,7 @@ export default function FrequentlyPurchasedPage() {
                         onClick={() => setSelectedCategory(category)}
                         className={`px-3 py-1 rounded-full text-sm transition-colors ${
                           selectedCategory === category
-                            ? 'bg-blue-600 text-white'
+                            ? 'bg-primary-500 text-white'
                             : 'bg-gray-100 hover:bg-gray-200'
                         }`}
                       >
@@ -290,7 +290,7 @@ export default function FrequentlyPurchasedPage() {
                       onClick={() => setSortBy('count')}
                       className={`px-3 py-1 rounded-full text-sm transition-colors ${
                         sortBy === 'count'
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-primary-500 text-white'
                           : 'bg-gray-100 hover:bg-gray-200'
                       }`}
                     >
@@ -300,7 +300,7 @@ export default function FrequentlyPurchasedPage() {
                       onClick={() => setSortBy('recent')}
                       className={`px-3 py-1 rounded-full text-sm transition-colors ${
                         sortBy === 'recent'
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-primary-500 text-white'
                           : 'bg-gray-100 hover:bg-gray-200'
                       }`}
                     >
@@ -310,7 +310,7 @@ export default function FrequentlyPurchasedPage() {
                       onClick={() => setSortBy('savings')}
                       className={`px-3 py-1 rounded-full text-sm transition-colors ${
                         sortBy === 'savings'
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-primary-500 text-white'
                           : 'bg-gray-100 hover:bg-gray-200'
                       }`}
                     >
@@ -341,7 +341,7 @@ export default function FrequentlyPurchasedPage() {
                           height={48}
                           className="w-12 h-12"
                         />
-                        <div className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                        <div className="absolute -top-2 -right-2 bg-primary-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
                           {index + 1}
                         </div>
                       </div>
@@ -351,7 +351,7 @@ export default function FrequentlyPurchasedPage() {
                         <div className="text-xs text-gray-500 space-y-1">
                           <div>
                             구매 횟수:{' '}
-                            <span className="font-semibold text-blue-600">
+                            <span className="font-semibold text-primary-500">
                               {item.purchaseCount}회
                             </span>
                           </div>
@@ -369,12 +369,12 @@ export default function FrequentlyPurchasedPage() {
                       <div className="text-sm text-gray-500">
                         평균 {item.averagePrice.toLocaleString()}원
                       </div>
-                      <div className="text-sm text-green-600">
+                      <div className="text-sm text-primary-500">
                         총 {item.totalSavings.toLocaleString()}원 절약
                       </div>
                       <button
                         onClick={() => addToCart(item)}
-                        className="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                        className="mt-2 px-3 py-1 bg-primary-500 text-white text-xs rounded hover:bg-primary-600 transition-colors"
                       >
                         다시 담기
                       </button>
@@ -391,7 +391,7 @@ export default function FrequentlyPurchasedPage() {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        className="bg-blue-600 h-2 rounded-full transition-all"
+                        className="bg-primary-500 h-2 rounded-full transition-all"
                         style={{
                           width: `${Math.min((item.purchaseCount / 20) * 100, 100)}%`,
                         }}
