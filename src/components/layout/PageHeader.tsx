@@ -5,6 +5,7 @@ interface PageHeaderProps {
   rightElement?: React.ReactNode;
   className?: string;
   onBack?: () => void;
+  showBackButton?: boolean;
 }
 
 export default function PageHeader({
@@ -12,12 +13,17 @@ export default function PageHeader({
   rightElement,
   className = '',
   onBack,
+  showBackButton = true,
 }: PageHeaderProps) {
   return (
     <header
       className={`flex items-center justify-between p-4 border-b border-gray-200 ${className}`}
     >
-      <BackButton onBack={onBack} />
+      {showBackButton ? (
+        <BackButton onBack={onBack} />
+      ) : (
+        <div className="w-10" />
+      )}
       <h1 className="text-xl font-bold">{title}</h1>
       <div className="w-10 flex justify-center">
         {rightElement || <div className="w-6 h-6" />}

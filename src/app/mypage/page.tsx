@@ -25,8 +25,7 @@ export default function MyPage() {
       title: '나의 장보기 리스트',
       icon: 'shopping-list',
       onClick: () => {
-        // TODO: 장보기 리스트 페이지로 이동
-        console.log('장보기 리스트 클릭');
+        window.location.href = '/mypage/shopping-list';
       },
     },
     {
@@ -34,8 +33,7 @@ export default function MyPage() {
       title: '즐겨찾기',
       icon: 'heart',
       onClick: () => {
-        // TODO: 즐겨찾기 페이지로 이동
-        console.log('즐겨찾기 클릭');
+        window.location.href = '/mypage/favorites';
       },
     },
     {
@@ -43,8 +41,7 @@ export default function MyPage() {
       title: '자주 구매한 상품',
       icon: 'chart',
       onClick: () => {
-        // TODO: 자주 구매한 상품 페이지로 이동
-        console.log('자주 구매한 상품 클릭');
+        window.location.href = '/mypage/frequently-purchased';
       },
     },
   ];
