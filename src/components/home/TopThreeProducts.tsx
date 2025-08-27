@@ -1,14 +1,7 @@
 import Image from 'next/image';
 import { useEffect, useState, useCallback } from 'react';
-
-interface Product {
-  id: string;
-  emoji: string;
-  name: string;
-  savings: number;
-  marketId: number;
-  rank: number;
-}
+import { topProductAPI } from '@/lib/api/client';
+import { TopProduct } from '@/lib/api/types';
 
 interface TopThreeProductsProps {
   userName?: string;
@@ -19,7 +12,7 @@ export default function TopThreeProducts({
   userName = '사용자',
   marketId = 1, // 기본값으로 첫 번째 마켓 선택
 }: TopThreeProductsProps) {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<TopProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,14 +23,7 @@ export default function TopThreeProducts({
 
       console.log('TopThreeProducts: Fetching data for marketId:', marketId);
 
-      const response = await fetch(
-        `http://localhost:3001/topProducts?marketId=${marketId}&_sort=rank&_order=asc`
-      );
-      if (!response.ok) {
-        throw new Error('데이터를 불러오는데 실패했습니다.');
-      }
-
-      const topProducts = await response.json();
+      const topProducts = await topProductAPI.getTopProducts(marketId);
       const limitedProducts = topProducts.slice(0, 3); // TOP 3만 가져오기
 
       console.log('TopThreeProducts: Fetched products:', limitedProducts);
@@ -59,7 +45,7 @@ export default function TopThreeProducts({
     fetchTopProducts();
   };
 
-  const handleProductClick = (productId: string) => {
+  const handleProductClick = (productId: number) => {
     console.log(`Product ${productId} clicked`);
     // 상품 상세 페이지로 이동하는 로직 구현
   };

@@ -1,20 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Category, SubCategory, CategoryItem } from '@/lib/data/categories';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Category as APICategory, CategoryItem } from '@/lib/api/types';
+import { categoryAPI } from '@/lib/api/client';
 import { IoChevronBack } from 'react-icons/io5';
 
 interface CategoryDetailProps {
-  category: Category;
+  category: APICategory;
   onBack: () => void;
 }
 
 interface ItemCardProps {
   item: CategoryItem;
-  onAddToCart?: (item: CategoryItem) => void;
+  onComparePrice?: (item: CategoryItem) => void;
 }
 
-function ItemCard({ item, onAddToCart }: ItemCardProps) {
+function ItemCard({ item, onComparePrice }: ItemCardProps) {
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between">
@@ -23,10 +25,10 @@ function ItemCard({ item, onAddToCart }: ItemCardProps) {
           <p className="text-sm text-gray-600">{item.unit}</p>
         </div>
         <button
-          onClick={() => onAddToCart?.(item)}
+          onClick={() => onComparePrice?.(item)}
           className="bg-primary-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-primary-600 transition-colors touch-feedback"
         >
-          장바구니
+          가격비교
         </button>
       </div>
     </div>
@@ -37,17 +39,28 @@ export default function CategoryDetail({
   category,
   onBack,
 }: CategoryDetailProps) {
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string>(
-    category.subcategories[0]?.id || ''
-  );
+  const [categoryItems, setCategoryItems] = useState<CategoryItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
-  const currentSubcategory = category.subcategories.find(
-    (sub) => sub.id === selectedSubcategory
-  );
+  useEffect(() => {
+    const fetchCategoryItems = async () => {
+      try {
+        const data = await categoryAPI.getCategoryItems(category.id);
+        setCategoryItems(data);
+      } catch (error) {
+        console.error('카테고리 아이템 로드 실패:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const handleAddToCart = (item: CategoryItem) => {
-    // TODO: 장바구니 추가 로직 구현
-    console.log('장바구니에 추가:', item);
+    fetchCategoryItems();
+  }, [category.id]);
+
+  const handleComparePrice = (item: CategoryItem) => {
+    // 가격 비교 페이지로 이동
+    router.push(`/scan/price-compare?item=${encodeURIComponent(item.name)}`);
   };
 
   return (
@@ -64,45 +77,30 @@ export default function CategoryDetail({
           <div className="text-2xl">{category.emoji}</div>
           <h1 className="text-xl font-bold text-gray-900">{category.name}</h1>
         </div>
-
-        {/* 서브카테고리 탭 */}
-        {category.subcategories.length > 1 && (
-          <div className="flex gap-2 overflow-x-auto">
-            {category.subcategories.map((sub) => (
-              <button
-                key={sub.id}
-                onClick={() => setSelectedSubcategory(sub.id)}
-                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap touch-feedback transition-colors ${
-                  selectedSubcategory === sub.id
-                    ? 'bg-primary-500 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {sub.name}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* 아이템 목록 */}
       <div className="flex-1 overflow-y-auto p-4">
-        {currentSubcategory && (
+        {isLoading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-2 border-primary-500 border-t-transparent"></div>
+          </div>
+        ) : (
           <div className="space-y-3">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900">
-                {currentSubcategory.name}
+                {category.name} 상품
               </h2>
               <span className="text-sm text-gray-500">
-                {currentSubcategory.items.length}개 상품
+                {categoryItems.length}개 상품
               </span>
             </div>
 
-            {currentSubcategory.items.map((item) => (
+            {categoryItems.map((item) => (
               <ItemCard
                 key={item.id}
                 item={item}
-                onAddToCart={handleAddToCart}
+                onComparePrice={handleComparePrice}
               />
             ))}
           </div>

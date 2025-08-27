@@ -13,21 +13,8 @@ import {
 } from 'react-icons/io5';
 import PageHeader from '@/components/layout/PageHeader';
 import BackButton from '@/components/layout/BackButton';
-
-interface MarketInfo {
-  id: string;
-  name: string;
-  distance: string;
-  walkTime: string;
-  rating: number;
-  price: number;
-  originalPrice?: number;
-  isOnSale: boolean;
-  address: string;
-  phone: string;
-  operatingHours: string;
-  lastUpdated: string;
-}
+import { priceCompareAPI } from '@/lib/api/client';
+import { MarketInfo } from '@/lib/api/types';
 
 export default function PriceComparePage() {
   const [itemName, setItemName] = useState<string>('');
@@ -39,93 +26,25 @@ export default function PriceComparePage() {
   useEffect(() => {
     const item = searchParams.get('item');
     if (item) {
-      setItemName(decodeURIComponent(item));
-      // 실제로는 API를 호출해서 데이터를 가져올 것
-      fetchMarketPrices();
+      const decodedItem = decodeURIComponent(item);
+      setItemName(decodedItem);
+      fetchMarketPrices(decodedItem);
     }
   }, [searchParams]);
 
-  const fetchMarketPrices = async () => {
+  const fetchMarketPrices = async (productName: string) => {
     setIsLoading(true);
 
-    // 모든 데이터 (실제로는 API에서 가져올 것)
-    const mockData: MarketInfo[] = [
-      {
-        id: '1',
-        name: '이마트 성수점',
-        distance: '0.3km',
-        walkTime: '4분',
-        rating: 4.5,
-        price: 2500,
-        originalPrice: 3000,
-        isOnSale: true,
-        address: '서울시 성동구 성수동',
-        phone: '02-1234-5678',
-        operatingHours: '10:00 - 22:00',
-        lastUpdated: '2024.01.15 14:30',
-      },
-      {
-        id: '2',
-        name: '롯데마트 건대점',
-        distance: '0.8km',
-        walkTime: '10분',
-        rating: 4.2,
-        price: 2800,
-        isOnSale: false,
-        address: '서울시 광진구 건국대학교',
-        phone: '02-2345-6789',
-        operatingHours: '10:00 - 23:00',
-        lastUpdated: '2024.01.15 12:00',
-      },
-      {
-        id: '3',
-        name: 'GS25 성수역점',
-        distance: '0.2km',
-        walkTime: '2분',
-        rating: 3.8,
-        price: 3200,
-        isOnSale: false,
-        address: '서울시 성동구 성수역',
-        phone: '02-3456-7890',
-        operatingHours: '24시간',
-        lastUpdated: '2024.01.15 16:45',
-      },
-      {
-        id: '4',
-        name: '홈플러스 왕십리점',
-        distance: '1.2km',
-        walkTime: '15분',
-        rating: 4.3,
-        price: 2400,
-        originalPrice: 2600,
-        isOnSale: true,
-        address: '서울시 성동구 왕십리',
-        phone: '02-4567-8901',
-        operatingHours: '10:00 - 24:00',
-        lastUpdated: '2024.01.15 13:20',
-      },
-      {
-        id: '5',
-        name: '세븐일레븐 성수점',
-        distance: '0.1km',
-        walkTime: '1분',
-        rating: 4.0,
-        price: 3100,
-        isOnSale: false,
-        address: '서울시 성동구 성수동1가',
-        phone: '02-5678-9012',
-        operatingHours: '24시간',
-        lastUpdated: '2024.01.15 15:10',
-      },
-    ];
-
-    // 가격 순으로 정렬
-    const sortedData = mockData.sort((a, b) => a.price - b.price);
-
-    setTimeout(() => {
-      setMarkets(sortedData);
+    try {
+      const data = await priceCompareAPI.getProductPrices(productName);
+      setMarkets(data);
+    } catch (error) {
+      console.error('가격 비교 데이터 로드 실패:', error);
+      // 에러 발생 시 빈 배열로 설정
+      setMarkets([]);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const renderStars = (rating: number) => {
@@ -149,6 +68,23 @@ export default function PriceComparePage() {
   const handleShowMap = (address: string) => {
     // 실제로는 지도 앱 연동
     alert(`${address}로 길 안내를 시작합니다.`);
+  };
+
+  const handleAddToCart = async (market: MarketInfo) => {
+    try {
+      await priceCompareAPI.addToCartWithMarket({
+        productName: itemName,
+        marketName: market.name,
+        price: market.price,
+        userId: 1, // 임시 사용자 ID
+        quantity: 1,
+      });
+
+      alert(`${market.name}에서 ${itemName}을(를) 장바구니에 추가했습니다.`);
+    } catch (error) {
+      console.error('장바구니 추가 실패:', error);
+      alert('장바구니 추가에 실패했습니다.');
+    }
   };
 
   if (isLoading) {
@@ -264,8 +200,14 @@ export default function PriceComparePage() {
 
                   <div className="flex flex-col space-y-2 ml-4">
                     <button
+                      onClick={() => handleAddToCart(market)}
+                      className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                    >
+                      장바구니 담기
+                    </button>
+                    <button
                       onClick={() => handleShowMap(market.address)}
-                      className="bg-primary-500 hover:bg-primary-600 text-white px-3 py-2 rounded-lg text-sm transition-colors flex items-center space-x-1"
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm transition-colors flex items-center space-x-1"
                     >
                       <IoMapOutline size={14} />
                       <span>길찾기</span>

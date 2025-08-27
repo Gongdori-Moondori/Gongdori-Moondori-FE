@@ -27,6 +27,1044 @@
       "isActive": false
     }
   ],
+  "priceCompareMarkets": [
+    {
+      "id": "pc1",
+      "name": "이마트 성수점",
+      "distance": "0.3km",
+      "walkTime": "4분",
+      "rating": 4.5,
+      "address": "서울시 성동구 성수동",
+      "phone": "02-1234-5678",
+      "operatingHours": "10:00 - 22:00",
+      "lastUpdated": "2024.01.15 14:30"
+    },
+    {
+      "id": "pc2",
+      "name": "롯데마트 건대점",
+      "distance": "0.8km",
+      "walkTime": "10분",
+      "rating": 4.2,
+      "address": "서울시 광진구 건국대학교",
+      "phone": "02-2345-6789",
+      "operatingHours": "10:00 - 23:00",
+      "lastUpdated": "2024.01.15 12:00"
+    },
+    {
+      "id": "pc3",
+      "name": "GS25 성수역점",
+      "distance": "0.2km",
+      "walkTime": "2분",
+      "rating": 3.8,
+      "address": "서울시 성동구 성수역",
+      "phone": "02-3456-7890",
+      "operatingHours": "24시간",
+      "lastUpdated": "2024.01.15 16:45"
+    },
+    {
+      "id": "pc4",
+      "name": "홈플러스 왕십리점",
+      "distance": "1.2km",
+      "walkTime": "15분",
+      "rating": 4.3,
+      "address": "서울시 성동구 왕십리",
+      "phone": "02-4567-8901",
+      "operatingHours": "10:00 - 24:00",
+      "lastUpdated": "2024.01.15 13:20"
+    },
+    {
+      "id": "pc5",
+      "name": "세븐일레븐 성수점",
+      "distance": "0.1km",
+      "walkTime": "1분",
+      "rating": 4.0,
+      "address": "서울시 성동구 성수동1가",
+      "phone": "02-5678-9012",
+      "operatingHours": "24시간",
+      "lastUpdated": "2024.01.15 15:10"
+    },
+    {
+      "id": "pc6",
+      "name": "코스트코 양평점",
+      "distance": "2.5km",
+      "walkTime": "30분",
+      "rating": 4.6,
+      "address": "서울시 영등포구 양평동",
+      "phone": "02-6789-0123",
+      "operatingHours": "10:00 - 22:00",
+      "lastUpdated": "2024.01.15 11:00"
+    },
+    {
+      "id": "pc7",
+      "name": "하나로마트 성동점",
+      "distance": "1.8km",
+      "walkTime": "22분",
+      "rating": 4.1,
+      "address": "서울시 성동구 용답동",
+      "phone": "02-7890-1234",
+      "operatingHours": "09:00 - 21:00",
+      "lastUpdated": "2024.01.15 14:00"
+    },
+    {
+      "id": "pc8",
+      "name": "CU 건대입구역점",
+      "distance": "0.9km",
+      "walkTime": "11분",
+      "rating": 3.9,
+      "address": "서울시 광진구 건대입구역",
+      "phone": "02-8901-2345",
+      "operatingHours": "24시간",
+      "lastUpdated": "2024.01.15 17:30"
+    }
+  ],
+  "priceCompareProducts": [
+    {
+      "id": "pcp1",
+      "name": "토마토",
+      "marketId": "pc1",
+      "price": 2500,
+      "originalPrice": 3000,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp2",
+      "name": "토마토",
+      "marketId": "pc2",
+      "price": 2800,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp3",
+      "name": "토마토",
+      "marketId": "pc3",
+      "price": 3200,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp4",
+      "name": "토마토",
+      "marketId": "pc4",
+      "price": 2400,
+      "originalPrice": 2600,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp5",
+      "name": "토마토",
+      "marketId": "pc5",
+      "price": 3100,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp6",
+      "name": "당근",
+      "marketId": "pc1",
+      "price": 2000,
+      "originalPrice": 2500,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp7",
+      "name": "당근",
+      "marketId": "pc2",
+      "price": 2300,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp8",
+      "name": "당근",
+      "marketId": "pc3",
+      "price": 2800,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp9",
+      "name": "당근",
+      "marketId": "pc4",
+      "price": 1900,
+      "originalPrice": 2200,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp10",
+      "name": "당근",
+      "marketId": "pc5",
+      "price": 2600,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp11",
+      "name": "오렌지",
+      "marketId": "pc1",
+      "price": 4500,
+      "originalPrice": 5000,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp12",
+      "name": "오렌지",
+      "marketId": "pc2",
+      "price": 4800,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp13",
+      "name": "오렌지",
+      "marketId": "pc3",
+      "price": 5200,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp14",
+      "name": "오렌지",
+      "marketId": "pc4",
+      "price": 4300,
+      "originalPrice": 4600,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp15",
+      "name": "오렌지",
+      "marketId": "pc5",
+      "price": 4900,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp16",
+      "name": "딸기",
+      "marketId": "pc1",
+      "price": 8500,
+      "originalPrice": 9000,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp17",
+      "name": "딸기",
+      "marketId": "pc2",
+      "price": 8800,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp18",
+      "name": "딸기",
+      "marketId": "pc3",
+      "price": 9200,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp19",
+      "name": "딸기",
+      "marketId": "pc4",
+      "price": 8200,
+      "originalPrice": 8700,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp20",
+      "name": "딸기",
+      "marketId": "pc5",
+      "price": 8900,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp21",
+      "name": "포도",
+      "marketId": "pc1",
+      "price": 6500,
+      "originalPrice": 7000,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp22",
+      "name": "포도",
+      "marketId": "pc2",
+      "price": 6800,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp23",
+      "name": "포도",
+      "marketId": "pc3",
+      "price": 7200,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp24",
+      "name": "포도",
+      "marketId": "pc4",
+      "price": 6300,
+      "originalPrice": 6600,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp25",
+      "name": "포도",
+      "marketId": "pc5",
+      "price": 6900,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp26",
+      "name": "배추",
+      "marketId": "pc1",
+      "price": 2500,
+      "originalPrice": 3000,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp27",
+      "name": "배추",
+      "marketId": "pc2",
+      "price": 2800,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp28",
+      "name": "배추",
+      "marketId": "pc3",
+      "price": 3200,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp29",
+      "name": "배추",
+      "marketId": "pc4",
+      "price": 2400,
+      "originalPrice": 2700,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp30",
+      "name": "배추",
+      "marketId": "pc5",
+      "price": 2900,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp31",
+      "name": "시금치",
+      "marketId": "pc1",
+      "price": 1500,
+      "originalPrice": 1800,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp32",
+      "name": "시금치",
+      "marketId": "pc2",
+      "price": 1700,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp33",
+      "name": "시금치",
+      "marketId": "pc3",
+      "price": 1900,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp34",
+      "name": "시금치",
+      "marketId": "pc4",
+      "price": 1400,
+      "originalPrice": 1600,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp35",
+      "name": "시금치",
+      "marketId": "pc5",
+      "price": 1800,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp36",
+      "name": "오이",
+      "marketId": "pc1",
+      "price": 2200,
+      "originalPrice": 2500,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp37",
+      "name": "오이",
+      "marketId": "pc2",
+      "price": 2400,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp38",
+      "name": "오이",
+      "marketId": "pc3",
+      "price": 2700,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp39",
+      "name": "오이",
+      "marketId": "pc4",
+      "price": 2100,
+      "originalPrice": 2300,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp40",
+      "name": "오이",
+      "marketId": "pc5",
+      "price": 2600,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp41",
+      "name": "삼겹살",
+      "marketId": "pc1",
+      "price": 15000,
+      "originalPrice": 16000,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp42",
+      "name": "삼겹살",
+      "marketId": "pc2",
+      "price": 15500,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp43",
+      "name": "삼겹살",
+      "marketId": "pc3",
+      "price": 16200,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp44",
+      "name": "삼겹살",
+      "marketId": "pc4",
+      "price": 14800,
+      "originalPrice": 15300,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp45",
+      "name": "삼겹살",
+      "marketId": "pc5",
+      "price": 15800,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp46",
+      "name": "닭가슴살",
+      "marketId": "pc1",
+      "price": 6500,
+      "originalPrice": 7000,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp47",
+      "name": "닭가슴살",
+      "marketId": "pc2",
+      "price": 6800,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp48",
+      "name": "닭가슴살",
+      "marketId": "pc3",
+      "price": 7200,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp49",
+      "name": "닭가슴살",
+      "marketId": "pc4",
+      "price": 6300,
+      "originalPrice": 6600,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp50",
+      "name": "닭가슴살",
+      "marketId": "pc5",
+      "price": 6900,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp51",
+      "name": "연어",
+      "marketId": "pc1",
+      "price": 12000,
+      "originalPrice": 13000,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp52",
+      "name": "연어",
+      "marketId": "pc2",
+      "price": 12500,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp53",
+      "name": "연어",
+      "marketId": "pc3",
+      "price": 13200,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp54",
+      "name": "연어",
+      "marketId": "pc4",
+      "price": 11800,
+      "originalPrice": 12300,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp55",
+      "name": "연어",
+      "marketId": "pc5",
+      "price": 12800,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp56",
+      "name": "우유",
+      "marketId": "pc1",
+      "price": 2800,
+      "originalPrice": 3000,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp57",
+      "name": "우유",
+      "marketId": "pc2",
+      "price": 2900,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp58",
+      "name": "우유",
+      "marketId": "pc3",
+      "price": 3100,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp59",
+      "name": "우유",
+      "marketId": "pc4",
+      "price": 2700,
+      "originalPrice": 2900,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp60",
+      "name": "우유",
+      "marketId": "pc5",
+      "price": 3000,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp61",
+      "name": "라면",
+      "marketId": "pc1",
+      "price": 3500,
+      "originalPrice": 4000,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp62",
+      "name": "라면",
+      "marketId": "pc2",
+      "price": 3800,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp63",
+      "name": "라면",
+      "marketId": "pc3",
+      "price": 4200,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp64",
+      "name": "라면",
+      "marketId": "pc4",
+      "price": 3400,
+      "originalPrice": 3700,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp65",
+      "name": "라면",
+      "marketId": "pc5",
+      "price": 3900,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp66",
+      "name": "토마토",
+      "marketId": "pc6",
+      "price": 2200,
+      "originalPrice": 2800,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp67",
+      "name": "토마토",
+      "marketId": "pc7",
+      "price": 2700,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp68",
+      "name": "토마토",
+      "marketId": "pc8",
+      "price": 3000,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp69",
+      "name": "오렌지",
+      "marketId": "pc6",
+      "price": 4100,
+      "originalPrice": 4400,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp70",
+      "name": "오렌지",
+      "marketId": "pc7",
+      "price": 4600,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp71",
+      "name": "오렌지",
+      "marketId": "pc8",
+      "price": 5100,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp72",
+      "name": "삼겹살",
+      "marketId": "pc6",
+      "price": 14500,
+      "originalPrice": 15200,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp73",
+      "name": "삼겹살",
+      "marketId": "pc7",
+      "price": 15200,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp74",
+      "name": "삼겹살",
+      "marketId": "pc8",
+      "price": 16000,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp75",
+      "name": "우유",
+      "marketId": "pc6",
+      "price": 2600,
+      "originalPrice": 2800,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp76",
+      "name": "우유",
+      "marketId": "pc7",
+      "price": 2850,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp77",
+      "name": "우유",
+      "marketId": "pc8",
+      "price": 3050,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp78",
+      "name": "배추",
+      "marketId": "pc6",
+      "price": 2300,
+      "originalPrice": 2600,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp79",
+      "name": "배추",
+      "marketId": "pc7",
+      "price": 2600,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp80",
+      "name": "배추",
+      "marketId": "pc8",
+      "price": 3000,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp81",
+      "name": "딸기",
+      "marketId": "pc6",
+      "price": 8000,
+      "originalPrice": 8500,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp82",
+      "name": "딸기",
+      "marketId": "pc7",
+      "price": 8600,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp83",
+      "name": "딸기",
+      "marketId": "pc8",
+      "price": 9100,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp84",
+      "name": "연어",
+      "marketId": "pc6",
+      "price": 11500,
+      "originalPrice": 12000,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp85",
+      "name": "연어",
+      "marketId": "pc7",
+      "price": 12200,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp86",
+      "name": "연어",
+      "marketId": "pc8",
+      "price": 13000,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp87",
+      "name": "라면",
+      "marketId": "pc6",
+      "price": 3300,
+      "originalPrice": 3600,
+      "isOnSale": true
+    },
+    {
+      "id": "pcp88",
+      "name": "라면",
+      "marketId": "pc7",
+      "price": 3750,
+      "originalPrice": null,
+      "isOnSale": false
+    },
+    {
+      "id": "pcp89",
+      "name": "라면",
+      "marketId": "pc8",
+      "price": 4100,
+      "originalPrice": null,
+      "isOnSale": false
+    }
+  ],
+  "categories": [
+    {
+      "id": "beverages",
+      "name": "음료류",
+      "emoji": "🥤",
+      "totalItems": 6
+    },
+    {
+      "id": "meat-seafood",
+      "name": "육류 및 수산물",
+      "emoji": "🥩",
+      "totalItems": 16
+    },
+    {
+      "id": "grains-noodles",
+      "name": "곡류 및 면류",
+      "emoji": "🌾",
+      "totalItems": 7
+    },
+    {
+      "id": "vegetables",
+      "name": "채소류",
+      "emoji": "🥕",
+      "totalItems": 18
+    },
+    {
+      "id": "fruits",
+      "name": "과일류",
+      "emoji": "🍎",
+      "totalItems": 11
+    },
+    {
+      "id": "processed-foods",
+      "name": "가공식품 및 간편식",
+      "emoji": "🍞",
+      "totalItems": 4
+    },
+    {
+      "id": "seasonings",
+      "name": "조미료 및 소스류",
+      "emoji": "🧂",
+      "totalItems": 12
+    },
+    {
+      "id": "household-items",
+      "name": "생활용품",
+      "emoji": "🧴",
+      "totalItems": 6
+    }
+  ],
+  "categoryItems": [
+    {
+      "id": "soda-1-5l",
+      "name": "사이다",
+      "unit": "1.5L",
+      "categoryId": "beverages",
+      "subcategoryId": "beverages-all"
+    },
+    {
+      "id": "cola-1-5l",
+      "name": "콜라",
+      "unit": "1.5L",
+      "categoryId": "beverages",
+      "subcategoryId": "beverages-all"
+    },
+    {
+      "id": "carrot-1kg",
+      "name": "당근",
+      "unit": "1kg",
+      "categoryId": "vegetables",
+      "subcategoryId": "root-vegetables"
+    },
+    {
+      "id": "tomato-1kg",
+      "name": "토마토",
+      "unit": "1kg",
+      "categoryId": "vegetables",
+      "subcategoryId": "other-vegetables"
+    },
+    {
+      "id": "onion-net",
+      "name": "양파",
+      "unit": "1망",
+      "categoryId": "vegetables",
+      "subcategoryId": "root-vegetables"
+    },
+    {
+      "id": "banana-1bunch",
+      "name": "바나나",
+      "unit": "1송이",
+      "categoryId": "fruits",
+      "subcategoryId": "fruits-all"
+    },
+    {
+      "id": "apple-busa-1",
+      "name": "사과(부사)",
+      "unit": "1개",
+      "categoryId": "fruits",
+      "subcategoryId": "fruits-all"
+    },
+    {
+      "id": "orange-1kg",
+      "name": "오렌지",
+      "unit": "1kg",
+      "categoryId": "fruits",
+      "subcategoryId": "fruits-all"
+    },
+    {
+      "id": "strawberry-500g",
+      "name": "딸기",
+      "unit": "500g",
+      "categoryId": "fruits",
+      "subcategoryId": "fruits-all"
+    },
+    {
+      "id": "grape-1bunch",
+      "name": "포도",
+      "unit": "1송이",
+      "categoryId": "fruits",
+      "subcategoryId": "fruits-all"
+    },
+    {
+      "id": "watermelon-1ea",
+      "name": "수박",
+      "unit": "1개",
+      "categoryId": "fruits",
+      "subcategoryId": "fruits-all"
+    },
+    {
+      "id": "cabbage-1ea",
+      "name": "배추",
+      "unit": "1포기",
+      "categoryId": "vegetables",
+      "subcategoryId": "leafy-vegetables"
+    },
+    {
+      "id": "spinach-300g",
+      "name": "시금치",
+      "unit": "300g",
+      "categoryId": "vegetables",
+      "subcategoryId": "leafy-vegetables"
+    },
+    {
+      "id": "lettuce-1ea",
+      "name": "상추",
+      "unit": "1포기",
+      "categoryId": "vegetables",
+      "subcategoryId": "leafy-vegetables"
+    },
+    {
+      "id": "cucumber-3ea",
+      "name": "오이",
+      "unit": "3개",
+      "categoryId": "vegetables",
+      "subcategoryId": "other-vegetables"
+    },
+    {
+      "id": "bell-pepper-3ea",
+      "name": "파프리카",
+      "unit": "3개",
+      "categoryId": "vegetables",
+      "subcategoryId": "other-vegetables"
+    },
+    {
+      "id": "beef-sirloin-500g",
+      "name": "한우등심",
+      "unit": "500g",
+      "categoryId": "meat-seafood",
+      "subcategoryId": "meat"
+    },
+    {
+      "id": "pork-belly-500g",
+      "name": "삼겹살",
+      "unit": "500g",
+      "categoryId": "meat-seafood",
+      "subcategoryId": "meat"
+    },
+    {
+      "id": "chicken-breast-500g",
+      "name": "닭가슴살",
+      "unit": "500g",
+      "categoryId": "meat-seafood",
+      "subcategoryId": "meat"
+    },
+    {
+      "id": "salmon-300g",
+      "name": "연어",
+      "unit": "300g",
+      "categoryId": "meat-seafood",
+      "subcategoryId": "seafood"
+    },
+    {
+      "id": "mackerel-2ea",
+      "name": "고등어",
+      "unit": "2마리",
+      "categoryId": "meat-seafood",
+      "subcategoryId": "seafood"
+    },
+    {
+      "id": "rice-10kg",
+      "name": "쌀",
+      "unit": "10kg",
+      "categoryId": "grains-noodles",
+      "subcategoryId": "grains"
+    },
+    {
+      "id": "ramen-4ea",
+      "name": "라면",
+      "unit": "4개입",
+      "categoryId": "grains-noodles",
+      "subcategoryId": "noodles"
+    },
+    {
+      "id": "milk-1l",
+      "name": "우유",
+      "unit": "1L",
+      "categoryId": "dairy",
+      "subcategoryId": "dairy-all"
+    },
+    {
+      "id": "yogurt-4pack",
+      "name": "요거트",
+      "unit": "4개입",
+      "categoryId": "dairy",
+      "subcategoryId": "dairy-all"
+    },
+    {
+      "id": "orange-juice-1l",
+      "name": "오렌지주스",
+      "unit": "1L",
+      "categoryId": "beverages",
+      "subcategoryId": "beverages-all"
+    }
+  ],
   "recommendations": [
     {
       "id": "1",

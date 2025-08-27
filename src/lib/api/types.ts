@@ -73,3 +73,65 @@ export interface AddToFavoritesRequest {
   productId: number;
   userId: number;
 }
+
+// 가격 비교 관련 타입
+export interface PriceCompareMarket {
+  id: string;
+  name: string;
+  distance: string;
+  walkTime: string;
+  rating: number;
+  address: string;
+  phone: string;
+  operatingHours: string;
+  lastUpdated: string;
+}
+
+export interface PriceCompareProduct {
+  id: string;
+  name: string;
+  marketId: string;
+  price: number;
+  originalPrice?: number;
+  isOnSale: boolean;
+}
+
+export interface MarketInfo {
+  id: string;
+  name: string;
+  distance: string;
+  walkTime: string;
+  rating: number;
+  price: number;
+  originalPrice?: number;
+  isOnSale: boolean;
+  address: string;
+  phone: string;
+  operatingHours: string;
+  lastUpdated: string;
+}
+
+// 카테고리 관련 타입
+export interface Category {
+  id: string;
+  name: string;
+  emoji: string;
+  totalItems: number;
+}
+
+export interface CategoryItem {
+  id: string;
+  name: string;
+  unit: string;
+  categoryId: string;
+  subcategoryId: string;
+}
+
+// 장바구니 추가 요청 (마켓 정보 포함)
+export interface AddToCartWithMarketRequest {
+  productName: string;
+  marketName: string;
+  price: number;
+  userId: number;
+  quantity?: number;
+}
