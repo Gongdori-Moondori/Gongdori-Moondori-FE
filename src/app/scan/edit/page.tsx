@@ -1,29 +1,45 @@
 'use client';
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import {
-  IoCheckmarkCircle,
-  IoTrashOutline,
-  IoAddOutline,
-} from 'react-icons/io5';
+import { IoAddOutline } from 'react-icons/io5';
 import PageHeader from '@/components/layout/PageHeader';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import EditableShoppingItem from '@/components/scan/EditableShoppingItem';
 
 function EditShoppingListContent() {
   const [items, setItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState<string>('');
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingText, setEditingText] = useState<string>('');
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
-    const itemsParam = searchParams.get('items');
-    if (itemsParam) {
+    // localStorage에서 장보기 리스트 데이터 읽기
+    const storedShoppingList = localStorage.getItem('shoppingList');
+    if (storedShoppingList) {
       try {
-        const parsedItems = JSON.parse(decodeURIComponent(itemsParam));
-        setItems(parsedItems);
+        const parsedData = JSON.parse(storedShoppingList);
+        // ShoppingItem[] 배열에서 name만 추출
+        const itemNames = parsedData.map((item: { name?: string } | string) =>
+          typeof item === 'string' ? item : item.name || ''
+        );
+        setItems(itemNames);
       } catch (error) {
-        console.error('아이템 파싱 오류:', error);
+        console.error('localStorage 데이터 파싱 오류:', error);
         setItems([]);
+      }
+    } else {
+      // localStorage에 데이터가 없으면 URL 파라미터도 확인 (하위 호환성)
+      const itemsParam = searchParams.get('items');
+      if (itemsParam) {
+        try {
+          const parsedItems = JSON.parse(decodeURIComponent(itemsParam));
+          setItems(parsedItems);
+        } catch (error) {
+          console.error('아이템 파싱 오류:', error);
+          setItems([]);
+        }
       }
     }
   }, [searchParams]);
@@ -32,14 +48,76 @@ function EditShoppingListContent() {
     if (newItem.trim() && !items.includes(newItem.trim())) {
       setItems([...items, newItem.trim()]);
       setNewItem('');
+      // 새 항목 추가 시 편집 모드 해제
+      if (editingIndex !== null) {
+        setEditingIndex(null);
+        setEditingText('');
+      }
     }
   };
 
   const removeItem = (index: number) => {
     setItems(items.filter((_, i) => i !== index));
+    // 편집 중인 항목이 삭제되면 편집 모드 해제
+    if (editingIndex === index) {
+      setEditingIndex(null);
+      setEditingText('');
+    }
+  };
+
+  const startEditing = (index: number) => {
+    setEditingIndex(index);
+    setEditingText(items[index]);
+  };
+
+  const cancelEditing = () => {
+    setEditingIndex(null);
+    setEditingText('');
+  };
+
+  const saveEdit = () => {
+    if (editingIndex !== null && editingText.trim()) {
+      const trimmedText = editingText.trim();
+      // 중복 체크 (현재 편집 중인 항목 제외)
+      const isDuplicate = items.some(
+        (item, index) => index !== editingIndex && item === trimmedText
+      );
+
+      if (isDuplicate) {
+        alert('이미 존재하는 항목입니다.');
+        return;
+      }
+
+      const updatedItems = [...items];
+      updatedItems[editingIndex] = trimmedText;
+      setItems(updatedItems);
+      setEditingIndex(null);
+      setEditingText('');
+    }
+  };
+
+  const handleEditKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      saveEdit();
+    } else if (e.key === 'Escape') {
+      cancelEditing();
+    }
   };
 
   const saveList = () => {
+    // 편집 중인 항목이 있으면 확인
+    if (editingIndex !== null) {
+      const confirm = window.confirm(
+        '편집 중인 항목이 있습니다. 저장하지 않고 계속하시겠습니까?'
+      );
+      if (!confirm) {
+        return;
+      }
+      // 편집 모드 해제
+      setEditingIndex(null);
+      setEditingText('');
+    }
+
     if (items.length === 0) {
       alert('최소 1개 이상의 항목이 필요합니다.');
       return;
@@ -47,6 +125,9 @@ function EditShoppingListContent() {
 
     // 로컬 스토리지에 저장
     localStorage.setItem('extractedShoppingList', JSON.stringify(items));
+
+    // 원본 OCR 데이터 정리 (더 이상 필요하지 않음)
+    localStorage.removeItem('shoppingList');
 
     // 홈으로 이동
     router.push('/');
@@ -58,6 +139,11 @@ function EditShoppingListContent() {
     }
   };
 
+  const handleItemClick = (item: string) => {
+    // 가격 비교 페이지로 이동
+    router.push(`/scan/price-compare?item=${encodeURIComponent(item)}`);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <PageHeader title="장보기 리스트 편집" className="bg-white" />
@@ -66,7 +152,17 @@ function EditShoppingListContent() {
         <div className="space-y-6">
           {/* 현재 리스트 */}
           <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h3 className="text-lg font-bold mb-4">현재 리스트</h3>
+            <div className="flex justify-items-start flex-col justify-start mb-4">
+              <h3 className="text-lg font-bold">현재 리스트</h3>
+              <div className="space-y-1">
+                <span className="text-sm text-gray-500 block">
+                  • 항목 클릭: 주변 마트 가격 비교
+                </span>
+                <span className="text-sm text-gray-500 block">
+                  • 연필 아이콘: 항목 수정
+                </span>
+              </div>
+            </div>
 
             {items.length === 0 ? (
               <p className="text-gray-500 text-center py-8">
@@ -75,24 +171,21 @@ function EditShoppingListContent() {
             ) : (
               <div className="space-y-3">
                 {items.map((item, index) => (
-                  <div
+                  <EditableShoppingItem
                     key={index}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <IoCheckmarkCircle
-                        className="text-primary-500"
-                        size={20}
-                      />
-                      <span className="text-gray-800">{item}</span>
-                    </div>
-                    <button
-                      onClick={() => removeItem(index)}
-                      className="text-red-500 hover:text-red-700 p-1"
-                    >
-                      <IoTrashOutline size={18} />
-                    </button>
-                  </div>
+                    item={item}
+                    index={index}
+                    isEditing={editingIndex === index}
+                    editingText={editingText}
+                    onStartEdit={startEditing}
+                    onSaveEdit={saveEdit}
+                    onCancelEdit={cancelEditing}
+                    onRemove={removeItem}
+                    onEditTextChange={setEditingText}
+                    onEditKeyPress={handleEditKeyPress}
+                    onItemClick={handleItemClick}
+                    allowTextClick={false}
+                  />
                 ))}
               </div>
             )}
