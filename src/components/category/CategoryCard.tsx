@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Category } from '@/lib/data/categories';
+import { Category } from '@/lib/api/types';
 
 interface CategoryCardProps {
   category: Category;
@@ -22,9 +22,9 @@ export default function CategoryCard({ category, onClick }: CategoryCardProps) {
       </div>
       <h3 className="font-semibold text-gray-900 text-lg">{category.name}</h3>
       <p className="text-sm text-gray-600 mt-1">
-        {category.subcategories.length > 1
-          ? `${category.subcategories.length}개 세부 카테고리`
-          : '전체 품목 보기'}
+        {category.totalItems > 0
+          ? `${category.totalItems}개 품목`
+          : '품목 보기'}
       </p>
     </div>
   );

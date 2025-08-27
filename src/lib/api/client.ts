@@ -8,6 +8,12 @@ import {
   Favorite,
   AddToCartRequest,
   AddToFavoritesRequest,
+  PriceCompareMarket,
+  PriceCompareProduct,
+  MarketInfo,
+  Category,
+  CategoryItem,
+  AddToCartWithMarketRequest,
 } from './types';
 
 const API_BASE_URL = 'http://localhost:3001';
@@ -191,4 +197,85 @@ export const favoriteAPI = {
     );
     return favorites.length > 0;
   },
+};
+
+// 가격 비교 관련 API
+export const priceCompareAPI = {
+  getMarkets: (): Promise<PriceCompareMarket[]> =>
+    apiRequest<PriceCompareMarket[]>('/priceCompareMarkets'),
+
+  getProductPrices: (productName: string): Promise<MarketInfo[]> =>
+    apiRequest<PriceCompareProduct[]>(
+      `/priceCompareProducts?name=${encodeURIComponent(productName)}`
+    ).then(async (products) => {
+      const markets = await apiRequest<PriceCompareMarket[]>(
+        '/priceCompareMarkets'
+      );
+
+      return products
+        .map((product) => {
+          const market = markets.find((m) => m.id === product.marketId);
+          if (!market) return null;
+
+          return {
+            id: market.id,
+            name: market.name,
+            distance: market.distance,
+            walkTime: market.walkTime,
+            rating: market.rating,
+            price: product.price,
+            originalPrice: product.originalPrice,
+            isOnSale: product.isOnSale,
+            address: market.address,
+            phone: market.phone,
+            operatingHours: market.operatingHours,
+            lastUpdated: market.lastUpdated,
+          } as MarketInfo;
+        })
+        .filter((item): item is MarketInfo => item !== null)
+        .sort((a, b) => a.price - b.price);
+    }),
+
+  addToCartWithMarket: async (
+    data: AddToCartWithMarketRequest
+  ): Promise<void> => {
+    // 실제로는 마켓 정보와 함께 장바구니에 추가
+    // 현재는 콘솔 로그로 처리
+    console.log('장바구니에 추가:', {
+      productName: data.productName,
+      marketName: data.marketName,
+      price: data.price,
+      quantity: data.quantity || 1,
+      userId: data.userId,
+      addedAt: new Date().toISOString(),
+    });
+
+    // TODO: 실제 API 구현
+    // return apiRequest('/cart-with-market', {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     ...data,
+    //     quantity: data.quantity || 1,
+    //     addedAt: new Date().toISOString(),
+    //   }),
+    // });
+  },
+};
+
+// 카테고리 관련 API
+export const categoryAPI = {
+  getCategories: (): Promise<Category[]> =>
+    apiRequest<Category[]>('/categories'),
+
+  getCategoryItems: (categoryId?: string): Promise<CategoryItem[]> => {
+    const url = categoryId
+      ? `/categoryItems?categoryId=${categoryId}`
+      : '/categoryItems';
+    return apiRequest<CategoryItem[]>(url);
+  },
+
+  searchCategoryItems: (searchTerm: string): Promise<CategoryItem[]> =>
+    apiRequest<CategoryItem[]>(
+      `/categoryItems?name_like=${encodeURIComponent(searchTerm)}`
+    ),
 };
