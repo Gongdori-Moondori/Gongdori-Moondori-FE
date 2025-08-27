@@ -53,7 +53,7 @@ export default function CategoryPage() {
       <PageHeader
         title="카테고리"
         rightElement={
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 whitespace-nowrap">
             총 {categories.reduce((sum, cat) => sum + cat.totalItems, 0)}개 품목
           </div>
         }

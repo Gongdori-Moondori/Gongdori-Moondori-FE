@@ -25,7 +25,7 @@ export default function PageHeader({
         <div className="w-10" />
       )}
       <h1 className="text-xl font-bold">{title}</h1>
-      <div className="w-10 flex justify-center">
+      <div className="w-auto flex justify-center">
         {rightElement || <div className="w-6 h-6" />}
       </div>
     </header>
