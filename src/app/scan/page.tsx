@@ -39,8 +39,8 @@ export default function Scan() {
 
   // 이미지 전처리 함수
   const preprocessImage = async (imageData: string): Promise<string> => {
-    return new Promise((resolve) => {
-      const img = new HTMLImageElement();
+    return new Promise((resolve, reject) => {
+      const img = document.createElement('img') as HTMLImageElement;
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -89,6 +89,14 @@ export default function Scan() {
           resolve(imageData);
         }
       };
+
+      img.onerror = () => {
+        console.error('이미지 로딩 오류');
+        reject(new Error('이미지 로딩에 실패했습니다.'));
+      };
+
+      // CORS 문제 방지
+      img.crossOrigin = 'anonymous';
       img.src = imageData;
     });
   };
@@ -135,7 +143,13 @@ export default function Scan() {
       }
 
       // 이미지 전처리
-      const processedImage = await preprocessImage(imageData);
+      let processedImage;
+      try {
+        processedImage = await preprocessImage(imageData);
+      } catch (preprocessError) {
+        console.error('이미지 전처리 오류:', preprocessError);
+        processedImage = imageData; // 전처리 실패 시 원본 이미지 사용
+      }
 
       // Tesseract.js를 사용한 OCR 처리
       const result = await Tesseract.recognize(processedImage, 'kor+eng', {
