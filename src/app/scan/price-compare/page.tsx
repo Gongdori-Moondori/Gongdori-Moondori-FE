@@ -15,6 +15,7 @@ import PageHeader from '@/components/layout/PageHeader';
 import BackButton from '@/components/layout/BackButton';
 import { priceCompareAPI } from '@/lib/api/client';
 import { MarketInfo } from '@/lib/api/types';
+import Image from 'next/image';
 
 export default function PriceComparePage() {
   const [itemName, setItemName] = useState<string>('');
@@ -116,8 +117,15 @@ export default function PriceComparePage() {
             className="bg-white rounded-2xl p-6 shadow-sm"
           >
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
-                <span className="text-primary-600 font-bold text-lg">🛒</span>
+              <div className="w-12 h-12 bg-secondary-100 rounded-full flex items-center justify-center">
+                <span className="text-primary-600 font-bold text-lg">
+                  <Image
+                    src="/assets/cart.svg"
+                    alt="cart"
+                    width={24}
+                    height={24}
+                  />
+                </span>
               </div>
               <div>
                 <h2 className="text-xl font-bold text-gray-900">{itemName}</h2>
@@ -154,7 +162,7 @@ export default function PriceComparePage() {
                       )}
                     </div>
 
-                    <div className="flex items-center space-x-4 mb-2">
+                    <div className="flex items-start flex-col space-x-4 mb-2">
                       <div className="flex items-center space-x-1">
                         <IoLocationOutline
                           className="text-gray-400"
@@ -170,12 +178,6 @@ export default function PriceComparePage() {
                           도보 {market.walkTime}
                         </span>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        {renderStars(market.rating)}
-                        <span className="text-sm text-gray-600 ml-1">
-                          {market.rating}
-                        </span>
-                      </div>
                     </div>
 
                     <div className="flex items-center space-x-2 mb-2">
@@ -189,7 +191,7 @@ export default function PriceComparePage() {
                       )}
                     </div>
 
-                    <div className="flex items-center space-x-4 text-xs text-gray-500">
+                    <div className="flex items-start flex-col space-x-4 text-xs text-gray-500">
                       <div className="flex items-center space-x-1">
                         <IoTimeOutline size={12} />
                         <span>{market.operatingHours}</span>
