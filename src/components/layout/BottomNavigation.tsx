@@ -2,7 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { RiHomeSmile2Line, RiHomeSmile2Fill } from 'react-icons/ri';
+import {
+  RiHomeSmile2Line,
+  RiHomeSmile2Fill,
+  RiMapPin2Line,
+  RiMapPin2Fill,
+} from 'react-icons/ri';
 import { BiFullscreen } from 'react-icons/bi';
 import { RiDashboardLine, RiDashboardFill } from 'react-icons/ri';
 import { RiUser3Line, RiUser3Fill } from 'react-icons/ri';
@@ -25,6 +30,13 @@ const navItems: NavItem[] = [
     href: '/scan',
     label: '스캔하기',
     icon: BiFullscreen,
+  },
+  {
+    href: '/map',
+    label: '지도',
+    icon: RiMapPin2Line,
+    // activeIcon: RiMapPin2Fill,
+    // isSheet: true, // 바텀시트로 열기
   },
   {
     href: '/category',
