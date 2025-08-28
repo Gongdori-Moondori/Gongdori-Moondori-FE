@@ -289,7 +289,7 @@ export default function FavoritesPage() {
                             : 'bg-red-100 text-red-800'
                         }`}
                       >
-                        {item.inStock ? '재고 있음' : '재고 없음'}
+                        {/* {item.inStock ? '재고 있음' : '재고 없음'} */}
                       </span>
                       <div className="text-xs text-gray-500">
                         대형마트 대비{' '}
