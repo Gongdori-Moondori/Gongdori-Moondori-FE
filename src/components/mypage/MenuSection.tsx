@@ -17,11 +17,11 @@ const defaultMenuItems: MenuItem[] = [
     title: '즐겨찾기',
     icon: 'heart',
   },
-  {
-    id: 'frequently-purchased',
-    title: '자주 구매한 상품',
-    icon: 'chart',
-  },
+  // {
+  //   id: 'frequently-purchased',
+  //   title: '자주 구매한 상품',
+  //   icon: 'chart',
+  // },
 ];
 
 function getIconComponent(iconType: MenuItem['icon']) {
@@ -30,8 +30,8 @@ function getIconComponent(iconType: MenuItem['icon']) {
       return <ShoppingListIcon />;
     case 'heart':
       return <HeartIcon />;
-    case 'chart':
-      return <ChartIcon />;
+    // case 'chart':
+    //   return <ChartIcon />;
     default:
       return <ShoppingListIcon />;
   }

@@ -37,6 +37,7 @@ interface ShoppingListProduct extends Product {
   quantity: number;
   addedAt: string;
   shoppingListId: string;
+  completed: boolean; // 체크박스 상태를 나타내는 필드
 }
 
 export default function ShoppingListPage() {
@@ -46,6 +47,7 @@ export default function ShoppingListPage() {
   const [markets, setMarkets] = useState<Market[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false); // 확인 다이얼로그 상태
 
   useEffect(() => {
     fetchShoppingList();
@@ -73,6 +75,7 @@ export default function ShoppingListPage() {
               quantity: item.quantity,
               addedAt: item.addedAt,
               shoppingListId: item.id,
+              completed: false, // 초기값은 false (미완료 상태)
             };
           }
           return null;
@@ -138,6 +141,44 @@ export default function ShoppingListPage() {
     } catch (err) {
       setError('수량 변경에 실패했습니다.');
     }
+  };
+
+  // 체크박스 토글 함수
+  const toggleCompleted = (shoppingListId: string) => {
+    setShoppingListItems((prev) =>
+      prev.map((item) =>
+        item.shoppingListId === shoppingListId
+          ? { ...item, completed: !item.completed }
+          : item
+      )
+    );
+  };
+
+  // 장보기 완료 버튼 클릭 시 처리
+  const handleCompleteShoppingClick = () => {
+    const uncompletedItems = shoppingListItems.filter(
+      (item) => !item.completed
+    );
+
+    if (uncompletedItems.length > 0) {
+      setShowConfirmDialog(true);
+    } else {
+      // 모든 상품이 체크되어 있으면 바로 완료
+      completeShoppingList();
+    }
+  };
+
+  // 장바구니 초기화 (장보기 완료)
+  const completeShoppingList = () => {
+    setShoppingListItems([]);
+    setShowConfirmDialog(false);
+    // 성공 메시지나 다른 화면으로 이동할 수도 있음
+    alert('장보기가 완료되었습니다!');
+  };
+
+  // 다이얼로그 취소
+  const handleDialogCancel = () => {
+    setShowConfirmDialog(false);
   };
 
   if (loading) {
@@ -208,6 +249,13 @@ export default function ShoppingListPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
+                  <span className="text-gray-600">완료된 상품</span>
+                  <span className="font-semibold text-green-600">
+                    {shoppingListItems.filter((item) => item.completed).length}{' '}
+                    / {shoppingListItems.length}개
+                  </span>
+                </div>
+                <div className="flex justify-between">
                   <span className="text-gray-600">총 가격</span>
                   <span className="font-semibold">
                     {getTotalPrice().toLocaleString()}원
@@ -233,17 +281,48 @@ export default function ShoppingListPage() {
               {shoppingListItems.map((item) => (
                 <div
                   key={item.shoppingListId}
-                  className="bg-white rounded-xl p-4 shadow-sm"
+                  className={`bg-white rounded-xl p-4 shadow-sm transition-all ${
+                    item.completed ? 'opacity-60' : ''
+                  }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-4">
+                      {/* 체크박스 */}
+                      <button
+                        onClick={() => toggleCompleted(item.shoppingListId)}
+                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                          item.completed
+                            ? 'bg-green-500 border-green-500 text-white'
+                            : 'border-gray-300 hover:border-green-400'
+                        }`}
+                      >
+                        {item.completed && (
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        )}
+                      </button>
                       <img
                         src={item.emoji}
                         alt={item.name}
                         className="w-12 h-12"
                       />
                       <div>
-                        <h3 className="font-semibold">{item.name}</h3>
+                        <h3
+                          className={`font-semibold ${item.completed ? 'line-through text-gray-500' : ''}`}
+                        >
+                          {item.name}
+                        </h3>
                         <p className="text-sm text-gray-600">{item.category}</p>
                         <p className="text-xs text-gray-500">
                           {getMarketName(item.marketId)}
@@ -251,7 +330,9 @@ export default function ShoppingListPage() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="font-semibold">
+                      <div
+                        className={`font-semibold ${item.completed ? 'line-through text-gray-500' : ''}`}
+                      >
                         {(item.marketPrice * item.quantity).toLocaleString()}원
                       </div>
                       <div className="text-sm text-gray-500">
@@ -311,14 +392,52 @@ export default function ShoppingListPage() {
           </div>
         )}
       </main>
-      {/* 주문하기 버튼 */}
+
+      {/* 장보기 완료 버튼 */}
       {shoppingListItems.length > 0 && (
         <div className="fixed bottom-20 left-0 right-0 bg-gray-100 px-4 py-3 max-w-md mx-auto">
-          <button className="w-full bg-primary-600 text-white py-4 rounded-xl font-semibold text-sm sm:text-base">
-            주문하기 ({getTotalPrice().toLocaleString()}원)
+          <button
+            onClick={handleCompleteShoppingClick}
+            className="w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-sm sm:text-base hover:bg-green-700 transition-colors"
+          >
+            장보기 완료 (
+            {shoppingListItems.filter((item) => item.completed).length} /{' '}
+            {shoppingListItems.length})
           </button>
         </div>
       )}
+
+      {/* 확인 다이얼로그 */}
+      {showConfirmDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full">
+            <h3 className="text-lg font-semibold mb-2 text-center">
+              아직 구매하지 않은 상품이 있어요
+            </h3>
+            <p className="text-gray-600 text-center mb-6">
+              장보기를 완료할까요?
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={handleDialogCancel}
+                className="flex-1 py-3 px-4 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+              >
+                취소
+              </button>
+              <button
+                onClick={completeShoppingList}
+                className="flex-1 py-3 px-4 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors"
+              >
+                확인
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 text-center mt-3">
+              확인하면 장바구니에서 삭제됩니다.
+            </p>
+          </div>
+        </div>
+      )}
+
       <BottomNavigation />
     </div>
   );
