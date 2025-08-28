@@ -151,15 +151,15 @@ export default function PriceComparePage() {
                     <div className="flex items-center space-x-2 mb-2">
                       <h3 className="font-bold text-gray-900">{market.name}</h3>
                       {index === 0 && (
-                        <span className="bg-primary-500 text-white text-xs px-2 py-1 rounded-full">
+                        <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                           최저가
                         </span>
                       )}
-                      {market.isOnSale && (
+                      {/* {market.isOnSale && (
                         <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                           세일
                         </span>
-                      )}
+                      )} */}
                     </div>
 
                     <div className="flex items-start flex-col space-x-4 mb-2">
@@ -191,13 +191,13 @@ export default function PriceComparePage() {
                       )}
                     </div>
 
-                    <div className="flex items-start flex-col space-x-4 text-xs text-gray-500">
+                    {/* <div className="flex items-start flex-col space-x-4 text-xs text-gray-500">
                       <div className="flex items-center space-x-1">
                         <IoTimeOutline size={12} />
                         <span>{market.operatingHours}</span>
                       </div>
                       <span>업데이트: {market.lastUpdated}</span>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="flex flex-col space-y-2 ml-4">
