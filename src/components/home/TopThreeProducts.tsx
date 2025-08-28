@@ -46,8 +46,10 @@ export default function TopThreeProducts({
   };
 
   const handleProductClick = (productId: number) => {
-    console.log(`Product ${productId} clicked`);
-    // 상품 상세 페이지로 이동하는 로직 구현
+    const product = products.find((p) => p.id === productId);
+    if (product) {
+      alert(`${product.name}이(가) 장보기 리스트에 추가되었습니다!`);
+    }
   };
 
   if (error) {

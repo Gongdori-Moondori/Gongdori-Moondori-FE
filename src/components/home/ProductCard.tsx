@@ -57,12 +57,27 @@ export default function ProductCard({
     }
   };
 
+  const handleCardClick = async () => {
+    if (onAddToCart && !isCartLoading && !isInCart) {
+      setIsCartLoading(true);
+      try {
+        await onAddToCart(id);
+        if (typeof window !== 'undefined') {
+          window.alert('장바구니에 추가되었습니다');
+        }
+      } finally {
+        setTimeout(() => setIsCartLoading(false), 500);
+      }
+    }
+  };
+
   return (
     <div
       className={`
       ${isInCart ? 'bg-white border-gray-200' : 'bg-gray-50 border-gray-100'} 
       rounded-xl p-4 border touch-feedback transition-colors duration-200
     `}
+      onClick={handleCardClick}
     >
       <div className="flex items-center gap-2 mb-2">
         {emoji.startsWith('/') ? (

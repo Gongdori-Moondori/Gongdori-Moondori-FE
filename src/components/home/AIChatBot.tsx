@@ -92,6 +92,12 @@ export default function AIChatBot({ userName = '사용자' }: AIChatBotProps) {
 
   // 현재 표시할 추천 아이템
   const currentRecommendation = recommendations?.[currentIndex];
+  const handleAddToShoppingList = () => {
+    if (isDragging || !currentRecommendation) return;
+    alert(
+      `${currentRecommendation.name}이(가) 장보기 리스트에 추가되었습니다!`
+    );
+  };
 
   return (
     <div className="mb-6">
@@ -133,7 +139,11 @@ export default function AIChatBot({ userName = '사용자' }: AIChatBotProps) {
               ) : (
                 <span className="text-lg">{currentRecommendation.emoji}</span>
               )}
-              <div className="flex flex-col">
+              <div
+                className="flex flex-col"
+                onClick={handleAddToShoppingList}
+                role="button"
+              >
                 <span className="font-medium">
                   지금 이 시기에는
                   <span className="text-primary-600 font-bold">
