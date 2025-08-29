@@ -9,6 +9,7 @@ import {
   ProductActionsProps,
 } from '@/components/product';
 import { ToastContainer, useToast } from '@/components/ui/Toast';
+
 import type { MarketVsMartComparison } from '@/lib/api/types';
 
 interface AllProductsSectionProps extends ProductActionsProps {
@@ -68,9 +69,16 @@ export default function AllProductsSection({
 
   // 카트 담기 핸들러 - hook의 함수와 props 함수를 함께 호출
   const handleAddToCart = async (productId: string) => {
-    await addToCart(productId);
-    if (onAddToCart) {
-      onAddToCart(productId);
+    try {
+      // 먼저 hook의 함수 호출 (로컬 상태 업데이트)
+      await addToCart(productId);
+
+      // props 함수가 있으면 호출
+      if (onAddToCart) {
+        onAddToCart(productId);
+      }
+    } catch (error) {
+      console.error('장바구니 추가 중 오류:', error);
     }
   };
 

@@ -11,9 +11,6 @@ export default function AIChatBot({
   userName = '사용자',
   seasonalRecommendations = [],
 }: AIChatBotProps) {
-  const [recommendations, setRecommendations] = useState<
-    SeasonalRecommendationItem[]
-  >([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // 드래그 관련 상태
@@ -22,13 +19,9 @@ export default function AIChatBot({
   const [dragStartY, setDragStartY] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // 시장이 변경되면 currentIndex를 0으로 리셋
   useEffect(() => {
-    // props로 받은 데이터가 있으면 사용, 없으면 빈 배열
-    if (seasonalRecommendations && seasonalRecommendations.length > 0) {
-      setRecommendations(seasonalRecommendations);
-    } else {
-      setRecommendations([]);
-    }
+    setCurrentIndex(0);
   }, [seasonalRecommendations]);
 
   // 드래그 시작
@@ -40,7 +33,7 @@ export default function AIChatBot({
 
   // 드래그 종료
   const handleDragEnd = (clientX: number, clientY: number) => {
-    if (!isDragging || recommendations.length === 0) return;
+    if (!isDragging || seasonalRecommendations.length === 0) return;
 
     const deltaX = clientX - dragStartX;
     const deltaY = clientY - dragStartY;
@@ -53,11 +46,11 @@ export default function AIChatBot({
     if (Math.abs(deltaX) > 50) {
       if (deltaX > 0) {
         setCurrentIndex((prevIndex) =>
-          prevIndex === 0 ? recommendations.length - 1 : prevIndex - 1
+          prevIndex === 0 ? seasonalRecommendations.length - 1 : prevIndex - 1
         );
       } else {
         setCurrentIndex(
-          (prevIndex) => (prevIndex + 1) % recommendations.length
+          (prevIndex) => (prevIndex + 1) % seasonalRecommendations.length
         );
       }
     }
@@ -92,16 +85,18 @@ export default function AIChatBot({
 
   // 3초마다 자동 순환 (드래그 중이 아닐 때만)
   useEffect(() => {
-    if (recommendations.length <= 1 || isDragging) return;
+    if (seasonalRecommendations.length <= 1 || isDragging) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % recommendations.length);
+      setCurrentIndex(
+        (prevIndex) => (prevIndex + 1) % seasonalRecommendations.length
+      );
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [recommendations, isDragging]);
+  }, [seasonalRecommendations, isDragging]);
 
-  const currentRecommendation = recommendations[currentIndex];
+  const currentRecommendation = seasonalRecommendations[currentIndex];
   const handleAddToShoppingList = () => {
     if (isDragging || !currentRecommendation) return;
     alert(
@@ -123,7 +118,7 @@ export default function AIChatBot({
         </span>
       </div>
 
-      {currentRecommendation && recommendations.length > 0 && (
+      {currentRecommendation && seasonalRecommendations.length > 0 && (
         <div
           ref={cardRef}
           className="bg-white rounded-2xl p-4 border border-gray-200 mb-4 cursor-grab select-none"
@@ -152,9 +147,9 @@ export default function AIChatBot({
             </div>
           </div>
 
-          {recommendations.length > 1 && (
+          {seasonalRecommendations.length > 1 && (
             <div className="flex justify-center gap-2 mt-3">
-              {recommendations.map((_, index) => (
+              {seasonalRecommendations.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToIndex(index)}

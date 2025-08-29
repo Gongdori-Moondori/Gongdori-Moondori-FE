@@ -1,46 +1,12 @@
 import { useState, useEffect } from 'react';
 import { ProductData } from '@/components/product/types';
 import { useToast } from '@/components/ui/Toast';
-import { PriceDataAPI } from '@/lib/api/diplomats';
-
-// DB 데이터 타입 정의 (실제 DB 구조에 맞춤)
-interface CartItem {
-  id: string;
-  productId?: string | number;
-  emoji: string;
-  name: string;
-  category: string;
-  marketPrice: number;
-  supermarketPrice: number;
-  savings: number;
-  marketId: number;
-  inStock: boolean;
-}
-
-interface FavoriteItem {
-  id: string;
-  productId: string | number;
-  userId: string | number;
-  addedAt?: string;
-}
-
-interface Product {
-  id: string | number;
-  emoji: string;
-  name: string;
-  category: string;
-  marketPrice: number;
-  supermarketPrice: number;
-  savings: number;
-  marketId: number;
-  inStock: boolean;
-}
-
-interface DBData {
-  cart: CartItem[];
-  favorites: FavoriteItem[];
-  products: Product[];
-}
+import {
+  PriceDataAPI,
+  ShoppingAPI,
+  isAuthenticated,
+  logAuthStatus,
+} from '@/lib/api/diplomats';
 
 export interface UseProductsReturn {
   products: ProductData[];
@@ -104,6 +70,12 @@ export function useProducts(marketId?: number): UseProductsReturn {
   // 카트 담기 기능
   const addToCart = async (productId: string): Promise<void> => {
     try {
+      // 인증 상태 확인
+      if (!isAuthenticated()) {
+        showError('로그인이 필요합니다. 다시 로그인해주세요.');
+        return;
+      }
+
       if (cartItems.has(productId)) {
         showInfo('이미 카트에 담긴 상품입니다.');
         return;
@@ -112,16 +84,43 @@ export function useProducts(marketId?: number): UseProductsReturn {
       const productToAdd = products.find((p) => p.id.toString() === productId);
 
       if (productToAdd) {
-        setCartItems((prev) => new Set([...prev, productId]));
-        setProducts((prev) =>
-          prev.map((product) =>
-            product.id.toString() === productId
-              ? { ...product, isInCart: true }
-              : product
-          )
-        );
+        // 실제 API 호출
+        try {
+          // 디버깅: 현재 인증 상태 확인
+          logAuthStatus();
 
-        showSuccess(`${productToAdd.name}이(가) 카트에 추가되었습니다!`);
+          await ShoppingAPI.addItem({
+            itemName: productToAdd.name,
+            quantity: 1,
+            category: productToAdd.category,
+            memo: `${productToAdd.name} 장바구니 추가`,
+          });
+
+          // 성공 시 로컬 상태 업데이트
+          setCartItems((prev) => new Set([...prev, productId]));
+          setProducts((prev) =>
+            prev.map((product) =>
+              product.id.toString() === productId
+                ? { ...product, isInCart: true }
+                : product
+            )
+          );
+
+          showSuccess(`${productToAdd.name}이(가) 장바구니에 추가되었습니다!`);
+        } catch (apiError: unknown) {
+          console.error('API 호출 중 오류:', apiError);
+          const axiosError = apiError as {
+            response?: { data?: unknown; status?: number };
+          };
+          console.error('Error response:', axiosError.response?.data);
+          console.error('Error status:', axiosError.response?.status);
+
+          if (axiosError.response?.status === 403) {
+            showError('권한이 없습니다. 로그인을 다시 확인해주세요.');
+          } else {
+            showError('장바구니 추가 중 서버 오류가 발생했습니다.');
+          }
+        }
       } else {
         showError('상품을 찾을 수 없습니다.');
       }

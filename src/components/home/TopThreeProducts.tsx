@@ -1,5 +1,10 @@
 import Image from 'next/image';
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
+import {
+  ShoppingAPI,
+  isAuthenticated,
+  logAuthStatus,
+} from '@/lib/api/diplomats';
 import type { SavingRecommendationItem } from '@/lib/api/types';
 
 interface TopThreeProductsProps {
@@ -18,49 +23,82 @@ interface SimpleTopProduct {
 
 export default function TopThreeProducts({
   userName = '사용자',
-  marketName,
   savingRecommendations = [],
 }: TopThreeProductsProps) {
-  const [products, setProducts] = useState<SimpleTopProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [loadingItems, setLoadingItems] = useState<Set<number>>(new Set());
 
-  const fetchTopProducts = useCallback(async () => {
+  // 장바구니 추가 함수
+  const handleAddToCart = async (
+    productId: number,
+    itemName: string,
+    category: string
+  ) => {
+    if (loadingItems.has(productId)) return;
+
+    // 인증 상태 확인
+    if (!isAuthenticated()) {
+      window.alert('로그인이 필요합니다. 다시 로그인해주세요.');
+      return;
+    }
+
+    setLoadingItems((prev) => new Set([...prev, productId]));
+
     try {
-      setIsLoading(true);
-      setError(null);
+      // 디버깅: 현재 인증 상태 확인
+      logAuthStatus();
 
-      // props로 받은 데이터가 있으면 사용
-      if (savingRecommendations && savingRecommendations.length > 0) {
-        const top3 = savingRecommendations.slice(0, 3).map((item, idx) => ({
+      await ShoppingAPI.addItem({
+        itemName,
+        quantity: 1,
+        category,
+        memo: `${itemName} TOP3 상품 장바구니 추가`,
+      });
+
+      // 성공 메시지 표시
+      if (typeof window !== 'undefined') {
+        window.alert(`${itemName}이(가) 장바구니에 추가되었습니다!`);
+      }
+    } catch (error: unknown) {
+      console.error('장바구니 추가 중 오류:', error);
+      const axiosError = error as {
+        response?: { data?: unknown; status?: number };
+      };
+      console.error('Error response:', axiosError.response?.data);
+      console.error('Error status:', axiosError.response?.status);
+
+      if (typeof window !== 'undefined') {
+        if (axiosError.response?.status === 403) {
+          window.alert('권한이 없습니다. 로그인을 다시 확인해주세요.');
+        } else {
+          window.alert('장바구니 추가 중 오류가 발생했습니다.');
+        }
+      }
+    } finally {
+      setLoadingItems((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(productId);
+        return newSet;
+      });
+    }
+  };
+
+  // props로 받은 데이터를 직접 변환
+  const products: SimpleTopProduct[] =
+    savingRecommendations && savingRecommendations.length > 0
+      ? savingRecommendations.slice(0, 3).map((item, idx) => ({
           id: idx + 1,
           emoji: '/assets/tomato.svg',
           name: item.itemName,
           savings: item.savingAmount,
-        }));
-        setProducts(top3);
-      } else {
-        setProducts([]);
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.'
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, [savingRecommendations]);
+        }))
+      : [];
 
-  useEffect(() => {
-    fetchTopProducts();
-  }, [fetchTopProducts]);
+  const isLoading = false; // props로 받은 데이터를 사용하므로 로딩 상태 불필요
 
   const onRetry = () => {
-    fetchTopProducts();
-  };
-
-  const handleProductClick = (_productId: number) => {
-    // 클릭시 장바구니 추가 등 액션 훅킹 가능
+    // 에러가 발생했을 때 재시도 로직
+    setError(null);
   };
 
   if (error) {
@@ -135,7 +173,6 @@ export default function TopThreeProducts({
             <div
               key={product.id}
               className="bg-white rounded-xl p-4 border border-gray-200 touch-feedback"
-              onClick={() => handleProductClick(product.id)}
             >
               <div className="flex flex-row gap-4">
                 <div className="flex flex-col items-center justify-center gap-3 ">
@@ -154,8 +191,8 @@ export default function TopThreeProducts({
                   </p>
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font.medium">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-medium">
                   {product.name} 구매하고
                 </span>
                 <div className="flex items-center gap-2">
@@ -175,6 +212,47 @@ export default function TopThreeProducts({
                   </svg>
                 </div>
               </div>
+
+              {/* 장바구니 추가 버튼 */}
+              <button
+                onClick={() =>
+                  handleAddToCart(product.id, product.name, '채소류')
+                }
+                disabled={loadingItems.has(product.id)}
+                className={`
+                  w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-sm transition-all duration-200 
+                  ${
+                    loadingItems.has(product.id)
+                      ? 'bg-primary-400 text-white cursor-wait'
+                      : 'bg-primary-500 hover:bg-primary-600 active:bg-primary-700 text-white shadow-sm hover:shadow-md active:scale-95'
+                  }
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                `}
+              >
+                {loadingItems.has(product.id) ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>담는중...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 3H3m4 10v4a2 2 0 002 2h8a2 2 0 002-2v-4M7 13l-2-8m0 0h16"
+                      />
+                    </svg>
+                    <span>장바구니에 담기</span>
+                  </>
+                )}
+              </button>
             </div>
           ))}
         </div>

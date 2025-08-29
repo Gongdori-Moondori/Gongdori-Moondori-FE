@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import type { MarketRecommendationResponse } from './types';
 
 const BASE_URL = (
   (process.env.API_BASE_URL ||
@@ -11,6 +10,25 @@ function getCookie(name: string): string | null {
   if (typeof document === 'undefined') return null;
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   return match ? decodeURIComponent(match[2]) : null;
+}
+
+// 인증 상태 확인을 위한 유틸리티 함수
+export function isAuthenticated(): boolean {
+  const token = getCookie('access_token');
+  return !!token;
+}
+
+// 현재 토큰 정보 로깅
+export function logAuthStatus(): void {
+  if (typeof document !== 'undefined') {
+    const token = getCookie('access_token');
+    const refreshToken = getCookie('refresh_token');
+    console.log('Auth Status:', {
+      hasAccessToken: !!token,
+      hasRefreshToken: !!refreshToken,
+      cookies: document.cookie,
+    });
+  }
 }
 
 const client = axios.create({
@@ -129,6 +147,12 @@ export interface ShoppingItemRequest {
   category: string;
   quantity: number;
 }
+export interface AddShoppingItemRequest {
+  itemName: string;
+  quantity: number;
+  category: string;
+  memo?: string;
+}
 export interface CreateShoppingListRequest {
   items: ShoppingItemRequest[];
 }
@@ -220,6 +244,10 @@ export interface PriceDataResponse {
 }
 
 export const ShoppingAPI = {
+  addItem: (payload: AddShoppingItemRequest) =>
+    client
+      .post<ApiResponse<object>>('/api/shopping/add-item', payload)
+      .then((r) => r.data),
   addItemTest: (payload: Record<string, unknown>) =>
     client
       .post<ApiResponse<object>>('/api/shopping/test', payload)
@@ -301,7 +329,7 @@ export const RecommendationAPI = {
   getComprehensive: (marketName: string) =>
     client
       .get<
-        ApiResponse<MarketRecommendationResponse>
+        ApiResponse<unknown>
       >(`/api/recommendation/market/${encodeURIComponent(marketName)}/main`)
       .then((r) => r.data),
 };

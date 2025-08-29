@@ -8,7 +8,6 @@ import TopThreeProducts from '@/components/home/TopThreeProducts';
 import AllProductsSection from '@/components/home/AllProductsSection';
 import { useState, useEffect } from 'react';
 import { PriceDataAPI, AuthAPI, RecommendationAPI } from '@/lib/api/diplomats';
-import type { MarketRecommendationResponse } from '@/lib/api/types';
 
 interface Market {
   id: number;
@@ -23,9 +22,10 @@ export default function Home() {
     name: string;
   } | null>(null);
   const [activeMarket, setActiveMarket] = useState<Market | null>(null);
+  const [markets, setMarkets] = useState<Market[]>([]);
   const [loading, setLoading] = useState(true);
   const [marketRecommendations, setMarketRecommendations] =
-    useState<MarketRecommendationResponse | null>(null);
+    useState<unknown>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -56,6 +56,7 @@ export default function Home() {
           location: '',
           isActive: idx === 0,
         }));
+        setMarkets(mapped);
         setActiveMarket(mapped[0] || null);
       } catch (error) {
         console.error('Failed to load market names:', error);
@@ -72,6 +73,7 @@ export default function Home() {
     const loadMarketRecommendations = async () => {
       if (!activeMarket?.name) return;
 
+      setLoading(true);
       try {
         const res = await RecommendationAPI.getComprehensive(activeMarket.name);
         if (res.success) {
@@ -80,6 +82,8 @@ export default function Home() {
       } catch (error) {
         console.error('Failed to load market recommendations:', error);
         setMarketRecommendations(null);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -112,30 +116,51 @@ export default function Home() {
       <MarketSelector
         selectedMarketId={activeMarket?.id}
         onMarketChange={handleMarketChange}
+        markets={markets}
       />
       <main className="flex-1 px-6 py-6 pb-20">
-        <AIChatBot
-          userName={currentUser.name}
-          seasonalRecommendations={
-            marketRecommendations?.seasonalRecommendations
-          }
-        />
+        {loading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="text-center">
+              <div className="w-6 h-6 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+              <p className="text-gray-600 text-sm">시장 데이터 로딩 중...</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <AIChatBot
+              userName={currentUser.name}
+              seasonalRecommendations={
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (marketRecommendations as any)?.seasonalRecommendations
+              }
+            />
 
-        <TopThreeProducts
-          userName={currentUser.name}
-          marketId={activeMarket?.id}
-          marketName={activeMarket?.name}
-          savingRecommendations={marketRecommendations?.savingRecommendations}
-        />
+            <TopThreeProducts
+              userName={currentUser.name}
+              marketId={activeMarket?.id}
+              marketName={activeMarket?.name}
+              savingRecommendations={
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (marketRecommendations as any)?.savingRecommendations
+              }
+            />
 
-        <AllProductsSection
-          maxSavings={marketRecommendations?.summary?.maxSavingAmount || 15000}
-          marketName={activeMarket?.name}
-          marketId={activeMarket?.id}
-          marketVsMartComparisons={
-            marketRecommendations?.marketVsMartComparisons
-          }
-        />
+            <AllProductsSection
+              maxSavings={
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (marketRecommendations as any)?.summary?.maxSavingAmount ||
+                15000
+              }
+              marketName={activeMarket?.name}
+              marketId={activeMarket?.id}
+              marketVsMartComparisons={
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (marketRecommendations as any)?.marketVsMartComparisons
+              }
+            />
+          </>
+        )}
       </main>
 
       <BottomNavigation />
