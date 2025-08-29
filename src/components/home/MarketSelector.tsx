@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { PriceDataAPI } from '@/lib/api/diplomats';
 
 interface Market {
   id: number;
@@ -12,40 +11,17 @@ interface Market {
 
 interface MarketSelectorProps {
   selectedMarketId?: number;
+  markets: Market[];
   onMarketChange?: (market: Market) => void;
 }
 
 export default function MarketSelector({
   selectedMarketId,
+  markets,
   onMarketChange,
 }: MarketSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [markets, setMarkets] = useState<Market[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // 시장 데이터 로딩
-    const loadMarkets = async () => {
-      try {
-        const res = await PriceDataAPI.getItemLists();
-        const names = res.data?.marketNames || [];
-        const mapped: Market[] = names.map((n: string, idx: number) => ({
-          id: idx + 1,
-          name: n,
-          location: '',
-          isActive: idx === 0,
-        }));
-        setMarkets(mapped);
-      } catch (error) {
-        console.error('Failed to load markets:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadMarkets();
-  }, []);
 
   // 선택된 시장 찾기
   const selectedMarket =
@@ -75,12 +51,14 @@ export default function MarketSelector({
     setIsOpen(!isOpen);
   };
 
-  if (isLoading) {
+  if (markets.length === 0) {
     return (
       <div className="m-6">
         <h2 className="text-lg font-bold mb-3">시장 선택하기</h2>
         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 w-full">
-          <span className="text-gray-400">로딩중...</span>
+          <span className="text-gray-400">
+            시장 데이터를 불러오는 중입니다.
+          </span>
         </div>
       </div>
     );

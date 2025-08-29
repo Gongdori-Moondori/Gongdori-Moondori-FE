@@ -2,6 +2,11 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { AiOutlineNotification } from 'react-icons/ai';
 import { AiTwotoneShop } from 'react-icons/ai';
+import {
+  ShoppingAPI,
+  isAuthenticated,
+  logAuthStatus,
+} from '@/lib/api/diplomats';
 
 interface ProductCardProps {
   id: string;
@@ -36,9 +41,42 @@ export default function ProductCard({
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onAddToCart && !isCartLoading) {
+      // 인증 상태 확인
+      if (!isAuthenticated()) {
+        window.alert('로그인이 필요합니다. 다시 로그인해주세요.');
+        return;
+      }
+
       setIsCartLoading(true);
       try {
+        // 디버깅: 현재 인증 상태 확인
+        logAuthStatus();
+
+        // 실제 API 호출
+        await ShoppingAPI.addItem({
+          itemName: name,
+          quantity: 1,
+          category: '채소류', // 기본 카테고리, 필요시 props로 받을 수 있음
+          memo: `${name} 장바구니 추가`,
+        });
+
+        // 성공 시 콜백 함수 호출
         await onAddToCart(id);
+      } catch (error: unknown) {
+        console.error('장바구니 추가 중 오류:', error);
+        const axiosError = error as {
+          response?: { data?: unknown; status?: number };
+        };
+        console.error('Error response:', axiosError.response?.data);
+        console.error('Error status:', axiosError.response?.status);
+
+        if (typeof window !== 'undefined') {
+          if (axiosError.response?.status === 403) {
+            window.alert('권한이 없습니다. 로그인을 다시 확인해주세요.');
+          } else {
+            window.alert('장바구니 추가 중 오류가 발생했습니다.');
+          }
+        }
       } finally {
         setTimeout(() => setIsCartLoading(false), 500); // 버튼 상태 표시를 위한 딜레이
       }
@@ -59,11 +97,45 @@ export default function ProductCard({
 
   const handleCardClick = async () => {
     if (onAddToCart && !isCartLoading && !isInCart) {
+      // 인증 상태 확인
+      if (!isAuthenticated()) {
+        window.alert('로그인이 필요합니다. 다시 로그인해주세요.');
+        return;
+      }
+
       setIsCartLoading(true);
       try {
+        // 디버깅: 현재 인증 상태 확인
+        logAuthStatus();
+
+        // 실제 API 호출
+        await ShoppingAPI.addItem({
+          itemName: name,
+          quantity: 1,
+          category: '채소류', // 기본 카테고리, 필요시 props로 받을 수 있음
+          memo: `${name} 장바구니 추가`,
+        });
+
+        // 성공 시 콜백 함수 호출
         await onAddToCart(id);
+
         if (typeof window !== 'undefined') {
           window.alert('장바구니에 추가되었습니다');
+        }
+      } catch (error: unknown) {
+        console.error('장바구니 추가 중 오류:', error);
+        const axiosError = error as {
+          response?: { data?: unknown; status?: number };
+        };
+        console.error('Error response:', axiosError.response?.data);
+        console.error('Error status:', axiosError.response?.status);
+
+        if (typeof window !== 'undefined') {
+          if (axiosError.response?.status === 403) {
+            window.alert('권한이 없습니다. 로그인을 다시 확인해주세요.');
+          } else {
+            window.alert('장바구니 추가 중 오류가 발생했습니다.');
+          }
         }
       } finally {
         setTimeout(() => setIsCartLoading(false), 500);
@@ -94,7 +166,7 @@ export default function ProductCard({
       <p
         className={`font-bold text-lg mb-3 ${isInCart ? 'text-primary-600' : 'text-primary-500'}`}
       >
-        {savings.toLocaleString()}원 저렴해요
+        {Math.floor(savings).toLocaleString()}원 저렴해요
       </p>
       <div
         className={`space-y-1 text-xs ${isInCart ? 'text-gray-500' : 'text-gray-400'}`}
@@ -104,14 +176,16 @@ export default function ProductCard({
             <AiOutlineNotification />
           </span>
           <span>
-            {marketName} {marketPrice.toLocaleString()}
+            {marketName} {Math.floor(marketPrice).toLocaleString()}원
           </span>
         </div>
         <div className="flex items-center gap-1">
           <span>
             <AiTwotoneShop />
           </span>
-          <span>대형마트 {supermarketPrice.toLocaleString()}</span>
+          <span>
+            대형마트 {Math.floor(supermarketPrice).toLocaleString()}원
+          </span>
         </div>
       </div>
       <div className="flex items-center gap-2 mt-4">

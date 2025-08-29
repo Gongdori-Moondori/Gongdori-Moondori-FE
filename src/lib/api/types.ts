@@ -135,3 +135,77 @@ export interface AddToCartWithMarketRequest {
   userId: number;
   quantity?: number;
 }
+
+// 시장 추천 API 응답 타입
+export interface SeasonalRecommendationItem {
+  itemName: string;
+  category: string;
+  reason: string;
+  seasonalScore: number;
+  season: string;
+  benefits: string[];
+}
+
+export interface SavingRecommendationItem {
+  itemName: string;
+  category: string;
+  marketName: string;
+  currentPrice: number;
+  averageMarketPrice: number;
+  savingAmount: number;
+  savingPercentage: number;
+  priceLevel: string;
+  recommendation: string;
+  confidence: number;
+  trendAnalysis: string;
+  savingReason: string;
+  dataPoints: number;
+  seasonalItem: boolean;
+}
+
+export interface MartPrice {
+  martName: string;
+  price: number;
+  priceUnit: string;
+  available: boolean;
+}
+
+export interface MarketVsMartComparison {
+  itemName: string;
+  category: string;
+  marketName: string;
+  marketPrice: number;
+  cheapestMartName: string;
+  cheapestMartPrice: number;
+  expensiveMartName: string;
+  expensiveMartPrice: number;
+  averageMartPrice: number;
+  priceDifference: number;
+  savingPercentage: number;
+  winner: string;
+  recommendation: string;
+  martPrices: MartPrice[];
+  comparisonSummary: string;
+  seasonalItem: boolean;
+}
+
+export interface MarketRecommendationSummary {
+  totalAnalyzedItems: number;
+  seasonalItemsCount: number;
+  savingItemsCount: number;
+  marketWinCount: number;
+  martWinCount: number;
+  maxSavingAmount: number;
+  maxSavingPercentage: number;
+  bestDealItem: string;
+  overallRecommendation: string;
+  shoppingTips: string[];
+}
+
+export interface MarketRecommendationResponse {
+  marketName: string;
+  seasonalRecommendations: SeasonalRecommendationItem[];
+  savingRecommendations: SavingRecommendationItem[];
+  marketVsMartComparisons: MarketVsMartComparison[];
+  summary: MarketRecommendationSummary;
+}

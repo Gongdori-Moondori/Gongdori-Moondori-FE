@@ -7,7 +7,7 @@ import AIChatBot from '@/components/home/AIChatBot';
 import TopThreeProducts from '@/components/home/TopThreeProducts';
 import AllProductsSection from '@/components/home/AllProductsSection';
 import { useState, useEffect } from 'react';
-import { PriceDataAPI, AuthAPI } from '@/lib/api/diplomats';
+import { PriceDataAPI, AuthAPI, RecommendationAPI } from '@/lib/api/diplomats';
 
 interface Market {
   id: number;
@@ -22,7 +22,10 @@ export default function Home() {
     name: string;
   } | null>(null);
   const [activeMarket, setActiveMarket] = useState<Market | null>(null);
+  const [markets, setMarkets] = useState<Market[]>([]);
   const [loading, setLoading] = useState(true);
+  const [marketRecommendations, setMarketRecommendations] =
+    useState<unknown>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -30,18 +33,18 @@ export default function Home() {
         // 1) 현재 사용자 불러오기
         try {
           const me = await AuthAPI.currentUser();
-          const user =
-            (me?.data as { userId?: string | number; name?: string }) || null;
-          if (user) {
+          if (me?.success && me.data) {
+            const user = me.data;
             setCurrentUser({
               id: Number(user.userId) || 0,
               name: user.name || '사용자',
             });
           } else {
-            setCurrentUser({ id: 0, name: '사용자' });
+            setCurrentUser(null);
           }
-        } catch {
-          setCurrentUser({ id: 0, name: '사용자' });
+        } catch (error) {
+          console.error('Failed to load user:', error);
+          setCurrentUser(null);
         }
 
         // 2) 마켓 목록 불러오기
@@ -53,6 +56,7 @@ export default function Home() {
           location: '',
           isActive: idx === 0,
         }));
+        setMarkets(mapped);
         setActiveMarket(mapped[0] || null);
       } catch (error) {
         console.error('Failed to load market names:', error);
@@ -63,6 +67,28 @@ export default function Home() {
 
     loadData();
   }, []);
+
+  // 시장이 변경될 때마다 해당 시장의 추천 데이터 로드
+  useEffect(() => {
+    const loadMarketRecommendations = async () => {
+      if (!activeMarket?.name) return;
+
+      setLoading(true);
+      try {
+        const res = await RecommendationAPI.getComprehensive(activeMarket.name);
+        if (res.success) {
+          setMarketRecommendations(res.data);
+        }
+      } catch (error) {
+        console.error('Failed to load market recommendations:', error);
+        setMarketRecommendations(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMarketRecommendations();
+  }, [activeMarket?.name]);
 
   const handleMarketChange = (market: Market) => {
     setActiveMarket(market);
@@ -79,26 +105,62 @@ export default function Home() {
     );
   }
 
+  // 사용자가 로그인되지 않은 경우 (AppWrapper에서 이미 리다이렉팅 처리됨)
+  if (!currentUser) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 text-foreground gap-1">
-      <WelcomeHeader userName={currentUser?.name || '사용자'} />
+      <WelcomeHeader userName={currentUser.name} />
       <MarketSelector
         selectedMarketId={activeMarket?.id}
         onMarketChange={handleMarketChange}
+        markets={markets}
       />
       <main className="flex-1 px-6 py-6 pb-20">
-        <AIChatBot userName={currentUser?.name || '사용자'} />
+        {loading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="text-center">
+              <div className="w-6 h-6 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+              <p className="text-gray-600 text-sm">시장 데이터 로딩 중...</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <AIChatBot
+              userName={currentUser.name}
+              seasonalRecommendations={
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (marketRecommendations as any)?.seasonalRecommendations
+              }
+            />
 
-        <TopThreeProducts
-          userName={currentUser?.name || '사용자'}
-          marketId={activeMarket?.id}
-        />
+            <TopThreeProducts
+              userName={currentUser.name}
+              marketId={activeMarket?.id}
+              marketName={activeMarket?.name}
+              savingRecommendations={
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (marketRecommendations as any)?.savingRecommendations
+              }
+            />
 
-        <AllProductsSection
-          maxSavings={15000}
-          marketName={activeMarket?.name}
-          marketId={activeMarket?.id}
-        />
+            <AllProductsSection
+              maxSavings={
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (marketRecommendations as any)?.summary?.maxSavingAmount ||
+                15000
+              }
+              marketName={activeMarket?.name}
+              marketId={activeMarket?.id}
+              marketVsMartComparisons={
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (marketRecommendations as any)?.marketVsMartComparisons
+              }
+            />
+          </>
+        )}
       </main>
 
       <BottomNavigation />
