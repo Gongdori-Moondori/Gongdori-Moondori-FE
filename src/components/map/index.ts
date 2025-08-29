@@ -1,2 +1,1 @@
-export { default as NaverMap } from './NaverMap';
-export { default as StaticMap } from './StaticMap';
+export { default as DynamicMap } from './DynamicMap';
