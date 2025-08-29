@@ -35,15 +35,6 @@ interface FrequentlyPurchasedProduct extends Product {
   averagePrice: number;
 }
 
-interface PurchaseData {
-  id: string;
-  userId: number;
-  productId: number;
-  quantity: number;
-  price: number;
-  purchaseDate: string;
-}
-
 export default function MyPage() {
   // 사용자 프로필 상태
   const [userProfile, setUserProfile] = useState<UserProfile>({
@@ -87,17 +78,6 @@ export default function MyPage() {
 
   const handleDeleteAccount = () => {
     console.log('계정 삭제 클릭');
-  };
-
-  // 디버그: 쿠키 상태 확인
-  const handleDebugCookies = async () => {
-    try {
-      const response = await fetch('/api/debug/cookies');
-      const data = await response.json();
-      console.log('🍪 쿠키 디버그 정보:', data);
-    } catch (error) {
-      console.error('쿠키 디버그 실패:', error);
-    }
   };
 
   const [frequentProducts, setFrequentProducts] = useState<

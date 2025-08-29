@@ -1,3 +1,5 @@
+import { useSavingsStatistics } from '@/lib/api/hooks';
+
 interface ProfileSectionProps {
   name: string;
   profileImage?: string;
@@ -7,8 +9,9 @@ interface ProfileSectionProps {
 export default function ProfileSection({
   name,
   profileImage = '/assets/userImage1.svg',
-  totalSavings,
 }: ProfileSectionProps) {
+  const { data: savingsStatistics } = useSavingsStatistics();
+
   return (
     <div className="bg-white rounded-2xl p-6 text-center">
       <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-white border-4 border-[#14b8a6] flex items-center justify-center">
@@ -26,7 +29,7 @@ export default function ProfileSection({
           </span>
         </div>
         <p className="text-2xl font-bold text-primary-500">
-          {totalSavings.toLocaleString()}원{' '}
+          {savingsStatistics?.data.totalSavings.toLocaleString()}원{' '}
           <span className="text-sm font-normal text-gray-600">이에요!</span>
         </p>
       </div>

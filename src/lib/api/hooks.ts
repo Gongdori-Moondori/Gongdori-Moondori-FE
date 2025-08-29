@@ -8,6 +8,7 @@ import {
   ShoppingAPI,
   PriceDataAPI,
   ItemDetailAPI,
+  SavingsAPI,
 } from './diplomats';
 import type { CompleteItemsRequest } from './diplomats';
 import { AddToCartRequest, AddToFavoritesRequest } from './types';
@@ -31,6 +32,7 @@ export const queryKeys = {
     ['shopping', 'categories', category, 'items'] as const,
   priceData: (params: { marketName?: string; itemName?: string }) =>
     ['price-data', params] as const,
+  savings: () => ['savings'] as const,
 };
 
 // 사용자 관련 훅
@@ -216,5 +218,13 @@ export const useCancelShoppingItems = () => {
         queryKey: ['shopping', 'statistics', variables.shoppingListId],
       });
     },
+  });
+};
+
+export const useSavingsStatistics = () => {
+  return useQuery({
+    queryKey: queryKeys.savings(),
+    queryFn: SavingsAPI.getSavingsStatistics,
+    staleTime: 1000 * 60 * 5, // 5분
   });
 };

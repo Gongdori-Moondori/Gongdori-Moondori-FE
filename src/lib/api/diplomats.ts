@@ -399,3 +399,28 @@ export const ItemDetailAPI = {
 export const SystemAPI = {
   health: () => client.get<ApiResponse<string>>('/health').then((r) => r.data),
 };
+
+// 절약 통계 관련 타입
+export interface SavingsStatisticsResponse {
+  totalSavings: number;
+  totalSavingsCount: number;
+  totalLoss: number;
+  recentThirtyDaysSavings: number;
+  topItemSavings: Array<{
+    itemName: string;
+    savings: number;
+  }>;
+  topMarketSavings: Array<{
+    marketName: string;
+    savings: number;
+  }>;
+}
+
+export const SavingsAPI = {
+  getSavingsStatistics: () =>
+    client
+      .get<
+        ApiResponse<SavingsStatisticsResponse>
+      >('/api/shopping/savings/statistics')
+      .then((r) => r.data),
+};
