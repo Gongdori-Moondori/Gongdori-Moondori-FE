@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // 프록시 API 사용 (CORS 문제 해결)
-const API_BASE_URL = '/api';
+const API_BASE_URL = 'https://hihigh.lion.it.kr';
 
 // axios 인스턴스 생성
 const apiClient = axios.create({
