@@ -279,10 +279,54 @@ export default function ShoppingListPage() {
   };
 
   // 장바구니 초기화 (장보기 완료)
-  const completeShoppingList = () => {
-    setShoppingListItems([]);
-    setShowConfirmDialog(false);
-    alert('장보기가 완료되었습니다!');
+  const completeShoppingList = async () => {
+    try {
+      if (shoppingListItems.length === 0) {
+        setShowConfirmDialog(false);
+        alert('장보기가 완료되었습니다!');
+        return;
+      }
+
+      // 완료된 아이템들의 ID 리스트 생성
+      const completedItemIds = shoppingListItems
+        .filter((item) => item.completed)
+        .map((item) => parseInt(item.id));
+
+      if (completedItemIds.length === 0) {
+        setShowConfirmDialog(false);
+        alert('완료된 상품이 없습니다.');
+        return;
+      }
+
+      // 첫 번째 장바구니 ID 사용 (현재는 하나의 장바구니만 사용)
+      const shoppingListId = parseInt(shoppingListItems[0].shoppingListId);
+
+      console.log('구매 완료 API 요청 데이터:', {
+        shoppingListId,
+        itemIds: completedItemIds,
+        reason: '장보기 완료',
+      });
+
+      // API 호출하여 선택된 아이템들을 구매 완료 상태로 변경
+      const response = await ShoppingAPI.completeShoppingItems(shoppingListId, {
+        itemIds: completedItemIds,
+        reason: '장보기 완료',
+      });
+
+      console.log('구매 완료 API 응답:', response);
+
+      // 성공 시 로컬 상태 업데이트
+      setShoppingListItems([]);
+      setShowConfirmDialog(false);
+      alert('장보기가 완료되었습니다!');
+    } catch (err) {
+      console.error('장보기 완료 중 오류:', err);
+      if (err instanceof Error) {
+        setError(`장보기 완료에 실패했습니다: ${err.message}`);
+      } else {
+        setError('장보기 완료에 실패했습니다.');
+      }
+    }
   };
 
   // 다이얼로그 취소
