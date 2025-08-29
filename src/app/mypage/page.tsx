@@ -13,7 +13,11 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { getCurrentUser, logout, type UserProfile } from '@/lib/api/auth';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { ShoppingAPI, type FrequentItemResponse } from '@/lib/api/diplomats';
+import {
+  ShoppingAPI,
+  AuthAPI,
+  type FrequentItemResponse,
+} from '@/lib/api/diplomats';
 
 interface Product {
   id: string;
@@ -43,6 +47,10 @@ export default function MyPage() {
     totalSavings: 0,
   });
   const [userLoading, setUserLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<{
+    userId: string;
+    name: string;
+  } | null>(null);
 
   // 메뉴 아이템 데이터
   const menuItems: MenuItem[] = [
@@ -112,6 +120,25 @@ export default function MyPage() {
     };
 
     loadUserProfile();
+  }, []);
+
+  // 현재 사용자 정보 로드 (API 인증용)
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      try {
+        const response = await AuthAPI.currentUser();
+        if (response?.success && response.data) {
+          setCurrentUser({
+            userId: response.data.userId,
+            name: response.data.name,
+          });
+        }
+      } catch (error) {
+        console.error('API 사용자 정보를 불러오는데 실패했습니다:', error);
+      }
+    };
+
+    loadCurrentUser();
   }, []);
 
   useEffect(() => {
@@ -197,10 +224,27 @@ export default function MyPage() {
   };
 
   const addToCart = async (product: FrequentlyPurchasedProduct) => {
+    if (!currentUser) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
     try {
-      alert(`${product.name}이(가) 장보기 리스트에 추가되었습니다!`);
-    } catch {
-      setError('장보기 리스트 추가에 실패했습니다.');
+      const response = await ShoppingAPI.addItem({
+        itemName: product.name,
+        quantity: 1,
+        category: product.category,
+        memo: `자주 구매 상품에서 추가: ${product.name}`,
+      });
+
+      if (response.success) {
+        alert(`${product.name}이(가) 장보기 리스트에 추가되었습니다!`);
+      } else {
+        alert('장보기 리스트 추가에 실패했습니다. 다시 시도해주세요.');
+      }
+    } catch (err) {
+      console.error('장보기 리스트 추가에 실패했습니다:', err);
+      alert('장보기 리스트 추가에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
