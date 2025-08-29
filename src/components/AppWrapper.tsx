@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import SplashScreen from './SplashScreen';
 import { AuthAPI } from '@/lib/api/diplomats';
+import PWAInstallPrompt from './PWAInstallPrompt';
 
 interface AppWrapperProps {
   children: React.ReactNode;
@@ -77,5 +78,10 @@ export default function AppWrapper({ children }: AppWrapperProps) {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <PWAInstallPrompt />
+    </>
+  );
 }

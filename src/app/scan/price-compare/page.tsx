@@ -13,6 +13,14 @@ import PageHeader from '@/components/layout/PageHeader';
 import { MarketInfo } from '@/lib/api/types';
 import Image from 'next/image';
 
+interface MarketPriceData {
+  marketCode: string;
+  marketName: string;
+  marketAddress: string;
+  price: number;
+  surveyDate: string;
+}
+
 export default function PriceComparePage() {
   const [itemName, setItemName] = useState<string>('');
   const [markets, setMarkets] = useState<MarketInfo[]>([]);
