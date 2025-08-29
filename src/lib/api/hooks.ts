@@ -155,6 +155,15 @@ export const useItemDetail = (itemName: string, marketName: string) => {
   });
 };
 
+export const useItemPrices = (itemName: string) => {
+  return useQuery({
+    queryKey: ['item', 'prices', itemName],
+    queryFn: () => ItemDetailAPI.getItemPrices(itemName),
+    staleTime: 1000 * 60 * 5, // 5분
+    enabled: !!itemName,
+  });
+};
+
 // 시스템 관련 훅
 export const useSystemHealth = () => {
   return useQuery({

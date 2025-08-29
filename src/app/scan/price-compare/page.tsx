@@ -1,21 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
   IoLocationOutline,
-  IoTimeOutline,
-  IoStarOutline,
-  IoStar,
   IoMapOutline,
   IoCallOutline,
   IoWalkOutline,
 } from 'react-icons/io5';
 import PageHeader from '@/components/layout/PageHeader';
-import BackButton from '@/components/layout/BackButton';
-// 레거시 JSON 서버 API 호출 제거 (Diplomats API 전환 전 임시 비활성화)
-// import { priceCompareAPI } from '@/lib/api/client';
 import { MarketInfo } from '@/lib/api/types';
 import Image from 'next/image';
 
@@ -24,7 +18,6 @@ export default function PriceComparePage() {
   const [markets, setMarkets] = useState<MarketInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   useEffect(() => {
     const item = searchParams.get('item');
@@ -35,11 +28,60 @@ export default function PriceComparePage() {
     }
   }, [searchParams]);
 
-  const fetchMarketPrices = async (_productName: string) => {
+  const fetchMarketPrices = async (productName: string) => {
     setIsLoading(true);
     try {
-      // TODO: Diplomats API 연동으로 대체 예정
-      setMarkets([]);
+      // 실제 API 호출
+      const response = await fetch(
+        `https://hihigh.lion.it.kr/api/item/name/${encodeURIComponent(productName)}/prices`,
+        {
+          headers: {
+            Authorization: `Bearer ${document.cookie.split('access_token=')[1]?.split(';')[0] || ''}`,
+            accept: '*/*',
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data && data.data.pricesByMarkets) {
+          const apiMarkets = data.data.pricesByMarkets.map(
+            (
+              market: {
+                marketCode: string;
+                marketName: string;
+                marketAddress: string;
+                price: number;
+                surveyDate: string;
+              },
+              index: number
+            ) => ({
+              id: market.marketCode || String(index),
+              name: market.marketName,
+              price: market.price,
+              originalPrice: null,
+              distance: market.marketAddress || '주소 정보 없음',
+              walkTime: '정보 없음',
+              address: market.marketAddress || '주소 정보 없음',
+              phone: '정보 없음',
+              operatingHours: '정보 없음',
+              lastUpdated: market.surveyDate || '정보 없음',
+              isOnSale: false,
+              rating: 0,
+            })
+          );
+
+          // 가격순으로 정렬 (최저가가 위로)
+          apiMarkets.sort((a: MarketInfo, b: MarketInfo) => a.price - b.price);
+          setMarkets(apiMarkets);
+        } else {
+          console.log('API 응답 데이터 구조:', data);
+          setMarkets([]);
+        }
+      } else {
+        console.error('API 응답 오류:', response.status);
+        setMarkets([]);
+      }
     } catch (error) {
       console.error('가격 비교 데이터 로드 실패:', error);
       setMarkets([]);
@@ -48,27 +90,20 @@ export default function PriceComparePage() {
     }
   };
 
-  const renderStars = (rating: number) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        i <= rating ? (
-          <IoStar key={i} className="text-yellow-400" size={14} />
-        ) : (
-          <IoStarOutline key={i} className="text-gray-300" size={14} />
-        )
-      );
-    }
-    return stars;
-  };
-
   const handleCallMarket = (phone: string) => {
     window.open(`tel:${phone}`);
   };
 
-  const handleShowMap = (address: string) => {
-    // 실제로는 지도 앱 연동
-    alert(`${address}로 길 안내를 시작합니다.`);
+  const handleShowMap = (address: string, marketName: string) => {
+    // 구글 지도로 연동 (모든 플랫폼)
+    const encodedAddress = encodeURIComponent(address);
+    const encodedMarketName = encodeURIComponent(marketName);
+
+    // 구글 지도 검색 URL (매장명 + 주소로 검색)
+    const googleMapsUrl = `https://www.google.com/maps/search/${encodedMarketName}+${encodedAddress}`;
+
+    // 새 탭에서 구글 지도 열기
+    window.open(googleMapsUrl, '_blank');
   };
 
   const handleAddToCart = async (market: MarketInfo) => {
@@ -201,7 +236,7 @@ export default function PriceComparePage() {
                       장바구니 담기
                     </button>
                     <button
-                      onClick={() => handleShowMap(market.address)}
+                      onClick={() => handleShowMap(market.address, market.name)}
                       className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm transition-colors flex items-center space-x-1"
                     >
                       <IoMapOutline size={14} />

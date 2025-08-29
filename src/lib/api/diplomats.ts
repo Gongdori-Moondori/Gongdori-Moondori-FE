@@ -418,6 +418,32 @@ export const ItemDetailAPI = {
         ApiResponse<unknown>
       >(`/api/item/${encodeURIComponent(itemName)}/market/${encodeURIComponent(marketName)}/detail`)
       .then((r) => r.data),
+
+  // 가격비교 API
+  getItemPrices: (itemName: string) =>
+    client
+      .get<
+        ApiResponse<{
+          itemId: number;
+          itemName: string;
+          itemCategory: string;
+          totalMarkets: number;
+          averagePrice: number;
+          minPrice: number;
+          maxPrice: number;
+          pricesByMarkets: Array<{
+            marketCode: string;
+            marketName: string;
+            marketAddress: string;
+            marketType: string | null;
+            price: number;
+            priceUnit: string;
+            surveyDate: string;
+            additionalInfo: string;
+          }>;
+        }>
+      >(`/api/item/name/${encodeURIComponent(itemName)}/prices`)
+      .then((r) => r.data),
 };
 
 export const SystemAPI = {
