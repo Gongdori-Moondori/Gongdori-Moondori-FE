@@ -33,18 +33,18 @@ export default function Home() {
         // 1) 현재 사용자 불러오기
         try {
           const me = await AuthAPI.currentUser();
-          const user =
-            (me?.data as { userId?: string | number; name?: string }) || null;
-          if (user) {
+          if (me?.success && me.data) {
+            const user = me.data;
             setCurrentUser({
               id: Number(user.userId) || 0,
               name: user.name || '사용자',
             });
           } else {
-            setCurrentUser({ id: 0, name: '사용자' });
+            setCurrentUser(null);
           }
-        } catch {
-          setCurrentUser({ id: 0, name: '사용자' });
+        } catch (error) {
+          console.error('Failed to load user:', error);
+          setCurrentUser(null);
         }
 
         // 2) 마켓 목록 불러오기
@@ -101,23 +101,28 @@ export default function Home() {
     );
   }
 
+  // 사용자가 로그인되지 않은 경우 (AppWrapper에서 이미 리다이렉팅 처리됨)
+  if (!currentUser) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 text-foreground gap-1">
-      <WelcomeHeader userName={currentUser?.name || '사용자'} />
+      <WelcomeHeader userName={currentUser.name} />
       <MarketSelector
         selectedMarketId={activeMarket?.id}
         onMarketChange={handleMarketChange}
       />
       <main className="flex-1 px-6 py-6 pb-20">
         <AIChatBot
-          userName={currentUser?.name || '사용자'}
+          userName={currentUser.name}
           seasonalRecommendations={
             marketRecommendations?.seasonalRecommendations
           }
         />
 
         <TopThreeProducts
-          userName={currentUser?.name || '사용자'}
+          userName={currentUser.name}
           marketId={activeMarket?.id}
           marketName={activeMarket?.name}
           savingRecommendations={marketRecommendations?.savingRecommendations}

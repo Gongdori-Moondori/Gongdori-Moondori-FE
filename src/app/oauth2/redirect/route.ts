@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       httpOnly: false,
     });
 
-    return NextResponse.redirect(new URL('/mypage', request.url));
+    return NextResponse.redirect(new URL('/', request.url));
   } catch (error) {
     console.error('토큰 처리 에러:', error);
     return NextResponse.redirect(
