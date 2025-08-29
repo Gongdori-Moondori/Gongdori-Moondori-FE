@@ -1,8 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
-// .env 예시
-// API_BASE_URL=https://hihigh.lion.it.kr
-// NEXT_PUBLIC_BACKEND_URL=https://hihigh.lion.it.kr (fallback)
 const BASE_URL = (
   (process.env.API_BASE_URL ||
     process.env.NEXT_PUBLIC_BACKEND_URL ||
