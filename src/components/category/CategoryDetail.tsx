@@ -93,7 +93,6 @@ export default function CategoryDetail({
           >
             <IoChevronBack className="w-6 h-6 text-gray-600" />
           </button>
-          <div className="text-2xl">{category.icon || '🛒'}</div>
           <h1 className="text-xl font-bold text-gray-900">{category.name}</h1>
         </div>
       </div>
