@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import PageHeader from '@/components/layout/PageHeader';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorMessage from '@/components/ui/ErrorMessage';
 import { useFavorites, useRemoveFavorite } from '@/lib/api/hooks';
+import { ShoppingAPI, AuthAPI } from '@/lib/api/diplomats';
 
 interface Product {
   id: string;
@@ -26,10 +27,33 @@ interface FavoriteProduct extends Product {
 
 export default function FavoritesPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('전체');
+  const [currentUser, setCurrentUser] = useState<{
+    userId: string;
+    name: string;
+  } | null>(null);
 
   // API 훅 사용
   const { data: favoritesData, isLoading: loading, error } = useFavorites();
   const removeFavorite = useRemoveFavorite();
+
+  // 현재 사용자 정보 로드
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      try {
+        const response = await AuthAPI.currentUser();
+        if (response?.success && response.data) {
+          setCurrentUser({
+            userId: response.data.userId,
+            name: response.data.name,
+          });
+        }
+      } catch (error) {
+        console.error('사용자 정보를 불러오는데 실패했습니다:', error);
+      }
+    };
+
+    loadCurrentUser();
+  }, []);
 
   // API 응답 구조 확인을 위한 디버깅
   console.log('favoritesData:', favoritesData);
@@ -99,11 +123,27 @@ export default function FavoritesPage() {
   };
 
   const addToCart = async (product: FavoriteProduct) => {
+    if (!currentUser) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
     try {
-      // 실제 API 호출 대신 알림 표시
-      alert(`${product.name}이(가) 장보기 리스트에 추가되었습니다!`);
+      const response = await ShoppingAPI.addItem({
+        itemName: product.name,
+        quantity: 1,
+        category: product.category,
+        memo: `즐겨찾기에서 추가: ${product.name}`,
+      });
+
+      if (response.success) {
+        alert(`${product.name}이(가) 장보기 리스트에 추가되었습니다!`);
+      } else {
+        alert('장보기 리스트 추가에 실패했습니다. 다시 시도해주세요.');
+      }
     } catch (err) {
       console.error('장보기 리스트 추가에 실패했습니다:', err);
+      alert('장보기 리스트 추가에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
