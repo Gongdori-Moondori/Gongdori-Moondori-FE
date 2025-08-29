@@ -73,26 +73,33 @@ export default function ShoppingListPage() {
         return;
       }
 
-      const mapped: ShoppingListProduct[] = first.items
-        .map((it) => ({
-          id: String(it.id),
-          emoji: '/assets/tomato.svg',
-          name: it.itemName,
-          category: it.category,
-          marketPrice: it.unitPrice ?? 0,
-          supermarketPrice: 0,
-          savings: 0,
-          marketId: 0,
-          inStock: true,
-          description: undefined as unknown as string,
+      const mapped: ShoppingListProduct[] = first.items.map((it, idx) => ({
+        id: String(it.id), // ShoppingRecordResponse의 id (아이템 ID) - number를 string으로 변환
+        emoji: '/assets/tomato.svg',
+        name: it.itemName,
+        category: it.category,
+        marketPrice: it.unitPrice ?? 0,
+        supermarketPrice: 0,
+        savings: 0,
+        marketId: 0,
+        inStock: true,
+        description: undefined as unknown as string,
+        quantity: it.quantity ?? 1,
+        addedAt: new Date(first.createdAt).toISOString(),
+        shoppingListId: String(first.id), // ShoppingListResponse의 id (장바구니 ID)
+        completed: it.status === 'PURCHASED',
+      }));
+
+      // 디버깅: 매핑된 데이터 확인
+      console.log(
+        '매핑된 데이터:',
+        mapped.map((item) => ({
+          name: item.name,
+          id: item.id,
+          shoppingListId: item.shoppingListId,
+          quantity: item.quantity,
         }))
-        .map((p, idx) => ({
-          ...(p as unknown as Product),
-          quantity: first.items[idx]?.quantity ?? 1,
-          addedAt: new Date(first.createdAt).toISOString(),
-          shoppingListId: String(first.items[idx]?.id),
-          completed: first.items[idx]?.status === 'PURCHASED',
-        }));
+      );
 
       setShoppingListItems(mapped);
       setMarkets([]);
@@ -122,45 +129,138 @@ export default function ShoppingListPage() {
     );
   };
 
-  const removeFromShoppingList = async (shoppingListId: string) => {
-    try {
-      setShoppingListItems((prev) =>
-        prev.filter((item) => item.shoppingListId !== shoppingListId)
-      );
-    } catch (err) {
-      setError('상품 삭제에 실패했습니다.');
-    }
-  };
-
-  const updateQuantity = async (
-    shoppingListId: string,
-    newQuantity: number
+  const removeFromShoppingList = async (
+    itemId: string,
+    quantityToRemove?: number
   ) => {
     try {
-      if (newQuantity <= 0) {
-        removeFromShoppingList(shoppingListId);
+      const item = shoppingListItems.find((item) => item.id === itemId);
+      if (!item) {
+        console.error('삭제할 아이템을 찾을 수 없습니다:', itemId);
         return;
       }
 
+      // quantityToRemove가 지정되지 않았거나 전체 수량과 같으면 전체 삭제
+      const removeQuantity = quantityToRemove || item.quantity;
+
+      // 디버깅: ID 값들 확인
+      console.log('삭제 요청 데이터:', {
+        shoppingListId: item.shoppingListId,
+        itemId: item.id,
+        parsedItemId: parseInt(item.id),
+        quantityToRemove: removeQuantity,
+        itemName: item.name,
+      });
+
+      // API 호출하여 서버에서 아이템 삭제
+      const response = await ShoppingAPI.removeShoppingItem({
+        shoppingListId: parseInt(item.shoppingListId), // 장바구니 ID
+        itemId: parseInt(item.id), // 아이템 ID - string을 number로 변환
+        quantityToRemove: removeQuantity,
+      });
+
+      console.log('삭제 API 응답:', response);
+
+      // 성공 시 로컬 상태 업데이트
+      if (removeQuantity >= item.quantity) {
+        // 전체 삭제
+        setShoppingListItems((prev) =>
+          prev.filter((item) => item.id !== itemId)
+        );
+      } else {
+        // 부분 삭제 (수량만 감소)
+        setShoppingListItems((prev) =>
+          prev.map((item) =>
+            item.id === itemId
+              ? { ...item, quantity: item.quantity - removeQuantity }
+              : item
+          )
+        );
+      }
+    } catch (err) {
+      console.error('상품 삭제 중 오류:', err);
+      if (err instanceof Error) {
+        setError(`상품 삭제에 실패했습니다: ${err.message}`);
+      } else {
+        setError('상품 삭제에 실패했습니다.');
+      }
+    }
+  };
+
+  // 장바구니 상품 수량 업데이트 함수
+  const updateShoppingItemQuantity = async (
+    item: ShoppingListProduct,
+    newQuantity: number
+  ) => {
+    try {
+      // 디버깅: 수량 업데이트 요청 데이터 확인
+      console.log('수량 업데이트 요청 데이터:', {
+        itemName: item.name,
+        quantity: 1, // + 버튼으로 추가할 때는 항상 1
+        category: item.category,
+        memo: `수량 추가: ${item.quantity} → ${newQuantity}`,
+      });
+
+      // API 호출하여 서버에서 상품 수량 업데이트
+      // /api/shopping/add-item API 사용
+      const response = await ShoppingAPI.addItem({
+        itemName: item.name,
+        quantity: 1, // + 버튼으로 추가할 때는 항상 1
+        category: item.category,
+        memo: `수량 추가: ${item.quantity} → ${newQuantity}`,
+      });
+
+      console.log('수량 업데이트 API 응답:', response);
+
+      // 성공 시 로컬 상태 업데이트
       setShoppingListItems((prev) =>
-        prev.map((item) =>
-          item.shoppingListId === shoppingListId
-            ? { ...item, quantity: newQuantity }
-            : item
+        prev.map((prevItem) =>
+          prevItem.id === item.id
+            ? { ...prevItem, quantity: newQuantity }
+            : prevItem
         )
       );
     } catch (err) {
+      console.error('상품 수량 업데이트 중 오류:', err);
+      if (err instanceof Error) {
+        setError(`상품 수량 업데이트에 실패했습니다: ${err.message}`);
+      } else {
+        setError('상품 수량 업데이트에 실패했습니다.');
+      }
+    }
+  };
+
+  const updateQuantity = async (itemId: string, newQuantity: number) => {
+    try {
+      if (newQuantity <= 0) {
+        // 수량이 0 이하가 되면 전체 삭제
+        await removeFromShoppingList(itemId);
+        return;
+      }
+
+      const currentItem = shoppingListItems.find((item) => item.id === itemId);
+      if (!currentItem) return;
+
+      if (newQuantity < currentItem.quantity) {
+        // 수량이 줄어드는 경우: 삭제 API 호출
+        const quantityToRemove = currentItem.quantity - newQuantity;
+        await removeFromShoppingList(itemId, quantityToRemove);
+      } else if (newQuantity > currentItem.quantity) {
+        // 수량이 늘어나는 경우: 수량 업데이트 API 호출
+        await updateShoppingItemQuantity(currentItem, newQuantity);
+      }
+      // 수량이 같은 경우는 아무것도 하지 않음
+    } catch (err) {
+      console.error('수량 변경 중 오류:', err);
       setError('수량 변경에 실패했습니다.');
     }
   };
 
   // 체크박스 토글 함수
-  const toggleCompleted = (shoppingListId: string) => {
+  const toggleCompleted = (itemId: string) => {
     setShoppingListItems((prev) =>
       prev.map((item) =>
-        item.shoppingListId === shoppingListId
-          ? { ...item, completed: !item.completed }
-          : item
+        item.id === itemId ? { ...item, completed: !item.completed } : item
       )
     );
   };
@@ -289,7 +389,7 @@ export default function ShoppingListPage() {
               <h2 className="text-lg font-semibold">상품 목록</h2>
               {shoppingListItems.map((item) => (
                 <div
-                  key={item.shoppingListId}
+                  key={item.id}
                   className={`bg-white rounded-xl p-4 shadow-sm transition-all ${
                     item.completed ? 'opacity-60' : ''
                   }`}
@@ -298,7 +398,7 @@ export default function ShoppingListPage() {
                     <div className="flex items-center space-x-4">
                       {/* 체크박스 */}
                       <button
-                        onClick={() => toggleCompleted(item.shoppingListId)}
+                        onClick={() => toggleCompleted(item.id)}
                         className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
                           item.completed
                             ? 'bg-green-500 border-green-500 text-white'
@@ -361,10 +461,7 @@ export default function ShoppingListPage() {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() =>
-                            updateQuantity(
-                              item.shoppingListId,
-                              item.quantity - 1
-                            )
+                            updateQuantity(item.id, item.quantity - 1)
                           }
                           className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200"
                         >
@@ -375,10 +472,7 @@ export default function ShoppingListPage() {
                         </span>
                         <button
                           onClick={() =>
-                            updateQuantity(
-                              item.shoppingListId,
-                              item.quantity + 1
-                            )
+                            updateQuantity(item.id, item.quantity + 1)
                           }
                           className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200"
                         >
@@ -387,9 +481,7 @@ export default function ShoppingListPage() {
                       </div>
                     </div>
                     <button
-                      onClick={() =>
-                        removeFromShoppingList(item.shoppingListId)
-                      }
+                      onClick={() => removeFromShoppingList(item.id)}
                       className="text-xs text-red-500 hover:text-red-700"
                     >
                       삭제

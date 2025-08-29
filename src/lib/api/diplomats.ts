@@ -192,6 +192,18 @@ export interface CompleteItemsRequest {
   itemIds: number[];
   reason?: string;
 }
+
+export interface RemoveShoppingItemRequest {
+  shoppingListId: number;
+  itemId: number;
+  quantityToRemove: number;
+}
+
+export interface UpdateShoppingItemQuantityRequest {
+  shoppingListId: number;
+  itemId: number;
+  newQuantity: number;
+}
 export interface FrequentItemResponse {
   itemName: string;
   category: string;
@@ -334,6 +346,20 @@ export const ShoppingAPI = {
       .delete<
         ApiResponse<object>
       >(`/api/favorites?itemName=${encodeURIComponent(itemName)}&marketName=${encodeURIComponent(marketName)}`)
+      .then((r) => r.data),
+
+  // 장바구니 아이템 삭제 API
+  removeShoppingItem: (payload: RemoveShoppingItemRequest) =>
+    client
+      .delete<
+        ApiResponse<object>
+      >('/api/shopping/lists/items', { data: payload })
+      .then((r) => r.data),
+
+  // 장바구니 아이템 수량 업데이트 API
+  updateShoppingItemQuantity: (payload: UpdateShoppingItemQuantityRequest) =>
+    client
+      .patch<ApiResponse<object>>('/api/shopping/lists/items/quantity', payload)
       .then((r) => r.data),
 };
 
