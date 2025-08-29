@@ -20,31 +20,24 @@ export async function GET(request: NextRequest) {
     // 쿠키 설정
     // 액세스 토큰 쿠키 (1시간 만료)
     await setServerSideCookie('access_token', token, {
-      maxAge: 60 * 60, // 1시간
+      maxAge: 60 * 60,
+      httpOnly: false,
     });
 
     // 리프레시 토큰 쿠키 (30일 만료)
     if (refresh) {
       await setServerSideCookie('refresh_token', refresh, {
-        maxAge: 30 * 24 * 60 * 60, // 30일
+        maxAge: 30 * 24 * 60 * 60,
+        httpOnly: false,
       });
     }
 
     // 사용자 ID 쿠키
     await setServerSideCookie('user_id', userId, {
-      maxAge: 30 * 24 * 60 * 60, // 30일
+      maxAge: 30 * 24 * 60 * 60,
+      httpOnly: false,
     });
 
-    // 로그인 성공 로그
-    console.log('✅ 카카오 로그인 성공!');
-    console.log('👤 사용자 ID:', userId);
-    console.log('🔑 액세스 토큰:', token.substring(0, 50) + '...');
-    if (refresh) {
-      console.log('🔄 리프레시 토큰:', refresh.substring(0, 50) + '...');
-    }
-    console.log('🍪 쿠키 저장 완료 - 대시보드로 리다이렉트 중...');
-
-    // 로그인 성공 후 대시보드로 리다이렉트
     return NextResponse.redirect(new URL('/mypage', request.url));
   } catch (error) {
     console.error('토큰 처리 에러:', error);
