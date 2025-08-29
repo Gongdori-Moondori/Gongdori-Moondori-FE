@@ -14,7 +14,7 @@ function getCookie(name: string): string | null {
 
 const client = axios.create({
   baseURL: BASE_URL,
-  withCredentials: true,
+  withCredentials: false,
 });
 
 let isRefreshing = false;

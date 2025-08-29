@@ -5,12 +5,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { createWorker } from 'tesseract.js';
 import PageHeader from '@/components/layout/PageHeader';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { ShoppingAPI } from '@/lib/api/diplomats';
 
 function ScanResultContent() {
   const [ocrResult, setOcrResult] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string>('');
   const [extractedItems, setExtractedItems] = useState<string[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   const imageUrl = searchParams.get('image');
@@ -105,10 +107,37 @@ function ScanResultContent() {
     router.back();
   };
 
-  const handleSaveToList = () => {
-    // TODO: 추출된 항목들을 사용자의 쇼핑 리스트에 저장
-    alert('쇼핑 리스트에 저장되었습니다!');
-    router.push('/');
+  const handleSaveToList = async () => {
+    if (extractedItems.length === 0) {
+      alert('저장할 항목이 없습니다.');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      // diplomats.ts API를 사용하여 쇼핑 리스트 생성
+      const shoppingItems = extractedItems.map((item) => ({
+        itemName: item,
+        category: '기타', // 기본 카테고리
+        quantity: 1, // 기본 수량
+      }));
+
+      const response = await ShoppingAPI.createShoppingList({
+        items: shoppingItems,
+      });
+
+      if (response.success) {
+        alert('쇼핑 리스트에 저장되었습니다!');
+        router.push('/mypage/shopping-list');
+      } else {
+        throw new Error(response.message || '저장 실패');
+      }
+    } catch (err) {
+      console.error('쇼핑 리스트 저장 실패:', err);
+      alert('쇼핑 리스트 저장에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (!imageUrl) {
@@ -190,9 +219,10 @@ function ScanResultContent() {
               <div className="mt-4 flex space-x-3">
                 <button
                   onClick={handleSaveToList}
-                  className="flex-1 bg-primary-500 hover:bg-primary-600 text-white py-3 px-4 rounded-lg transition-colors"
+                  disabled={isSaving}
+                  className="flex-1 bg-primary-500 hover:bg-primary-600 disabled:bg-gray-400 text-white py-3 px-4 rounded-lg transition-colors"
                 >
-                  리스트에 저장
+                  {isSaving ? '저장 중...' : '리스트에 저장'}
                 </button>
                 <button
                   onClick={handleRetry}

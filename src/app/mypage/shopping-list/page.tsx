@@ -5,6 +5,7 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 import PageHeader from '@/components/layout/PageHeader';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorMessage from '@/components/ui/ErrorMessage';
+import { ShoppingAPI, type ShoppingListResponse } from '@/lib/api/diplomats';
 
 interface Product {
   id: string;
@@ -56,34 +57,45 @@ export default function ShoppingListPage() {
   const fetchShoppingList = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/db.json');
-      const data = await response.json();
 
-      const shoppingList: ShoppingListItem[] = data.shoppingList || [];
-      const products: Product[] = data.products || [];
-      const markets: Market[] = data.markets || [];
+      const res = await ShoppingAPI.getUserShoppingLists();
+      if (!res.success) {
+        throw new Error(res.message || '장바구니 조회 실패');
+      }
 
-      // 장보기 리스트와 상품 데이터를 조합
-      const shoppingListProductsData = shoppingList
-        .map((item) => {
-          const product = products.find(
-            (p) => parseInt(p.id) === item.productId
-          );
-          if (product) {
-            return {
-              ...product,
-              quantity: item.quantity,
-              addedAt: item.addedAt,
-              shoppingListId: item.id,
-              completed: false, // 초기값은 false (미완료 상태)
-            };
-          }
-          return null;
-        })
-        .filter(Boolean) as ShoppingListProduct[];
+      const lists: ShoppingListResponse[] = res.data || [];
+      const first = lists[0];
 
-      setShoppingListItems(shoppingListProductsData);
-      setMarkets(markets);
+      if (!first || !first.items) {
+        setShoppingListItems([]);
+        setMarkets([]);
+        setLoading(false);
+        return;
+      }
+
+      const mapped: ShoppingListProduct[] = first.items
+        .map((it) => ({
+          id: String(it.id),
+          emoji: '/assets/tomato.svg',
+          name: it.itemName,
+          category: it.category,
+          marketPrice: it.unitPrice ?? 0,
+          supermarketPrice: 0,
+          savings: 0,
+          marketId: 0,
+          inStock: true,
+          description: undefined as unknown as string,
+        }))
+        .map((p, idx) => ({
+          ...(p as unknown as Product),
+          quantity: first.items[idx]?.quantity ?? 1,
+          addedAt: new Date(first.createdAt).toISOString(),
+          shoppingListId: String(first.items[idx]?.id),
+          completed: first.items[idx]?.status === 'PURCHASED',
+        }));
+
+      setShoppingListItems(mapped);
+      setMarkets([]);
     } catch (err) {
       setError('장보기 리스트를 불러오는데 실패했습니다.');
     } finally {
@@ -112,7 +124,6 @@ export default function ShoppingListPage() {
 
   const removeFromShoppingList = async (shoppingListId: string) => {
     try {
-      // 실제 API 호출 대신 로컬 상태 업데이트
       setShoppingListItems((prev) =>
         prev.filter((item) => item.shoppingListId !== shoppingListId)
       );
@@ -163,7 +174,6 @@ export default function ShoppingListPage() {
     if (uncompletedItems.length > 0) {
       setShowConfirmDialog(true);
     } else {
-      // 모든 상품이 체크되어 있으면 바로 완료
       completeShoppingList();
     }
   };
@@ -172,7 +182,6 @@ export default function ShoppingListPage() {
   const completeShoppingList = () => {
     setShoppingListItems([]);
     setShowConfirmDialog(false);
-    // 성공 메시지나 다른 화면으로 이동할 수도 있음
     alert('장보기가 완료되었습니다!');
   };
 
@@ -420,7 +429,7 @@ export default function ShoppingListPage() {
             <div className="flex space-x-3">
               <button
                 onClick={handleDialogCancel}
-                className="flex-1 py-3 px-4 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                className="flex-1 py-3 px-4 bg_GRAY-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
               >
                 취소
               </button>

@@ -6,6 +6,7 @@ import BottomNavigation from '@/components/layout/BottomNavigation';
 import PageHeader from '@/components/layout/PageHeader';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorMessage from '@/components/ui/ErrorMessage';
+import { ShoppingAPI, type FrequentItemResponse } from '@/lib/api/diplomats';
 
 interface Product {
   id: string;
@@ -46,72 +47,37 @@ export default function FrequentlyPurchasedPage() {
   const [sortBy, setSortBy] = useState<'count' | 'recent' | 'savings'>('count');
 
   useEffect(() => {
-    generateFrequentlyPurchasedData();
+    loadFrequentItems();
   }, []);
 
-  const generateFrequentlyPurchasedData = async () => {
+  const loadFrequentItems = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/db.json');
-      const data = await response.json();
+      const res = await ShoppingAPI.getFrequentItems();
+      if (!res.success) throw new Error(res.message || '조회 실패');
 
-      const products: Product[] = data.products || [];
-      const purchaseHistory = data.purchaseHistory || [];
+      const items: FrequentItemResponse[] = res.data || [];
+      const mapped: FrequentlyPurchasedProduct[] = items.map((it, idx) => ({
+        id: String(idx + 1),
+        emoji: '/assets/tomato.svg',
+        name: it.itemName,
+        category: it.category,
+        marketPrice: Math.round(it.averagePrice || 0),
+        supermarketPrice: 0,
+        savings: 0,
+        marketId: 0,
+        inStock: true,
+        purchaseCount: it.purchaseCount,
+        lastPurchaseDate: it.lastPurchaseDate,
+        totalSpent: Math.round(it.totalSpent || 0),
+        totalSavings: 0,
+        averagePrice: Math.round(it.averagePrice || 0),
+      }));
 
-      // 구매 이력을 기반으로 자주 구매한 상품 데이터 생성
-      const productPurchaseMap = new Map();
-
-      purchaseHistory.forEach((purchase: PurchaseData) => {
-        const productId = purchase.productId;
-        if (!productPurchaseMap.has(productId)) {
-          productPurchaseMap.set(productId, {
-            purchases: [],
-            totalQuantity: 0,
-            totalSpent: 0,
-          });
-        }
-
-        const existing = productPurchaseMap.get(productId);
-        existing.purchases.push(purchase);
-        existing.totalQuantity += purchase.quantity;
-        existing.totalSpent += purchase.price * purchase.quantity;
-      });
-
-      const frequentData: FrequentlyPurchasedProduct[] = [];
-
-      productPurchaseMap.forEach((purchaseData, productId) => {
-        const product = products.find((p) => parseInt(p.id) === productId);
-        if (product && purchaseData.purchases.length >= 2) {
-          // 최소 2회 이상 구매한 상품만
-          const purchaseCount = purchaseData.purchases.length;
-          const lastPurchase = purchaseData.purchases.sort(
-            (a: PurchaseData, b: PurchaseData) =>
-              new Date(b.purchaseDate).getTime() -
-              new Date(a.purchaseDate).getTime()
-          )[0];
-
-          const totalSpent = purchaseData.totalSpent;
-          const totalSavings = product.savings * purchaseData.totalQuantity;
-          const averagePrice = Math.floor(
-            totalSpent / purchaseData.totalQuantity
-          );
-
-          frequentData.push({
-            ...product,
-            purchaseCount,
-            lastPurchaseDate: lastPurchase.purchaseDate,
-            totalSpent,
-            totalSavings,
-            averagePrice,
-          });
-        }
-      });
-
-      // 구매 횟수로 정렬
-      frequentData.sort((a, b) => b.purchaseCount - a.purchaseCount);
-
-      setFrequentProducts(frequentData);
-    } catch {
+      // 기본 정렬: 구매 횟수
+      mapped.sort((a, b) => b.purchaseCount - a.purchaseCount);
+      setFrequentProducts(mapped);
+    } catch (_e) {
       setError('자주 구매한 상품 데이터를 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
@@ -127,7 +93,6 @@ export default function FrequentlyPurchasedPage() {
       );
     }
 
-    // 정렬
     switch (sortBy) {
       case 'count':
         return filtered.sort((a, b) => b.purchaseCount - a.purchaseCount);
@@ -163,9 +128,9 @@ export default function FrequentlyPurchasedPage() {
     return `${Math.floor(diffDays / 30)}개월 전`;
   };
 
-  const addToCart = async (product: FrequentlyPurchasedProduct) => {
+  const addToCart = async (_product: FrequentlyPurchasedProduct) => {
     try {
-      alert(`${product.name}이(가) 장보기 리스트에 추가되었습니다!`);
+      alert('장보기 리스트에 추가되었습니다!');
     } catch {
       setError('장보기 리스트 추가에 실패했습니다.');
     }

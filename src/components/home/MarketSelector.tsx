@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { marketAPI } from '@/lib/api/client';
+import { PriceDataAPI } from '@/lib/api/diplomats';
 
 interface Market {
   id: number;
@@ -28,8 +28,15 @@ export default function MarketSelector({
     // 시장 데이터 로딩
     const loadMarkets = async () => {
       try {
-        const data = await marketAPI.getMarkets();
-        setMarkets(data);
+        const res = await PriceDataAPI.getItemLists();
+        const names = res.data?.marketNames || [];
+        const mapped: Market[] = names.map((n: string, idx: number) => ({
+          id: idx + 1,
+          name: n,
+          location: '',
+          isActive: idx === 0,
+        }));
+        setMarkets(mapped);
       } catch (error) {
         console.error('Failed to load markets:', error);
       } finally {
@@ -87,18 +94,12 @@ export default function MarketSelector({
       <div className="relative w-full">
         <button
           onClick={toggleDropdown}
-          className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 w-full touch-feedback hover:bg-gray-50 transition-colors"
+          className="flex items-center justify-between p-4 bg.white rounded-lg border border-gray-200 w-full touch-feedback hover:bg-gray-50 transition-colors"
         >
           <div className="flex flex-col items-start">
             <span className="text-gray-900 font-medium text-left">
               {selectedMarket?.name || '시장을 선택하세요'}
             </span>
-            {/* TODO : 시장 위치 표시 할지 말지 결정 */}
-            {/* {selectedMarket?.location && (
-              <span className="text-sm text-gray-500">
-                {selectedMarket.location}
-              </span>
-            )} */}
           </div>
           <svg
             className={`w-5 h-5 text-gray-400 transform transition-transform ${
@@ -131,15 +132,6 @@ export default function MarketSelector({
               >
                 <div className="flex flex-col">
                   <span className="font-medium">{market.name}</span>
-                  {/* TODO : 시장 위치 표시 할지 말지 결정 */}
-                  {/* <span className="text-sm text-gray-500">
-                    {market.location}
-                  </span> */}
-                  {/* {selectedMarket?.id === market.id && (
-                    <span className="text-xs text-primary-600 mt-1">
-                      현재 선택됨
-                    </span>
-                  )} */}
                 </div>
               </button>
             ))}

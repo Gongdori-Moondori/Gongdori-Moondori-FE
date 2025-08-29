@@ -2,18 +2,24 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Category as APICategory, CategoryItem } from '@/lib/api/types';
-import { categoryAPI } from '@/lib/api/client';
+import { ShoppingAPI } from '@/lib/api/diplomats';
 import { IoChevronBack } from 'react-icons/io5';
 
+interface Category {
+  id: string;
+  name: string;
+  totalItems: number;
+  icon?: string;
+}
+
 interface CategoryDetailProps {
-  category: APICategory;
+  category: Category;
   onBack: () => void;
 }
 
 interface ItemCardProps {
-  item: CategoryItem;
-  onComparePrice?: (item: CategoryItem) => void;
+  item: string;
+  onComparePrice?: (item: string) => void;
 }
 
 function ItemCard({ item, onComparePrice }: ItemCardProps) {
@@ -21,8 +27,8 @@ function ItemCard({ item, onComparePrice }: ItemCardProps) {
     <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between">
         <div>
-          <h4 className="font-medium text-gray-900">{item.name}</h4>
-          <p className="text-sm text-gray-600">{item.unit}</p>
+          <h4 className="font-medium text-gray-900">{item}</h4>
+          <p className="text-sm text-gray-600">상품</p>
         </div>
         <button
           onClick={() => onComparePrice?.(item)}
@@ -39,28 +45,41 @@ export default function CategoryDetail({
   category,
   onBack,
 }: CategoryDetailProps) {
-  const [categoryItems, setCategoryItems] = useState<CategoryItem[]>([]);
+  const [categoryItems, setCategoryItems] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const fetchCategoryItems = async () => {
       try {
-        const data = await categoryAPI.getCategoryItems(category.id);
-        setCategoryItems(data);
+        const response = await ShoppingAPI.getItemsByCategory(category.name);
+        if (response?.success) {
+          const data = response.data as unknown;
+          const items = Array.isArray(data)
+            ? data
+            : Array.isArray((data as { items?: unknown[] })?.items)
+              ? (data as { items: unknown[] }).items
+              : Array.isArray((data as { itemNames?: unknown[] })?.itemNames)
+                ? (data as { itemNames: unknown[] }).itemNames
+                : [];
+          setCategoryItems(items as string[]);
+        } else {
+          setCategoryItems([]);
+        }
       } catch (error) {
         console.error('카테고리 아이템 로드 실패:', error);
+        setCategoryItems([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchCategoryItems();
-  }, [category.id]);
+  }, [category.name]);
 
-  const handleComparePrice = (item: CategoryItem) => {
+  const handleComparePrice = (item: string) => {
     // 가격 비교 페이지로 이동
-    router.push(`/scan/price-compare?item=${encodeURIComponent(item.name)}`);
+    router.push(`/scan/price-compare?item=${encodeURIComponent(item)}`);
   };
 
   return (
@@ -74,7 +93,7 @@ export default function CategoryDetail({
           >
             <IoChevronBack className="w-6 h-6 text-gray-600" />
           </button>
-          <div className="text-2xl">{category.emoji}</div>
+          <div className="text-2xl">{category.icon || '🛒'}</div>
           <h1 className="text-xl font-bold text-gray-900">{category.name}</h1>
         </div>
       </div>
@@ -96,9 +115,9 @@ export default function CategoryDetail({
               </span>
             </div>
 
-            {categoryItems.map((item) => (
+            {categoryItems.map((item, index) => (
               <ItemCard
-                key={item.id}
+                key={index}
                 item={item}
                 onComparePrice={handleComparePrice}
               />

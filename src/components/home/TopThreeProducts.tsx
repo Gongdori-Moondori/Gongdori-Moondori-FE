@@ -1,18 +1,26 @@
 import Image from 'next/image';
 import { useEffect, useState, useCallback } from 'react';
-import { topProductAPI } from '@/lib/api/client';
-import { TopProduct } from '@/lib/api/types';
+import {
+  RecommendationAPI,
+  type SeasonalRecommendation,
+} from '@/lib/api/diplomats';
 
 interface TopThreeProductsProps {
   userName?: string;
   marketId?: number; // 현재 선택된 마켓 ID
 }
 
+interface SimpleTopProduct {
+  id: number;
+  emoji: string;
+  name: string;
+  savings: number;
+}
+
 export default function TopThreeProducts({
   userName = '사용자',
-  marketId = 1, // 기본값으로 첫 번째 마켓 선택
 }: TopThreeProductsProps) {
-  const [products, setProducts] = useState<TopProduct[]>([]);
+  const [products, setProducts] = useState<SimpleTopProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,13 +29,18 @@ export default function TopThreeProducts({
       setIsLoading(true);
       setError(null);
 
-      console.log('TopThreeProducts: Fetching data for marketId:', marketId);
+      const res = await RecommendationAPI.getSeasonal();
+      if (!res.success) throw new Error(res.message || '조회 실패');
 
-      const topProducts = await topProductAPI.getTopProducts(marketId);
-      const limitedProducts = topProducts.slice(0, 3); // TOP 3만 가져오기
+      const list: SeasonalRecommendation[] = res.data || [];
+      const top3 = list.slice(0, 3).map((it, idx) => ({
+        id: idx + 1,
+        emoji: '/assets/tomato.svg',
+        name: it.itemName,
+        savings: Math.floor((it.seasonalScore || 0) * 1000),
+      }));
 
-      console.log('TopThreeProducts: Fetched products:', limitedProducts);
-      setProducts(limitedProducts);
+      setProducts(top3);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.'
@@ -35,7 +48,7 @@ export default function TopThreeProducts({
     } finally {
       setIsLoading(false);
     }
-  }, [marketId]);
+  }, []);
 
   useEffect(() => {
     fetchTopProducts();
@@ -45,11 +58,8 @@ export default function TopThreeProducts({
     fetchTopProducts();
   };
 
-  const handleProductClick = (productId: number) => {
-    const product = products.find((p) => p.id === productId);
-    if (product) {
-      alert(`${product.name}이(가) 장보기 리스트에 추가되었습니다!`);
-    }
+  const handleProductClick = (_productId: number) => {
+    // 클릭시 장바구니 추가 등 액션 훅킹 가능
   };
 
   if (error) {
@@ -128,16 +138,12 @@ export default function TopThreeProducts({
             >
               <div className="flex flex-row gap-4">
                 <div className="flex flex-col items-center justify-center gap-3 ">
-                  {product.emoji.startsWith('/') ? (
-                    <Image
-                      src={product.emoji}
-                      alt={product.name}
-                      width={24}
-                      height={24}
-                    />
-                  ) : (
-                    <span className="text-2xl">{product.emoji}</span>
-                  )}
+                  <Image
+                    src={product.emoji}
+                    alt={product.name}
+                    width={24}
+                    height={24}
+                  />
                 </div>
                 <div className="flex flex-col">
                   <span className="font-medium">
@@ -149,7 +155,7 @@ export default function TopThreeProducts({
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">
+                <span className="text-sm font.medium">
                   {product.name} 구매하고
                 </span>
                 <div className="flex items-center gap-2">

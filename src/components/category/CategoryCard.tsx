@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Category } from '@/lib/api/types';
 
 interface CategoryCardProps {
@@ -15,7 +16,12 @@ export default function CategoryCard({ category, onClick }: CategoryCardProps) {
       className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer touch-feedback"
     >
       <div className="flex items-center justify-between mb-3">
-        <div className="text-3xl">{category.emoji}</div>
+        <Image
+          src={category.emoji}
+          alt={category.name}
+          width={32}
+          height={32}
+        />
         <div className="text-sm text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
           {category.totalItems}개
         </div>

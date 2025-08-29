@@ -14,7 +14,8 @@ import {
 } from 'react-icons/io5';
 import PageHeader from '@/components/layout/PageHeader';
 import BackButton from '@/components/layout/BackButton';
-import { priceCompareAPI } from '@/lib/api/client';
+// 레거시 JSON 서버 API 호출 제거 (Diplomats API 전환 전 임시 비활성화)
+// import { priceCompareAPI } from '@/lib/api/client';
 import { MarketInfo } from '@/lib/api/types';
 import Image from 'next/image';
 
@@ -34,15 +35,13 @@ export default function PriceComparePage() {
     }
   }, [searchParams]);
 
-  const fetchMarketPrices = async (productName: string) => {
+  const fetchMarketPrices = async (_productName: string) => {
     setIsLoading(true);
-
     try {
-      const data = await priceCompareAPI.getProductPrices(productName);
-      setMarkets(data);
+      // TODO: Diplomats API 연동으로 대체 예정
+      setMarkets([]);
     } catch (error) {
       console.error('가격 비교 데이터 로드 실패:', error);
-      // 에러 발생 시 빈 배열로 설정
       setMarkets([]);
     } finally {
       setIsLoading(false);
@@ -74,14 +73,7 @@ export default function PriceComparePage() {
 
   const handleAddToCart = async (market: MarketInfo) => {
     try {
-      await priceCompareAPI.addToCartWithMarket({
-        productName: itemName,
-        marketName: market.name,
-        price: market.price,
-        userId: 1, // 임시 사용자 ID
-        quantity: 1,
-      });
-
+      // TODO: 실제 장바구니 API 연동 예정
       alert(`${market.name}에서 ${itemName}을(를) 장바구니에 추가했습니다.`);
     } catch (error) {
       console.error('장바구니 추가 실패:', error);

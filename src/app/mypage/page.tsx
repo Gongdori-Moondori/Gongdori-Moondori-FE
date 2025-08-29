@@ -13,6 +13,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { getCurrentUser, logout, type UserProfile } from '@/lib/api/auth';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { ShoppingAPI, type FrequentItemResponse } from '@/lib/api/diplomats';
 
 interface Product {
   id: string;
@@ -134,71 +135,35 @@ export default function MyPage() {
   }, []);
 
   useEffect(() => {
-    generateFrequentlyPurchasedData();
+    loadFrequentItems();
   }, []);
 
-  const generateFrequentlyPurchasedData = async () => {
+  const loadFrequentItems = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/db.json');
-      const data = await response.json();
+      const res = await ShoppingAPI.getFrequentItems();
+      if (!res.success) throw new Error(res.message || '조회 실패');
 
-      const products: Product[] = data.products || [];
-      const purchaseHistory = data.purchaseHistory || [];
+      const items: FrequentItemResponse[] = res.data || [];
+      const mapped: FrequentlyPurchasedProduct[] = items.map((it, idx) => ({
+        id: String(idx + 1),
+        emoji: '/assets/tomato.svg',
+        name: it.itemName,
+        category: it.category,
+        marketPrice: Math.round(it.averagePrice || 0),
+        supermarketPrice: 0,
+        savings: 0,
+        marketId: 0,
+        inStock: true,
+        purchaseCount: it.purchaseCount,
+        lastPurchaseDate: it.lastPurchaseDate,
+        totalSpent: Math.round(it.totalSpent || 0),
+        totalSavings: 0,
+        averagePrice: Math.round(it.averagePrice || 0),
+      }));
 
-      // 구매 이력을 기반으로 자주 구매한 상품 데이터 생성
-      const productPurchaseMap = new Map();
-
-      purchaseHistory.forEach((purchase: PurchaseData) => {
-        const productId = purchase.productId;
-        if (!productPurchaseMap.has(productId)) {
-          productPurchaseMap.set(productId, {
-            purchases: [],
-            totalQuantity: 0,
-            totalSpent: 0,
-          });
-        }
-
-        const existing = productPurchaseMap.get(productId);
-        existing.purchases.push(purchase);
-        existing.totalQuantity += purchase.quantity;
-        existing.totalSpent += purchase.price * purchase.quantity;
-      });
-
-      const frequentData: FrequentlyPurchasedProduct[] = [];
-
-      productPurchaseMap.forEach((purchaseData, productId) => {
-        const product = products.find((p) => parseInt(p.id) === productId);
-        if (product && purchaseData.purchases.length >= 2) {
-          // 최소 2회 이상 구매한 상품만
-          const purchaseCount = purchaseData.purchases.length;
-          const lastPurchase = purchaseData.purchases.sort(
-            (a: PurchaseData, b: PurchaseData) =>
-              new Date(b.purchaseDate).getTime() -
-              new Date(a.purchaseDate).getTime()
-          )[0];
-
-          const totalSpent = purchaseData.totalSpent;
-          const totalSavings = product.savings * purchaseData.totalQuantity;
-          const averagePrice = Math.floor(
-            totalSpent / purchaseData.totalQuantity
-          );
-
-          frequentData.push({
-            ...product,
-            purchaseCount,
-            lastPurchaseDate: lastPurchase.purchaseDate,
-            totalSpent,
-            totalSavings,
-            averagePrice,
-          });
-        }
-      });
-
-      // 구매 횟수로 정렬
-      frequentData.sort((a, b) => b.purchaseCount - a.purchaseCount);
-
-      setFrequentProducts(frequentData);
+      mapped.sort((a, b) => b.purchaseCount - a.purchaseCount);
+      setFrequentProducts(mapped);
     } catch {
       setError('자주 구매한 상품 데이터를 불러오는데 실패했습니다.');
     } finally {
@@ -427,19 +392,6 @@ export default function MyPage() {
             onLogout={handleLogout}
             onDeleteAccount={handleDeleteAccount}
           />
-
-          {/* 디버그 버튼 (개발용) */}
-          <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">
-              개발자 도구
-            </h3>
-            <button
-              onClick={handleDebugCookies}
-              className="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
-            >
-              🍪 쿠키 상태 확인
-            </button>
-          </div>
         </div>
       </main>
 
