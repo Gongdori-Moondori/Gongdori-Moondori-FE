@@ -486,7 +486,7 @@ const MapPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <PageHeader title="경동시장 내부 구획 맵" />
+      <PageHeader title="전통시장 찾기" />
       <main className="flex-1 p-4 pb-24 flex flex-col gap-4">
         <div className="space-y-4">
           {/* 경로 찾기 설정 */}
