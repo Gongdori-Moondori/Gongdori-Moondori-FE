@@ -23,6 +23,11 @@ const CATEGORY_ICON_SRC: Record<string, string> = {
   반찬: '/assets/pot.svg',
   토마토: '/assets/tomato.svg',
   수박: '/assets/watermelon.svg',
+  곡류: '/assets/rice.svg',
+  음료: '/assets/drink.svg',
+  가공식품: '/assets/artificial.svg',
+  생활용품: '/assets/life.svg',
+  소스: '/assets/sauce.svg',
 };
 
 const isAssetPath = (v: string): boolean =>
@@ -61,6 +66,11 @@ const getIconForCategory = (value: string): string => {
     return '/assets/pot.svg';
   if (v.includes('수박')) return '/assets/watermelon.svg';
   if (v.includes('토마토')) return '/assets/tomato.svg';
+  if (v.includes('곡류')) return '/assets/rice.svg';
+  if (v.includes('음료')) return '/assets/drink.svg';
+  if (v.includes('가공식품')) return '/assets/artificial.svg';
+  if (v.includes('생활용품')) return '/assets/life.svg';
+  if (v.includes('소스')) return '/assets/sauce.svg';
   return '/assets/vegetable.svg';
 };
 
