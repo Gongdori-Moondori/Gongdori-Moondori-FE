@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createWorker } from 'tesseract.js';

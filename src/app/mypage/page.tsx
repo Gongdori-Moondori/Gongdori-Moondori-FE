@@ -6,11 +6,11 @@ import {
   ProfileSection,
   MenuSection,
   ActionButtons,
-  type UserProfile,
   type MenuItem,
 } from '@/components/mypage';
 import ErrorMessage from '@/components/ui/ErrorMessage';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { getCurrentUser, logout, type UserProfile } from '@/lib/api/auth';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
@@ -44,14 +44,15 @@ interface PurchaseData {
 }
 
 export default function MyPage() {
-  // 사용자 프로필 데이터
-  const userProfile: UserProfile = {
-    name: '이예림',
+  // 사용자 프로필 상태
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    name: '',
     profileImage: '/assets/userImage1.svg',
-    totalSavings: 14543230000,
-  };
+    totalSavings: 0,
+  });
+  const [userLoading, setUserLoading] = useState(true);
 
-  // 메뉴 아이템 데이터 (필요시 커스텀 가능)
+  // 메뉴 아이템 데이터
   const menuItems: MenuItem[] = [
     {
       id: 'shopping-list',
@@ -69,25 +70,33 @@ export default function MyPage() {
         window.location.href = '/mypage/favorites';
       },
     },
-    // {
-    //   id: 'frequently-purchased',
-    //   title: '자주 구매한 상품',
-    //   icon: 'chart',
-    //   onClick: () => {
-    //     window.location.href = '/mypage/frequently-purchased';
-    //   },
-    // },
   ];
 
   // 액션 핸들러들
-  const handleLogout = () => {
-    // TODO: 로그아웃 로직 구현
-    console.log('로그아웃 클릭');
+  const handleLogout = async () => {
+    const success = await logout();
+    if (success) {
+      console.log('로그아웃 성공');
+      // 로그인 페이지로 리다이렉트
+      window.location.href = '/auth/login';
+    } else {
+      console.log('로그아웃 실패');
+    }
   };
 
   const handleDeleteAccount = () => {
-    // TODO: 계정 삭제 로직 구현
     console.log('계정 삭제 클릭');
+  };
+
+  // 디버그: 쿠키 상태 확인
+  const handleDebugCookies = async () => {
+    try {
+      const response = await fetch('/api/debug/cookies');
+      const data = await response.json();
+      console.log('🍪 쿠키 디버그 정보:', data);
+    } catch (error) {
+      console.error('쿠키 디버그 실패:', error);
+    }
   };
 
   const [frequentProducts, setFrequentProducts] = useState<
@@ -97,6 +106,32 @@ export default function MyPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('전체');
   const [sortBy, setSortBy] = useState<'count' | 'recent' | 'savings'>('count');
+
+  // 사용자 정보 가져오기
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        setUserLoading(true);
+        console.log('🔄 사용자 정보 로딩 시작...');
+        const profile = await getCurrentUser();
+        console.log('✅ 사용자 정보 로딩 완료:', profile);
+        setUserProfile(profile);
+      } catch (error) {
+        console.error('❌ 사용자 정보 로드 실패:', error);
+        // 에러 발생 시에도 기본값으로 설정
+        setUserProfile({
+          name: '사용자',
+          profileImage: '/assets/userImage1.svg',
+          totalSavings: 14543230000,
+        });
+      } finally {
+        setUserLoading(false);
+        console.log('🏁 사용자 정보 로딩 상태 완료');
+      }
+    };
+
+    loadUserProfile();
+  }, []);
 
   useEffect(() => {
     generateFrequentlyPurchasedData();
@@ -241,12 +276,19 @@ export default function MyPage() {
     return { totalPurchases, totalSpent, totalSavings };
   };
 
-  if (loading) {
+  if (loading || userLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
-        <PageHeader title="자주 구매한 상품" showBackButton />
+        <PageHeader title="내정보" showBackButton />
         <div className="flex-1 flex items-center justify-center">
-          <LoadingSpinner />
+          <div className="text-center">
+            <LoadingSpinner />
+            <p className="mt-4 text-gray-600">
+              {userLoading
+                ? '사용자 정보를 불러오는 중...'
+                : '데이터를 불러오는 중...'}
+            </p>
+          </div>
         </div>
         <BottomNavigation />
       </div>
@@ -268,6 +310,15 @@ export default function MyPage() {
   const stats = getTotalStats();
   const filteredProducts = getFilteredProducts();
 
+  // 디버깅: 사용자 정보 상태 확인
+  console.log('🔍 현재 사용자 정보 상태:', {
+    userProfile,
+    userLoading,
+    name: userProfile.name,
+    profileImage: userProfile.profileImage,
+    totalSavings: userProfile.totalSavings,
+  });
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 text-foreground">
       {/* 헤더 */}
@@ -278,7 +329,7 @@ export default function MyPage() {
         <div className="space-y-6">
           {/* 프로필 섹션 */}
           <ProfileSection
-            name={userProfile.name}
+            name={userProfile.name || '사용자'}
             profileImage={userProfile.profileImage}
             totalSavings={userProfile.totalSavings}
           />
@@ -376,6 +427,19 @@ export default function MyPage() {
             onLogout={handleLogout}
             onDeleteAccount={handleDeleteAccount}
           />
+
+          {/* 디버그 버튼 (개발용) */}
+          <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">
+              개발자 도구
+            </h3>
+            <button
+              onClick={handleDebugCookies}
+              className="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
+            >
+              🍪 쿠키 상태 확인
+            </button>
+          </div>
         </div>
       </main>
 

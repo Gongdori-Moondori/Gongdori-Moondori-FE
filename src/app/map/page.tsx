@@ -1,4 +1,5 @@
 'use client';
+
 import PageHeader from '@/components/layout/PageHeader';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import { useEffect, useState } from 'react';

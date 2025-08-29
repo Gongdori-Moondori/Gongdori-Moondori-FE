@@ -202,6 +202,10 @@
   --shadow-sm: rgba(0, 0, 0, 0.05);
   --shadow-md: rgba(0, 0, 0, 0.1);
   --shadow-lg: rgba(0, 0, 0, 0.15);
+
+  /* 소셜 로그인 컬러 */
+  --kakao-yellow: #fee500;
+  --kakao-brown: #3c1e1e;
 }
 
 /* Tailwind theme variables */
@@ -795,4 +799,15 @@ body {
   touch-action: pan-x;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
+}
+
+/* 카카오 색상 유틸리티 */
+.bg-kakao-yellow {
+  background-color: var(--kakao-yellow);
+}
+.text-kakao-brown {
+  color: var(--kakao-brown);
+}
+.border-kakao-yellow {
+  border-color: var(--kakao-yellow);
 }
