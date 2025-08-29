@@ -11,7 +11,6 @@ import {
   SavingsAPI,
 } from './diplomats';
 import type { CompleteItemsRequest } from './diplomats';
-import { AddToCartRequest, AddToFavoritesRequest } from './types';
 
 // Query Keys
 export const queryKeys = {
@@ -226,5 +225,50 @@ export const useSavingsStatistics = () => {
     queryKey: queryKeys.savings(),
     queryFn: SavingsAPI.getSavingsStatistics,
     staleTime: 1000 * 60 * 5, // 5분
+  });
+};
+
+// 즐겨찾기 관련 훅들
+export const useFavorites = () => {
+  return useQuery({
+    queryKey: ['favorites'],
+    queryFn: ShoppingAPI.getFavoriteItems,
+    staleTime: 1000 * 60 * 5, // 5분
+  });
+};
+
+export const useAddFavorite = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ShoppingAPI.addFavoriteItem,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+    },
+  });
+};
+
+export const useRemoveFavorite = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ favoriteId }: { favoriteId: string }) =>
+      ShoppingAPI.removeFavoriteItem(favoriteId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+    },
+  });
+};
+
+export const useAddToCart = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ShoppingAPI.addItem,
+    onSuccess: () => {
+      // 장보기 리스트 관련 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: ['shopping', 'lists'] });
+      queryClient.invalidateQueries({ queryKey: ['shopping', 'current'] });
+    },
   });
 };

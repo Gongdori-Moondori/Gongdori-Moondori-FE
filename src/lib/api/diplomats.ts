@@ -341,11 +341,9 @@ export const ShoppingAPI = {
       .get<ApiResponse<AddFavoriteItemRequest[]>>('/api/favorites')
       .then((r) => r.data),
 
-  removeFavoriteItem: (itemName: string, marketName: string) =>
+  removeFavoriteItem: (favoriteId: string) =>
     client
-      .delete<
-        ApiResponse<object>
-      >(`/api/favorites?itemName=${encodeURIComponent(itemName)}&marketName=${encodeURIComponent(marketName)}`)
+      .delete<ApiResponse<object>>(`/api/favorites/${favoriteId}`)
       .then((r) => r.data),
 
   // 장바구니 아이템 삭제 API

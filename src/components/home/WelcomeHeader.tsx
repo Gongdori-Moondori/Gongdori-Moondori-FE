@@ -17,11 +17,6 @@ export default function WelcomeHeader({
         boxShadow: '0 6px 15px 0 rgba(0, 0, 0, 0.15)',
       }}
     >
-      {/* 배경 장식 원들 */}
-      {/* <div className="absolute top-4 right-8 w-16 h-16 bg-white bg-opacity-20 rounded-full"></div>
-      <div className="absolute top-8 right-16 w-8 h-8 bg-white bg-opacity-30 rounded-full"></div>
-      <div className="absolute bottom-4 left-4 w-20 h-20 bg-white bg-opacity-10 rounded-full"></div> */}
-
       {/* 웰컴 메시지 */}
       <div className="flex items-center gap-3 mb-4">
         <Image src="/assets/chef.svg" alt="요리사" width={60} height={60} />
@@ -33,7 +28,7 @@ export default function WelcomeHeader({
       </div>
 
       <p className="text-sm opacity-90 mb-6">
-        오늘의 알지 추천은 어쩌고 저쩌고입니다.
+        오늘도 알지와 함께 소비를 즐겨보세요.
       </p>
 
       {/* 장보기 아이콘 */}

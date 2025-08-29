@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import BottomNavigation from '@/components/layout/BottomNavigation';
 import PageHeader from '@/components/layout/PageHeader';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import ErrorMessage from '@/components/ui/ErrorMessage';
+import { useFavorites, useRemoveFavorite } from '@/lib/api/hooks';
 
 interface Product {
   id: string;
@@ -18,73 +19,50 @@ interface Product {
   inStock: boolean;
 }
 
-interface Favorite {
-  id: string;
-  productId: number;
-  userId: number;
-  addedAt: string;
-}
-
-interface Market {
-  id: string;
-  name: string;
-  location: string;
-  isActive: boolean;
-}
-
 interface FavoriteProduct extends Product {
   addedAt: string;
   favoriteId: string;
 }
 
 export default function FavoritesPage() {
-  const [favoriteProducts, setFavoriteProducts] = useState<FavoriteProduct[]>(
-    []
-  );
-  const [markets, setMarkets] = useState<Market[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('전체');
 
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
+  // API 훅 사용
+  const { data: favoritesData, isLoading: loading, error } = useFavorites();
+  const removeFavorite = useRemoveFavorite();
 
-  const fetchFavorites = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('/db.json');
-      const data = await response.json();
+  // API 응답 구조 확인을 위한 디버깅
+  console.log('favoritesData:', favoritesData);
 
-      const favorites: Favorite[] = data.favorites || [];
-      const products: Product[] = data.products || [];
-      const markets: Market[] = data.markets || [];
+  // 기존 데이터 구조에 맞게 변환 (API 응답 구조에 맞춤)
+  const favoriteProducts =
+    (
+      favoritesData?.data as {
+        favorites?: Array<{
+          id: number;
+          itemName: string;
+          itemCategory: string;
+          favoritePrice: number;
+          createdAt: string;
+        }>;
+      }
+    )?.favorites?.map((fav) => ({
+      id: fav.id.toString(),
+      emoji: '/assets/tomato.svg', // 기본 이모지
+      name: fav.itemName,
+      category: fav.itemCategory,
+      marketPrice: fav.favoritePrice,
+      supermarketPrice: fav.favoritePrice * 1.2, // 임시로 20% 높게 설정
+      savings: fav.favoritePrice * 0.2, // 임시로 20% 절약으로 설정
+      marketId: 0,
+      inStock: true,
+      addedAt: fav.createdAt,
+      favoriteId: fav.id.toString(),
+    })) || [];
 
-      // 즐겨찾기와 상품 데이터를 조합
-      const favoriteProductsData = favorites
-        .map((favorite) => {
-          const product = products.find(
-            (p) => parseInt(p.id) === favorite.productId
-          );
-          if (product) {
-            return {
-              ...product,
-              addedAt: favorite.addedAt,
-              favoriteId: favorite.id,
-            };
-          }
-          return null;
-        })
-        .filter(Boolean) as FavoriteProduct[];
-
-      setFavoriteProducts(favoriteProductsData);
-      setMarkets(markets);
-    } catch (err) {
-      setError('즐겨찾기를 불러오는데 실패했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const markets = [
+    { id: '0', name: '경동시장', location: '동대문구', isActive: true },
+  ];
 
   const getMarketName = (marketId: number) => {
     const market = markets.find((m) => parseInt(m.id) === marketId);
@@ -102,12 +80,21 @@ export default function FavoritesPage() {
 
   const removeFromFavorites = async (favoriteId: string) => {
     try {
-      // 실제 API 호출 대신 로컬 상태 업데이트
-      setFavoriteProducts((prev) =>
-        prev.filter((item) => item.favoriteId !== favoriteId)
-      );
+      // API를 통해 즐겨찾기 제거
+      const itemName =
+        favoriteProducts.find(
+          (item: FavoriteProduct) => item.favoriteId === favoriteId
+        )?.name || '';
+      if (!itemName) {
+        alert('상품을 찾을 수 없습니다.');
+        return;
+      }
+
+      await removeFavorite.mutateAsync({ favoriteId });
+      alert(`${itemName}을(를) 즐겨찾기에서 제거했습니다.`);
     } catch (err) {
-      setError('즐겨찾기 삭제에 실패했습니다.');
+      console.error('즐겨찾기 삭제에 실패했습니다:', err);
+      alert('즐겨찾기 삭제에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -116,7 +103,7 @@ export default function FavoritesPage() {
       // 실제 API 호출 대신 알림 표시
       alert(`${product.name}이(가) 장보기 리스트에 추가되었습니다!`);
     } catch (err) {
-      setError('장보기 리스트 추가에 실패했습니다.');
+      console.error('장보기 리스트 추가에 실패했습니다:', err);
     }
   };
 
@@ -125,15 +112,15 @@ export default function FavoritesPage() {
       return favoriteProducts;
     }
     return favoriteProducts.filter(
-      (product) => product.category === selectedCategory
+      (product: FavoriteProduct) => product.category === selectedCategory
     );
   };
 
   const getCategories = () => {
     const categories = Array.from(
-      new Set(favoriteProducts.map((p) => p.category))
+      new Set(favoriteProducts.map((p: FavoriteProduct) => p.category))
     );
-    return ['전체', ...categories];
+    return ['전체', ...categories] as string[];
   };
 
   if (loading) {
@@ -153,7 +140,7 @@ export default function FavoritesPage() {
       <div className="min-h-screen flex flex-col bg-gray-50">
         <PageHeader title="즐겨찾기" showBackButton />
         <div className="flex-1 flex items-center justify-center p-6">
-          <ErrorMessage message={error} />
+          <ErrorMessage message="즐겨찾기를 불러오는데 실패했습니다." />
         </div>
         <BottomNavigation />
       </div>
@@ -190,7 +177,11 @@ export default function FavoritesPage() {
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary-500">
                     {favoriteProducts
-                      .reduce((total, item) => total + item.savings, 0)
+                      .reduce(
+                        (total: number, item: FavoriteProduct) =>
+                          total + item.savings,
+                        0
+                      )
                       .toLocaleString()}
                     원
                   </div>
@@ -216,8 +207,9 @@ export default function FavoritesPage() {
                     {category} (
                     {category === '전체'
                       ? favoriteProducts.length
-                      : favoriteProducts.filter((p) => p.category === category)
-                          .length}
+                      : favoriteProducts.filter(
+                          (p: FavoriteProduct) => p.category === category
+                        ).length}
                     )
                   </button>
                 ))}
@@ -229,7 +221,7 @@ export default function FavoritesPage() {
               <h2 className="text-lg font-semibold">
                 즐겨찾기 상품 ({getFilteredProducts().length}개)
               </h2>
-              {getFilteredProducts().map((item) => (
+              {getFilteredProducts().map((item: FavoriteProduct) => (
                 <div
                   key={item.favoriteId}
                   className="bg-white rounded-xl p-4 shadow-sm"
