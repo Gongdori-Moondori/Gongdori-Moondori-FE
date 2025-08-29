@@ -153,6 +153,15 @@ export interface AddShoppingItemRequest {
   category: string;
   memo?: string;
 }
+
+export interface AddFavoriteItemRequest {
+  itemName: string;
+  marketName: string;
+  price: number;
+  priceUnit: string;
+  memo?: string;
+}
+
 export interface CreateShoppingListRequest {
   items: ShoppingItemRequest[];
 }
@@ -307,6 +316,24 @@ export const ShoppingAPI = {
   updateItemCategories: () =>
     client
       .post<ApiResponse<object>>('/api/shopping/admin/update-categories')
+      .then((r) => r.data),
+
+  // 즐겨찾기 관련 API
+  addFavoriteItem: (payload: AddFavoriteItemRequest) =>
+    client
+      .post<ApiResponse<object>>('/api/favorites', payload)
+      .then((r) => r.data),
+
+  getFavoriteItems: () =>
+    client
+      .get<ApiResponse<AddFavoriteItemRequest[]>>('/api/favorites')
+      .then((r) => r.data),
+
+  removeFavoriteItem: (itemName: string, marketName: string) =>
+    client
+      .delete<
+        ApiResponse<object>
+      >(`/api/favorites?itemName=${encodeURIComponent(itemName)}&marketName=${encodeURIComponent(marketName)}`)
       .then((r) => r.data),
 };
 

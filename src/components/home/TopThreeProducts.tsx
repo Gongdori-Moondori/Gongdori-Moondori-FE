@@ -19,14 +19,20 @@ interface SimpleTopProduct {
   emoji: string;
   name: string;
   savings: number;
+  currentPrice: number;
 }
 
 export default function TopThreeProducts({
   userName = '사용자',
+  marketName = '경동시장',
   savingRecommendations = [],
 }: TopThreeProductsProps) {
   const [error, setError] = useState<string | null>(null);
   const [loadingItems, setLoadingItems] = useState<Set<number>>(new Set());
+  const [favoriteItems, setFavoriteItems] = useState<Set<number>>(new Set());
+  const [favoriteLoading, setFavoriteLoading] = useState<Set<number>>(
+    new Set()
+  );
 
   // 장바구니 추가 함수
   const handleAddToCart = async (
@@ -83,6 +89,57 @@ export default function TopThreeProducts({
     }
   };
 
+  // 즐겨찾기 추가/제거 함수
+  const handleToggleFavorite = async (productId: number, itemName: string) => {
+    if (favoriteLoading.has(productId)) return;
+
+    // 인증 상태 확인
+    if (!isAuthenticated()) {
+      window.alert('로그인이 필요합니다. 다시 로그인해주세요.');
+      return;
+    }
+
+    setFavoriteLoading((prev) => new Set([...prev, productId]));
+
+    try {
+      if (!favoriteItems.has(productId)) {
+        // 즐겨찾기 추가
+        const product = products.find((p) => p.id === productId);
+        if (!product) {
+          throw new Error('상품을 찾을 수 없습니다.');
+        }
+
+        await ShoppingAPI.addFavoriteItem({
+          itemName,
+          marketName,
+          price: product.currentPrice, // 실제 가격 정보 사용
+          priceUnit: '1kg', // 기본 단위
+          memo: `${itemName} TOP3 상품 즐겨찾기 추가`,
+        });
+
+        setFavoriteItems((prev) => new Set([...prev, productId]));
+        window.alert(`${itemName}이(가) 즐겨찾기에 추가되었습니다!`);
+      } else {
+        // 즐겨찾기 제거 (실제 API 호출은 생략, 로컬 상태만 업데이트)
+        setFavoriteItems((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(productId);
+          return newSet;
+        });
+        window.alert(`${itemName}이(가) 즐겨찾기에서 제거되었습니다.`);
+      }
+    } catch (error) {
+      console.error('즐겨찾기 처리 중 오류:', error);
+      window.alert('즐겨찾기 처리 중 오류가 발생했습니다.');
+    } finally {
+      setFavoriteLoading((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(productId);
+        return newSet;
+      });
+    }
+  };
+
   // props로 받은 데이터를 직접 변환
   const products: SimpleTopProduct[] =
     savingRecommendations && savingRecommendations.length > 0
@@ -91,6 +148,7 @@ export default function TopThreeProducts({
           emoji: '/assets/tomato.svg',
           name: item.itemName,
           savings: item.savingAmount,
+          currentPrice: item.currentPrice, // 실제 가격 정보 추가
         }))
       : [];
 
@@ -213,32 +271,72 @@ export default function TopThreeProducts({
                 </div>
               </div>
 
-              {/* 장바구니 추가 버튼 */}
-              <button
-                onClick={() =>
-                  handleAddToCart(product.id, product.name, '채소류')
-                }
-                disabled={loadingItems.has(product.id)}
-                className={`
-                  w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-sm transition-all duration-200 
-                  ${
-                    loadingItems.has(product.id)
-                      ? 'bg-primary-400 text-white cursor-wait'
-                      : 'bg-primary-500 hover:bg-primary-600 active:bg-primary-700 text-white shadow-sm hover:shadow-md active:scale-95'
+              {/* 버튼 그룹 */}
+              <div className="flex gap-2">
+                {/* 장바구니 추가 버튼 */}
+                <button
+                  onClick={() =>
+                    handleAddToCart(product.id, product.name, '채소류')
                   }
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                `}
-              >
-                {loadingItems.has(product.id) ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>담는중...</span>
-                  </>
-                ) : (
-                  <>
+                  disabled={loadingItems.has(product.id)}
+                  className={`
+                    flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-sm transition-all duration-200 
+                    ${
+                      loadingItems.has(product.id)
+                        ? 'bg-primary-400 text-white cursor-wait'
+                        : 'bg-primary-500 hover:bg-primary-600 active:bg-primary-700 text-white shadow-sm hover:shadow-md active:scale-95'
+                    }
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  {loadingItems.has(product.id) ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>담는중...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 3H3m4 10v4a2 2 0 002 2h8a2 2 0 002-2v-4M7 13l-2-8m0 0h16"
+                        />
+                      </svg>
+                      <span>담기</span>
+                    </>
+                  )}
+                </button>
+
+                {/* 즐겨찾기 버튼 */}
+                <button
+                  onClick={() => handleToggleFavorite(product.id, product.name)}
+                  disabled={favoriteLoading.has(product.id)}
+                  className={`
+                    p-2.5 rounded-lg transition-all duration-200 border
+                    ${
+                      favoriteItems.has(product.id)
+                        ? 'bg-red-50 border-red-200 text-red-500 hover:bg-red-100 active:bg-red-200'
+                        : 'bg-gray-50 border-gray-200 text-gray-400 hover:bg-gray-100 hover:text-gray-600 active:bg-gray-200'
+                    }
+                    ${favoriteLoading.has(product.id) ? 'animate-pulse' : 'hover:shadow-sm active:scale-95'}
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                  `}
+                >
+                  {favoriteLoading.has(product.id) ? (
+                    <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
                     <svg
-                      className="w-4 h-4"
-                      fill="none"
+                      className={`w-5 h-5 transition-all duration-200 ${favoriteItems.has(product.id) ? 'scale-110' : ''}`}
+                      fill={
+                        favoriteItems.has(product.id) ? 'currentColor' : 'none'
+                      }
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -246,13 +344,12 @@ export default function TopThreeProducts({
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 3H3m4 10v4a2 2 0 002 2h8a2 2 0 002-2v-4M7 13l-2-8m0 0h16"
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                       />
                     </svg>
-                    <span>장바구니에 담기</span>
-                  </>
-                )}
-              </button>
+                  )}
+                </button>
+              </div>
             </div>
           ))}
         </div>

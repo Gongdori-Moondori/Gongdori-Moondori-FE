@@ -7,7 +7,12 @@ import AIChatBot from '@/components/home/AIChatBot';
 import TopThreeProducts from '@/components/home/TopThreeProducts';
 import AllProductsSection from '@/components/home/AllProductsSection';
 import { useState, useEffect } from 'react';
-import { PriceDataAPI, AuthAPI, RecommendationAPI } from '@/lib/api/diplomats';
+import {
+  PriceDataAPI,
+  AuthAPI,
+  RecommendationAPI,
+  ShoppingAPI,
+} from '@/lib/api/diplomats';
 
 interface Market {
   id: number;

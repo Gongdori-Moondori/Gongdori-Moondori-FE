@@ -85,10 +85,43 @@ export default function ProductCard({
 
   const handleToggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onToggleFavorite && !isFavoriteLoading) {
+    if (!isFavoriteLoading) {
       setIsFavoriteLoading(true);
       try {
-        await onToggleFavorite(id);
+        // 인증 상태 확인
+        if (!isAuthenticated()) {
+          window.alert('로그인이 필요합니다. 다시 로그인해주세요.');
+          return;
+        }
+
+        if (!isFavorite) {
+          // 즐겨찾기 추가
+          try {
+            await ShoppingAPI.addFavoriteItem({
+              itemName: name,
+              marketName: marketName,
+              price: marketPrice,
+              priceUnit: '1kg', // 기본 단위, 필요시 props로 받을 수 있음
+              memo: `${name} 즐겨찾기 추가`,
+            });
+
+            // 성공 시 alert 표시
+            window.alert(`${name}이(가) 즐겨찾기에 추가되었습니다!`);
+
+            // 부모 컴포넌트의 콜백 함수 호출
+            if (onToggleFavorite) {
+              await onToggleFavorite(id);
+            }
+          } catch (error) {
+            console.error('즐겨찾기 추가 중 오류:', error);
+            window.alert('즐겨찾기 추가 중 오류가 발생했습니다.');
+          }
+        } else {
+          // 즐겨찾기 제거 (기존 로직)
+          if (onToggleFavorite) {
+            await onToggleFavorite(id);
+          }
+        }
       } finally {
         setTimeout(() => setIsFavoriteLoading(false), 300);
       }
