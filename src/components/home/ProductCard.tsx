@@ -94,7 +94,7 @@ export default function ProductCard({
       <p
         className={`font-bold text-lg mb-3 ${isInCart ? 'text-primary-600' : 'text-primary-500'}`}
       >
-        {savings.toLocaleString()}원 저렴해요
+        {Math.floor(savings).toLocaleString()}원 저렴해요
       </p>
       <div
         className={`space-y-1 text-xs ${isInCart ? 'text-gray-500' : 'text-gray-400'}`}
@@ -104,14 +104,16 @@ export default function ProductCard({
             <AiOutlineNotification />
           </span>
           <span>
-            {marketName} {marketPrice.toLocaleString()}
+            {marketName} {Math.floor(marketPrice).toLocaleString()}원
           </span>
         </div>
         <div className="flex items-center gap-1">
           <span>
             <AiTwotoneShop />
           </span>
-          <span>대형마트 {supermarketPrice.toLocaleString()}</span>
+          <span>
+            대형마트 {Math.floor(supermarketPrice).toLocaleString()}원
+          </span>
         </div>
       </div>
       <div className="flex items-center gap-2 mt-4">

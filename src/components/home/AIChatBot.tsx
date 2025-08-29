@@ -1,17 +1,18 @@
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
-import {
-  RecommendationAPI,
-  type SeasonalRecommendation,
-} from '@/lib/api/diplomats';
+import type { SeasonalRecommendationItem } from '@/lib/api/types';
 
 interface AIChatBotProps {
   userName?: string;
+  seasonalRecommendations?: SeasonalRecommendationItem[];
 }
 
-export default function AIChatBot({ userName = '사용자' }: AIChatBotProps) {
+export default function AIChatBot({
+  userName = '사용자',
+  seasonalRecommendations = [],
+}: AIChatBotProps) {
   const [recommendations, setRecommendations] = useState<
-    SeasonalRecommendation[]
+    SeasonalRecommendationItem[]
   >([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -22,18 +23,13 @@ export default function AIChatBot({ userName = '사용자' }: AIChatBotProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await RecommendationAPI.getSeasonal();
-        if (res.success) {
-          setRecommendations(res.data || []);
-        }
-      } catch {
-        setRecommendations([]);
-      }
-    };
-    load();
-  }, []);
+    // props로 받은 데이터가 있으면 사용, 없으면 빈 배열
+    if (seasonalRecommendations && seasonalRecommendations.length > 0) {
+      setRecommendations(seasonalRecommendations);
+    } else {
+      setRecommendations([]);
+    }
+  }, [seasonalRecommendations]);
 
   // 드래그 시작
   const handleDragStart = (clientX: number, clientY: number) => {

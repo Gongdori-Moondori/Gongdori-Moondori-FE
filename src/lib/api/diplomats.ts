@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import type { MarketRecommendationResponse } from './types';
 
 const BASE_URL = (
   (process.env.API_BASE_URL ||
@@ -300,7 +301,7 @@ export const RecommendationAPI = {
   getComprehensive: (marketName: string) =>
     client
       .get<
-        ApiResponse<unknown>
+        ApiResponse<MarketRecommendationResponse>
       >(`/api/recommendation/market/${encodeURIComponent(marketName)}/main`)
       .then((r) => r.data),
 };

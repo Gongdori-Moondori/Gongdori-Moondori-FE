@@ -9,6 +9,7 @@ import {
   ProductActionsProps,
 } from '@/components/product';
 import { ToastContainer, useToast } from '@/components/ui/Toast';
+import type { MarketVsMartComparison } from '@/lib/api/types';
 
 interface AllProductsSectionProps extends ProductActionsProps {
   maxSavings?: number;
@@ -18,6 +19,7 @@ interface AllProductsSectionProps extends ProductActionsProps {
   onRetry?: () => void;
   marketName?: string;
   marketId?: number;
+  marketVsMartComparisons?: MarketVsMartComparison[];
 }
 
 export default function AllProductsSection({
@@ -30,6 +32,7 @@ export default function AllProductsSection({
   onRetry,
   marketName,
   marketId,
+  marketVsMartComparisons = [],
 }: AllProductsSectionProps) {
   const {
     products: hookProducts,
@@ -39,8 +42,25 @@ export default function AllProductsSection({
   } = useProducts(marketId);
   const { toasts, removeToast } = useToast();
 
-  // products가 props로 전달된 경우 해당 데이터 사용, 아니면 hook에서 가져온 데이터 사용
-  const displayProducts = products || hookProducts;
+  // marketVsMartComparisons 데이터를 ProductData 형태로 변환
+  const convertedProducts: ProductData[] = marketVsMartComparisons.map(
+    (item, index) => ({
+      id: `market-${index}`,
+      name: item.itemName,
+      category: item.category,
+      marketPrice: item.marketPrice,
+      supermarketPrice: item.averageMartPrice,
+      savings: item.priceDifference,
+      marketId: marketId || 0,
+      inStock: true,
+      description: item.comparisonSummary,
+      emoji: '/assets/tomato.svg', // 기본 이모지
+    })
+  );
+
+  // products가 props로 전달된 경우 해당 데이터 사용, 아니면 변환된 데이터 또는 hook에서 가져온 데이터 사용
+  const displayProducts =
+    products || convertedProducts.length > 0 ? convertedProducts : hookProducts;
   const calculatedMaxSavings =
     maxSavings ||
     displayProducts.reduce((max, product) => Math.max(max, product.savings), 0);

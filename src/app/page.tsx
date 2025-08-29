@@ -7,7 +7,8 @@ import AIChatBot from '@/components/home/AIChatBot';
 import TopThreeProducts from '@/components/home/TopThreeProducts';
 import AllProductsSection from '@/components/home/AllProductsSection';
 import { useState, useEffect } from 'react';
-import { PriceDataAPI, AuthAPI } from '@/lib/api/diplomats';
+import { PriceDataAPI, AuthAPI, RecommendationAPI } from '@/lib/api/diplomats';
+import type { MarketRecommendationResponse } from '@/lib/api/types';
 
 interface Market {
   id: number;
@@ -23,6 +24,8 @@ export default function Home() {
   } | null>(null);
   const [activeMarket, setActiveMarket] = useState<Market | null>(null);
   const [loading, setLoading] = useState(true);
+  const [marketRecommendations, setMarketRecommendations] =
+    useState<MarketRecommendationResponse | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -64,6 +67,25 @@ export default function Home() {
     loadData();
   }, []);
 
+  // 시장이 변경될 때마다 해당 시장의 추천 데이터 로드
+  useEffect(() => {
+    const loadMarketRecommendations = async () => {
+      if (!activeMarket?.name) return;
+
+      try {
+        const res = await RecommendationAPI.getComprehensive(activeMarket.name);
+        if (res.success) {
+          setMarketRecommendations(res.data);
+        }
+      } catch (error) {
+        console.error('Failed to load market recommendations:', error);
+        setMarketRecommendations(null);
+      }
+    };
+
+    loadMarketRecommendations();
+  }, [activeMarket?.name]);
+
   const handleMarketChange = (market: Market) => {
     setActiveMarket(market);
   };
@@ -87,17 +109,27 @@ export default function Home() {
         onMarketChange={handleMarketChange}
       />
       <main className="flex-1 px-6 py-6 pb-20">
-        <AIChatBot userName={currentUser?.name || '사용자'} />
+        <AIChatBot
+          userName={currentUser?.name || '사용자'}
+          seasonalRecommendations={
+            marketRecommendations?.seasonalRecommendations
+          }
+        />
 
         <TopThreeProducts
           userName={currentUser?.name || '사용자'}
           marketId={activeMarket?.id}
+          marketName={activeMarket?.name}
+          savingRecommendations={marketRecommendations?.savingRecommendations}
         />
 
         <AllProductsSection
-          maxSavings={15000}
+          maxSavings={marketRecommendations?.summary?.maxSavingAmount || 15000}
           marketName={activeMarket?.name}
           marketId={activeMarket?.id}
+          marketVsMartComparisons={
+            marketRecommendations?.marketVsMartComparisons
+          }
         />
       </main>
 

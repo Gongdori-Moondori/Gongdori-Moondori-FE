@@ -1,13 +1,12 @@
 import Image from 'next/image';
 import { useEffect, useState, useCallback } from 'react';
-import {
-  RecommendationAPI,
-  type SeasonalRecommendation,
-} from '@/lib/api/diplomats';
+import type { SavingRecommendationItem } from '@/lib/api/types';
 
 interface TopThreeProductsProps {
   userName?: string;
   marketId?: number; // 현재 선택된 마켓 ID
+  marketName?: string; // 현재 선택된 마켓 이름
+  savingRecommendations?: SavingRecommendationItem[];
 }
 
 interface SimpleTopProduct {
@@ -19,6 +18,8 @@ interface SimpleTopProduct {
 
 export default function TopThreeProducts({
   userName = '사용자',
+  marketName,
+  savingRecommendations = [],
 }: TopThreeProductsProps) {
   const [products, setProducts] = useState<SimpleTopProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,18 +30,18 @@ export default function TopThreeProducts({
       setIsLoading(true);
       setError(null);
 
-      const res = await RecommendationAPI.getSeasonal();
-      if (!res.success) throw new Error(res.message || '조회 실패');
-
-      const list: SeasonalRecommendation[] = res.data || [];
-      const top3 = list.slice(0, 3).map((it, idx) => ({
-        id: idx + 1,
-        emoji: '/assets/tomato.svg',
-        name: it.itemName,
-        savings: Math.floor((it.seasonalScore || 0) * 1000),
-      }));
-
-      setProducts(top3);
+      // props로 받은 데이터가 있으면 사용
+      if (savingRecommendations && savingRecommendations.length > 0) {
+        const top3 = savingRecommendations.slice(0, 3).map((item, idx) => ({
+          id: idx + 1,
+          emoji: '/assets/tomato.svg',
+          name: item.itemName,
+          savings: item.savingAmount,
+        }));
+        setProducts(top3);
+      } else {
+        setProducts([]);
+      }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.'
@@ -48,7 +49,7 @@ export default function TopThreeProducts({
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [savingRecommendations]);
 
   useEffect(() => {
     fetchTopProducts();
@@ -146,11 +147,10 @@ export default function TopThreeProducts({
                   />
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-medium">
-                    지금 {product.name} 구매하면
-                  </span>
+                  <span className="font-medium">{product.name}을 구매하면</span>
                   <p className="text-sm text-gray-600 mb-3">
-                    {product.savings.toLocaleString()}원을 절약할 수 있어요
+                    {Math.floor(product.savings).toLocaleString()}원 절약할 수
+                    있어요
                   </p>
                 </div>
               </div>
@@ -159,9 +159,7 @@ export default function TopThreeProducts({
                   {product.name} 구매하고
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500">
-                    {product.savings.toLocaleString()}원 절약하기
-                  </span>
+                  <span className="text-sm text-gray-500">내 지갑 지키기</span>
                   <svg
                     className="w-4 h-4 text-gray-400"
                     fill="none"
